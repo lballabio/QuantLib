@@ -295,7 +295,7 @@ namespace QuantLib {
         }
         //! Density function of M, the market/systemic factors.
         Probability density(const std::vector<Real>& m) const {
-            #if defined(QL_EXTRA_SAFETY_CHECKS)
+            #ifdef QL_EXTRA_SAFETY_CHECKS
                 QL_REQUIRE(m.size() == nFactors_, 
                     "Factor size must match that of model.");
             #endif

@@ -288,7 +288,7 @@ BOOST_AUTO_TEST_CASE(testHolderExtensibleOptionNegativeDividendYield) {
         option.setPricingEngine(engine);
 
         BOOST_TEST_CONTEXT(c.description << ", dividend yield " << c.dividendYield) {
-            if (c.expectedError)
+            if (c.expectedError != nullptr)
                 BOOST_CHECK_EXCEPTION(option.NPV(), Error,
                                       ExpectedErrorMessage(c.expectedError));
             else

@@ -41,7 +41,7 @@
 #endif
 #endif
 
-#if defined(BOOST_NO_STDC_NAMESPACE)
+#ifdef BOOST_NO_STDC_NAMESPACE
     namespace std { using ::time; using ::time_t; using ::tm;
                     using ::gmtime; using ::localtime; }
 #endif
@@ -61,7 +61,7 @@ namespace {
        boost/date_time/compiler_config.hpp.
     */
     bool localTime(std::time_t t, std::tm& result) {
-#if defined(BOOST_MSVC)
+#ifdef BOOST_MSVC
         // Microsoft's localtime_s is not the one from Annex K of the C
         // standard: it takes the output buffer first and returns an error
         // code instead of a pointer.

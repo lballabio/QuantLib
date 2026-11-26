@@ -144,15 +144,17 @@ namespace QuantLib {
                 const Real dp = std::log(S_*dq/(b_t*dr))/v + 0.5*v;
                 r = 2*z*(r_*K_*dr*Phi_(-dp+v) - q_*S_*dq*Phi_(-dp));
             }
-            else
+            else {
                 r = 0.0;
+}
         }
-        else if (close_enough(S_*dq, b_t*dr))
+        else if (close_enough(S_*dq, b_t*dr)) {
             r = z*(r_*K_*dr - q_*S_*dq);
-        else if (b_t*dr > S_*dq)
+        } else if (b_t*dr > S_*dq) {
             r = 2*z*(r_*K_*dr - q_*S_*dq);
-        else
+        } else {
             r = 0.0;
+}
 
         return r;
     }

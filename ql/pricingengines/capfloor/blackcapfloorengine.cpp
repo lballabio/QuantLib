@@ -66,8 +66,9 @@ namespace QuantLib {
                        "Displacement used for stripping and provided for "
                        "pricing differ. Model displacement was : "
                            << vol_->displacement());
-        } else
+        } else {
             displacement_ = vol_->displacement();
+}
         registerWith(discountCurve_);
         registerWith(vol_);
     }

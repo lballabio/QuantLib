@@ -54,7 +54,7 @@ namespace QuantLib {
         return result;
     }
 
-    #if !defined(QL_PATCH_SOLARIS)
+    #ifndef QL_PATCH_SOLARIS
     const CumulativeNormalDistribution InverseCumulativeNormal::f_;
     #endif
 

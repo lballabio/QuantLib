@@ -40,9 +40,9 @@ namespace QuantLib {
     : mesher_(mesher), rTS_(bsProcess->riskFreeRate().currentLink()),
       qTS_(bsProcess->dividendYield().currentLink()),
       volTS_(bsProcess->blackVolatility().currentLink()),
-      localVol_((localVol) ? bsProcess->localVolatility().currentLink() :
+      localVol_(localVol ? bsProcess->localVolatility().currentLink() :
                              ext::shared_ptr<LocalVolTermStructure>()),
-      x_((localVol) ? Array(Exp(mesher->locations(direction))) : Array()),
+      x_(localVol ? Array(Exp(mesher->locations(direction))) : Array()),
       dxMap_(FirstDerivativeOp(direction, mesher)), dxxMap_(SecondDerivativeOp(direction, mesher)),
       mapT_(direction, mesher), strike_(strike),
       illegalLocalVolOverwrite_(illegalLocalVolOverwrite), direction_(direction),
@@ -105,9 +105,9 @@ namespace QuantLib {
 
     Array FdmBlackScholesOp::apply_direction(Size direction,
                                              const Array& r) const {
-        if (direction == direction_)
+        if (direction == direction_) {
             return mapT_.apply(r);
-        else {
+        } else {
             return Array(r.size(), 0.0);
         }
     }
@@ -118,9 +118,9 @@ namespace QuantLib {
 
     Array FdmBlackScholesOp::solve_splitting(Size direction,
                                              const Array& r, Real dt) const {
-        if (direction == direction_)
+        if (direction == direction_) {
             return mapT_.solve_splitting(r, dt, 1.0);
-        else {
+        } else {
             return r;
         }
     }

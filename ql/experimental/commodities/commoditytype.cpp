@@ -28,9 +28,9 @@ namespace QuantLib {
     CommodityType::CommodityType(const std::string& name,
                                  const std::string& code) {
         auto i = commodityTypes_.find(code);
-        if (i != commodityTypes_.end())
+        if (i != commodityTypes_.end()) {
             data_ = i->second;
-        else {
+        } else {
             data_ = ext::make_shared<CommodityType::Data>(
                                          name, code);
             commodityTypes_[code] = data_;

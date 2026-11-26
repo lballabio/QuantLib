@@ -25,6 +25,7 @@
 #include "utilities.hpp"
 #include <ql/indexes/swap/euriborswap.hpp>
 #include <ql/quotes/simplequote.hpp>
+#include <ql/shared_ptr.hpp>
 #include <ql/termstructures/volatility/swaption/interpolatedswaptionvolatilitycube.hpp>
 #include <ql/termstructures/volatility/swaption/sabrswaptionvolatilitycube.hpp>
 #include <ql/termstructures/volatility/swaption/zabrswaptionvolatilitycube.hpp>
@@ -615,7 +616,7 @@ BOOST_AUTO_TEST_CASE(testSpreadedCube) {
                          isParameterFixed,
                          true)));
 
-    ext::shared_ptr<SimpleQuote> spread (new SimpleQuote(0.0001));
+    ext::shared_ptr<SimpleQuote> spread  = ext::make_shared<SimpleQuote>(0.0001);
     Handle<Quote> spreadHandle(spread);
     ext::shared_ptr<SwaptionVolatilityStructure> spreadedVolCube(new
         SpreadedSwaptionVolatility(volCube, spreadHandle));

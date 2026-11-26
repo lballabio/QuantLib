@@ -87,9 +87,9 @@ namespace QuantLib {
         }
 
         if (std::isnan(z_[k][i])) {
-            if (k == 0)
+            if (k == 0) {
                 z_[k][i] = moment(i);
-            else {
+            } else {
                 const mp_real tmp = z(k-1, i+1)
                     - alpha_(k-1)*z(k-1, i) - beta_(k-1)*z(k-2, i);
                 z_[k][i] = tmp;
@@ -106,9 +106,9 @@ namespace QuantLib {
             b_.resize(u+1, std::numeric_limits<mp_real>::quiet_NaN());
 
         if (std::isnan(b_[u])) {
-            if (u == 0)
+            if (u == 0) {
                 b_[u] = moment(1);
-            else {
+            } else {
                 const Integer iu(u);
                 const mp_real tmp =
                     -z(iu-1, iu)/z(iu-1, iu-1) + z(iu, iu+1)/z(iu, iu);

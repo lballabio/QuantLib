@@ -32,7 +32,7 @@ namespace QuantLib {
 
         const Size n = mtrx.columns();
 
-        #if defined(QL_EXTRA_SAFETY_CHECKS)
+        #ifdef QL_EXTRA_SAFETY_CHECKS
         // check symmetry
         for (Size iRow=0; iRow<mtrx.rows(); iRow++)
             for (Size iCol=0; iCol<iRow; iCol++)
@@ -90,7 +90,7 @@ namespace QuantLib {
                    "convergence not reached after " <<
                    iteration << " iterations");
 
-        #if defined(QL_EXTRA_SAFETY_CHECKS)
+        #ifdef QL_EXTRA_SAFETY_CHECKS
         QL_REQUIRE(*std::max_element(previousCorrels.begin(),
                                      previousCorrels.end()) <=1 &&
                    *std::min_element(previousCorrels.begin(),

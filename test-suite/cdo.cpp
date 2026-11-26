@@ -29,6 +29,7 @@
 #include <ql/experimental/credit/pool.hpp>
 #include <ql/experimental/credit/randomdefaultlatentmodel.hpp>
 #include <ql/quotes/simplequote.hpp>
+#include <ql/shared_ptr.hpp>
 #include <ql/termstructures/credit/flathazardrate.hpp>
 #include <ql/termstructures/yield/flatforward.hpp>
 #include <ql/time/calendars/target.hpp>
@@ -141,7 +142,7 @@ BOOST_AUTO_TEST_CASE_TEMPLATE(testHW, T, dataSets) {
     std::vector<Handle<DefaultProbabilityTermStructure>> basket;
     ext::shared_ptr<DefaultProbabilityTermStructure> ptr(
         new FlatHazardRate(asofDate, hazardRate, ActualActual(ActualActual::ISDA)));
-    ext::shared_ptr<Pool> pool(new Pool());
+    ext::shared_ptr<Pool> pool = ext::make_shared<Pool>();
     std::vector<std::string> names;
     // probability key items
     std::vector<Issuer> issuers;
@@ -161,7 +162,7 @@ BOOST_AUTO_TEST_CASE_TEMPLATE(testHW, T, dataSets) {
                   NorthAmericaCorpDefaultKey(EURCurrency(), QuantLib::SeniorSec, Period(), 1.));
     }
 
-    ext::shared_ptr<SimpleQuote> correlation(new SimpleQuote(0.0));
+    ext::shared_ptr<SimpleQuote> correlation = ext::make_shared<SimpleQuote>(0.0);
     Handle<Quote> hCorrelation(correlation);
     QL_REQUIRE(std::size(hwAttachment) == std::size(hwDetachment), "data length does not match");
 

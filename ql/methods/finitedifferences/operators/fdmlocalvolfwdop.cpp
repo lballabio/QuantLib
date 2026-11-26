@@ -34,7 +34,7 @@ namespace QuantLib {
                                        const ext::shared_ptr<LocalVolTermStructure>& localVol,
                                        Size direction)
     : mesher_(mesher), rTS_(std::move(rTS)), qTS_(std::move(qTS)), localVol_(localVol),
-      x_((localVol) != nullptr ? Array(Exp(mesher->locations(direction))) : Array()),
+      x_(localVol != nullptr ? Array(Exp(mesher->locations(direction))) : Array()),
       dxMap_(FirstDerivativeOp(direction, mesher)), dxxMap_(SecondDerivativeOp(direction, mesher)),
       mapT_(direction, mesher), direction_(direction) {}
 
@@ -60,9 +60,9 @@ namespace QuantLib {
 
     Array FdmLocalVolFwdOp::apply_direction(
         Size direction, const Array& r) const {
-        if (direction == direction_)
+        if (direction == direction_) {
             return mapT_.apply(r);
-        else {
+        } else {
             return Array(r.size(), 0.0);
         }
     }
@@ -73,9 +73,9 @@ namespace QuantLib {
 
     Array FdmLocalVolFwdOp::solve_splitting(
         Size direction, const Array& r, Real dt) const {
-        if (direction == direction_)
+        if (direction == direction_) {
             return mapT_.solve_splitting(r, dt, 1.0);
-        else {
+        } else {
             return r;
         }
     }

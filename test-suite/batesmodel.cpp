@@ -20,6 +20,7 @@
 
 #include "toplevelfixture.hpp"
 #include "utilities.hpp"
+#include <ql/shared_ptr.hpp>
 #include <ql/time/calendars/target.hpp>
 #include <ql/processes/batesprocess.hpp>
 #include <ql/processes/merton76process.hpp>
@@ -115,9 +116,9 @@ BOOST_AUTO_TEST_CASE(testAnalyticVsBlack) {
 
     VanillaOption option(payoff, exercise);
 
-    ext::shared_ptr<BatesProcess> process(
-        new BatesProcess(riskFreeTS, dividendTS, s0, v0, 
-                         kappa, theta, sigma, rho, lambda, nu, delta));
+    ext::shared_ptr<BatesProcess> process = ext::make_shared<BatesProcess>(
+        riskFreeTS, dividendTS, s0, v0, 
+                         kappa, theta, sigma, rho, lambda, nu, delta);
 
     ext::shared_ptr<PricingEngine> engine(new BatesEngine(
         ext::make_shared<BatesModel>(process), 64));
@@ -208,7 +209,7 @@ BOOST_AUTO_TEST_CASE(testAnalyticAndMcVsJumpDiffusion) {
     Handle<Quote> s0(ext::shared_ptr<Quote>(new SimpleQuote(100)));
 
     Real v0 = 0.0433;
-    ext::shared_ptr<SimpleQuote> vol(new SimpleQuote(std::sqrt(v0)));
+    ext::shared_ptr<SimpleQuote> vol = ext::make_shared<SimpleQuote>(std::sqrt(v0));
     ext::shared_ptr<BlackVolTermStructure> volTS =
         flatVol(settlementDate, vol, dayCounter);
 
@@ -217,13 +218,13 @@ BOOST_AUTO_TEST_CASE(testAnalyticAndMcVsJumpDiffusion) {
     const Real sigma = 1.0e-4;
     const Real rho = 0.0;
 
-    ext::shared_ptr<SimpleQuote> jumpIntensity(new SimpleQuote(2));
-    ext::shared_ptr<SimpleQuote> meanLogJump(new SimpleQuote(-0.2));
-    ext::shared_ptr<SimpleQuote> jumpVol(new SimpleQuote(0.2));
+    ext::shared_ptr<SimpleQuote> jumpIntensity = ext::make_shared<SimpleQuote>(2);
+    ext::shared_ptr<SimpleQuote> meanLogJump = ext::make_shared<SimpleQuote>(-0.2);
+    ext::shared_ptr<SimpleQuote> jumpVol = ext::make_shared<SimpleQuote>(0.2);
 
-    ext::shared_ptr<BatesProcess> batesProcess(new BatesProcess(
+    ext::shared_ptr<BatesProcess> batesProcess = ext::make_shared<BatesProcess>(
         riskFreeTS, dividendTS, s0, v0, kappa, theta, sigma, rho,
-        jumpIntensity->value(), meanLogJump->value(), jumpVol->value()));
+        jumpIntensity->value(), meanLogJump->value(), jumpVol->value());
 
     ext::shared_ptr<Merton76Process> mertonProcess(
         new Merton76Process(s0, dividendTS, riskFreeTS,
@@ -308,9 +309,9 @@ BOOST_AUTO_TEST_CASE(testAnalyticVsMCPricing) {
         Handle<YieldTermStructure> dividendTS(flatRate(hestonModel.q, dayCounter));
         Handle<Quote> s0(ext::shared_ptr<Quote>(new SimpleQuote(100)));
 
-        ext::shared_ptr<BatesProcess> batesProcess(new BatesProcess(
+        ext::shared_ptr<BatesProcess> batesProcess = ext::make_shared<BatesProcess>(
             riskFreeTS, dividendTS, s0, hestonModel.v0, hestonModel.kappa, hestonModel.theta,
-            hestonModel.sigma, hestonModel.rho, 2.0, -0.2, 0.1));
+            hestonModel.sigma, hestonModel.rho, 2.0, -0.2, 0.1);
 
         const Real mcTolerance = 0.5;
         ext::shared_ptr<PricingEngine> mcEngine =
@@ -320,7 +321,7 @@ BOOST_AUTO_TEST_CASE(testAnalyticVsMCPricing) {
                 .withAbsoluteTolerance(mcTolerance)
                 .withSeed(1234);
     
-        ext::shared_ptr<BatesModel> batesModel(new BatesModel(batesProcess));    
+        ext::shared_ptr<BatesModel> batesModel = ext::make_shared<BatesModel>(batesProcess);    
         
         ext::shared_ptr<PricingEngine> fdEngine(
                             new FdBatesVanillaEngine(batesModel, 50, 100, 30));
@@ -414,7 +415,7 @@ BOOST_AUTO_TEST_CASE(testDAXCalibration) {
 
 
     Real v0 = 0.0433;
-    ext::shared_ptr<SimpleQuote> vol(new SimpleQuote(std::sqrt(v0)));
+    ext::shared_ptr<SimpleQuote> vol = ext::make_shared<SimpleQuote>(std::sqrt(v0));
 
     const Real kappa = 1.0;
     const Real theta = v0;
@@ -424,11 +425,11 @@ BOOST_AUTO_TEST_CASE(testDAXCalibration) {
     const Real nu = -0.1285;
     const Real delta = 0.1702;
 
-    ext::shared_ptr<BatesProcess> process(
-        new BatesProcess(riskFreeTS, dividendTS, s0, v0, 
-                         kappa, theta, sigma, rho, lambda, nu, delta));
+    ext::shared_ptr<BatesProcess> process = ext::make_shared<BatesProcess>(
+        riskFreeTS, dividendTS, s0, v0, 
+                         kappa, theta, sigma, rho, lambda, nu, delta);
 
-    ext::shared_ptr<BatesModel> batesModel(new BatesModel(process));
+    ext::shared_ptr<BatesModel> batesModel = ext::make_shared<BatesModel>(process);
 
     ext::shared_ptr<PricingEngine> batesEngine(
                                             new BatesEngine(batesModel, 64));

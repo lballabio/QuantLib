@@ -73,9 +73,9 @@ namespace QuantLib {
             Real y = a * values[0] + sqrt(1-a*a) * values[j+1];
             Real p = CumulativeNormalDistribution()(y);
 
-            if (dts->defaultProbability(tmax) < p)
+            if (dts->defaultProbability(tmax) < p) {
                 pool_->setTime(name, tmax + 1);
-            else {
+            } else {
                 // we know there is a zero of f(t) = dts->defaultProbability(t) - p in [0, tmax]
                 try {
                     // try bracketing the root and find it with Brent

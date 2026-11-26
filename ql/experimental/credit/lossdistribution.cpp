@@ -250,9 +250,9 @@ namespace QuantLib {
                     QL_REQUIRE (u >= k, "u=" << u << "<k=" << k << " at i=" << i);
 
                     Real dp = p[k] * P;
-                    if (u == k)
+                    if (u == k) {
                         a[k] += P * L;
-                    else {
+                    } else {
                         // no update of a[u] and p[u] if u is beyond grid end
                         if (u < int(nBuckets_)) {
                             // a[u] remains unchanged, if dp = 0

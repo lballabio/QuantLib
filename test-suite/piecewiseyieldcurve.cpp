@@ -3139,9 +3139,11 @@ BOOST_AUTO_TEST_CASE(testCrossCurveJacobian) {
             Real q0 = quote->value();
             quote->setValue(q0 + h);
             std::vector<std::vector<Real>> up;
+            up.reserve(curves.size());
             for (auto& x : curves) up.push_back(x.curve->data());
             quote->setValue(q0 - h);
             std::vector<std::vector<Real>> dn;
+            dn.reserve(curves.size());
             for (auto& x : curves) dn.push_back(x.curve->data());
             quote->setValue(q0);
             for (auto& x : curves) x.curve->data();
@@ -3315,9 +3317,11 @@ BOOST_AUTO_TEST_CASE(testCurveSensitivityPropagation) {
             Real q0 = quote->value();
             quote->setValue(q0 + h);
             std::vector<std::vector<Real>> up;
+            up.reserve(curves.size());
             for (auto& x : curves) up.push_back(x.curve->data());
             quote->setValue(q0 - h);
             std::vector<std::vector<Real>> dn;
+            dn.reserve(curves.size());
             for (auto& x : curves) dn.push_back(x.curve->data());
             quote->setValue(q0);
             for (auto& x : curves) x.curve->data();
@@ -3794,9 +3798,11 @@ BOOST_AUTO_TEST_CASE(testCoDependentCurveSensitivityPropagation) {
             Real q0 = quote->value();
             quote->setValue(q0 + h);
             std::vector<std::vector<Real>> up;
+            up.reserve(curves.size());
             for (auto& x : curves) up.push_back(x.data());
             quote->setValue(q0 - h);
             std::vector<std::vector<Real>> dn;
+            dn.reserve(curves.size());
             for (auto& x : curves) dn.push_back(x.data());
             quote->setValue(q0);
             for (auto& x : curves) x.data();
@@ -4075,6 +4081,7 @@ BOOST_AUTO_TEST_CASE(testCurveJacobianGraphAfterBaseCurveRelink) {
 
     auto makeSwapHelpers = [&](const std::vector<Datum>& data) {
         std::vector<ext::shared_ptr<RateHelper>> helpers;
+        helpers.reserve(data.size());
         for (const auto& datum : data)
             helpers.push_back(ext::make_shared<SwapRateHelper>(
                 datum.rate / 100.0, datum.n * datum.units, vars.calendar,
@@ -4171,6 +4178,73 @@ BOOST_AUTO_TEST_CASE(testBmaHelperSwap) {
     Settings::instance().evaluationDate() = bmaCalendar.advance(today, 1 * Months);
     BOOST_CHECK(helper->swap() != swap);
     BOOST_CHECK_EQUAL(helper->swap()->startDate(), helper->earliestDate());
+}
+
+BOOST_AUTO_TEST_CASE(testSwapRateHelperDateGenerationRule) {
+    BOOST_TEST_MESSAGE("Testing SwapRateHelper date-generation rule...");
+
+    Date today = Settings::instance().evaluationDate();
+    Calendar calendar = TARGET();
+    auto index = ext::make_shared<Euribor3M>();
+
+    // an IMM swap: from an IMM date to the IMM date five years later
+    Date startDate = IMM::nextDate(today);
+    Date endDate = IMM::nextDate(startDate + 5 * Years - 1 * Weeks);
+    BOOST_REQUIRE(IMM::isIMMdate(startDate) && IMM::isIMMdate(endDate));
+
+    auto checkSchedule = [&](const Schedule& schedule, const Period& tenor,
+                             DateGeneration::Rule rule, const std::string& leg) {
+        BOOST_TEST_CONTEXT(leg << " leg") {
+            BOOST_CHECK(schedule.rule() == rule);
+            Schedule expected(startDate, endDate, tenor, calendar, ModifiedFollowing,
+                              ModifiedFollowing, rule, false);
+            BOOST_REQUIRE_EQUAL(schedule.size(), expected.size());
+            for (Size i = 0; i < schedule.size(); ++i) {
+                BOOST_CHECK_EQUAL(schedule[i], expected[i]);
+                if (rule == DateGeneration::ThirdWednesday)
+                    BOOST_CHECK_MESSAGE(IMM::isIMMdate(schedule[i], false),
+                                        schedule[i] << " is not an IMM date");
+            }
+        }
+    };
+
+    // the default rule is unchanged...
+    auto defaultHelper = ext::make_shared<SwapRateHelper>(
+        0.02, startDate, endDate, calendar, Annual, ModifiedFollowing,
+        Thirty360(Thirty360::BondBasis), index);
+    checkSchedule(defaultHelper->swap()->fixedSchedule(), 1 * Years,
+                  DateGeneration::Backward, "default fixed");
+    checkSchedule(defaultHelper->swap()->floatingSchedule(), 3 * Months,
+                  DateGeneration::Backward, "default floating");
+
+    // ...and with the IMM rule all the swap dates are IMM dates
+    auto immHelper = ext::make_shared<SwapRateHelper>(
+        0.02, startDate, endDate, calendar, Annual, ModifiedFollowing,
+        Thirty360(Thirty360::BondBasis), index, Handle<Quote>(),
+        Handle<YieldTermStructure>(), Pillar::LastRelevantDate, Date(),
+        false, std::nullopt, std::nullopt,
+        ext::shared_ptr<FloatingRateCouponPricer>(),
+        DateGeneration::ThirdWednesday);
+    checkSchedule(immHelper->swap()->fixedSchedule(), 1 * Years,
+                  DateGeneration::ThirdWednesday, "IMM fixed");
+    checkSchedule(immHelper->swap()->floatingSchedule(), 3 * Months,
+                  DateGeneration::ThirdWednesday, "IMM floating");
+
+    // the rule is also passed on by the tenor-based constructor
+    auto tenorHelper = ext::make_shared<SwapRateHelper>(
+        0.02, 5 * Years, calendar, Annual, ModifiedFollowing,
+        Thirty360(Thirty360::BondBasis), index, Handle<Quote>(), 0 * Days,
+        Handle<YieldTermStructure>(), Null<Natural>(),
+        Pillar::LastRelevantDate, Date(), false, std::nullopt, std::nullopt,
+        ext::shared_ptr<FloatingRateCouponPricer>(),
+        DateGeneration::ThirdWednesday);
+    for (const auto& schedule : {tenorHelper->swap()->fixedSchedule(),
+                                 tenorHelper->swap()->floatingSchedule()}) {
+        BOOST_CHECK(schedule.rule() == DateGeneration::ThirdWednesday);
+        for (Size i = 1; i < schedule.size() - 1; ++i)
+            BOOST_CHECK_MESSAGE(IMM::isIMMdate(schedule[i], false),
+                                schedule[i] << " is not an IMM date");
+    }
 }
 
 BOOST_AUTO_TEST_SUITE_END()

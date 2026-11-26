@@ -94,7 +94,7 @@ namespace QuantLib {
     std::vector<Real> CumulativeBehrensFisher::convolveVectorPolynomials(
         const std::vector<Real>& v1,
         const std::vector<Real>& v2) const {
-    #if defined(QL_EXTRA_SAFETY_CHECKS)
+    #ifdef QL_EXTRA_SAFETY_CHECKS
         QL_REQUIRE(!v1.empty() && !v2.empty(),
             "Incorrect vectors in polynomial.");
     #endif
@@ -123,7 +123,7 @@ namespace QuantLib {
 
         for(Size exponent = 2; exponent <polyConvolved_.size(); exponent++) {
             integral -= polyConvolved_[exponent] *
-                Factorial::get(exponent-1) * std::sin((exponent)*atan2xa)
+                Factorial::get(exponent-1) * std::sin(exponent*atan2xa)
                     /std::pow(rootsqr, static_cast<Real>(exponent));
          }
         return .5 + integral / M_PI;

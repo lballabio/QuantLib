@@ -38,6 +38,7 @@
 #include <ql/pricingengines/vanilla/juquadraticengine.hpp>
 #include <ql/pricingengines/vanilla/qdfpamericanengine.hpp>
 #include <ql/pricingengines/vanilla/qdplusamericanengine.hpp>
+#include <ql/shared_ptr.hpp>
 #include <ql/termstructures/volatility/equityfx/blackconstantvol.hpp>
 #include <ql/termstructures/yield/flatforward.hpp>
 #include <ql/termstructures/yield/zerocurve.hpp>
@@ -284,12 +285,12 @@ BOOST_AUTO_TEST_CASE(testBaroneAdesiWhaleyValues) {
 
     Date today = Settings::instance().evaluationDate();
     DayCounter dc = Actual360();
-    ext::shared_ptr<SimpleQuote> spot(new SimpleQuote(0.0));
-    ext::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.0));
+    ext::shared_ptr<SimpleQuote> spot = ext::make_shared<SimpleQuote>(0.0);
+    ext::shared_ptr<SimpleQuote> qRate = ext::make_shared<SimpleQuote>(0.0);
     ext::shared_ptr<YieldTermStructure> qTS = flatRate(today, qRate, dc);
-    ext::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.0));
+    ext::shared_ptr<SimpleQuote> rRate = ext::make_shared<SimpleQuote>(0.0);
     ext::shared_ptr<YieldTermStructure> rTS = flatRate(today, rRate, dc);
-    ext::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.0));
+    ext::shared_ptr<SimpleQuote> vol = ext::make_shared<SimpleQuote>(0.0);
     ext::shared_ptr<BlackVolTermStructure> volTS = flatVol(today, vol, dc);
 
     Real tolerance = 3.0e-3;
@@ -417,12 +418,12 @@ BOOST_AUTO_TEST_CASE(testBjerksundStenslandValues) {
 
     Date today = Settings::instance().evaluationDate();
     DayCounter dc = Actual360();
-    ext::shared_ptr<SimpleQuote> spot(new SimpleQuote(0.0));
-    ext::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.0));
+    ext::shared_ptr<SimpleQuote> spot = ext::make_shared<SimpleQuote>(0.0);
+    ext::shared_ptr<SimpleQuote> qRate = ext::make_shared<SimpleQuote>(0.0);
     ext::shared_ptr<YieldTermStructure> qTS = flatRate(today, qRate, dc);
-    ext::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.0));
+    ext::shared_ptr<SimpleQuote> rRate = ext::make_shared<SimpleQuote>(0.0);
     ext::shared_ptr<YieldTermStructure> rTS = flatRate(today, rRate, dc);
-    ext::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.0));
+    ext::shared_ptr<SimpleQuote> vol = ext::make_shared<SimpleQuote>(0.0);
     ext::shared_ptr<BlackVolTermStructure> volTS = flatVol(today, vol, dc);
 
     Real tolerance = 5.0e-5;
@@ -539,12 +540,12 @@ BOOST_AUTO_TEST_CASE(testJuValues) {
 
     Date today = Settings::instance().evaluationDate();
     DayCounter dc = Actual360();
-    ext::shared_ptr<SimpleQuote> spot(new SimpleQuote(0.0));
-    ext::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.0));
+    ext::shared_ptr<SimpleQuote> spot = ext::make_shared<SimpleQuote>(0.0);
+    ext::shared_ptr<SimpleQuote> qRate = ext::make_shared<SimpleQuote>(0.0);
     ext::shared_ptr<YieldTermStructure> qTS = flatRate(today, qRate, dc);
-    ext::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.0));
+    ext::shared_ptr<SimpleQuote> rRate = ext::make_shared<SimpleQuote>(0.0);
     ext::shared_ptr<YieldTermStructure> rTS = flatRate(today, rRate, dc);
-    ext::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.0));
+    ext::shared_ptr<SimpleQuote> vol = ext::make_shared<SimpleQuote>(0.0);
     ext::shared_ptr<BlackVolTermStructure> volTS = flatVol(today, vol, dc);
 
     Real tolerance = 1.0e-3;
@@ -1153,12 +1154,12 @@ BOOST_AUTO_TEST_CASE(testFdValues) {
 
     Date today = Settings::instance().evaluationDate();
     DayCounter dc = Actual360();
-    ext::shared_ptr<SimpleQuote> spot(new SimpleQuote(0.0));
-    ext::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.0));
+    ext::shared_ptr<SimpleQuote> spot = ext::make_shared<SimpleQuote>(0.0);
+    ext::shared_ptr<SimpleQuote> qRate = ext::make_shared<SimpleQuote>(0.0);
     ext::shared_ptr<YieldTermStructure> qTS = flatRate(today, qRate, dc);
-    ext::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.0));
+    ext::shared_ptr<SimpleQuote> rRate = ext::make_shared<SimpleQuote>(0.0);
     ext::shared_ptr<YieldTermStructure> rTS = flatRate(today, rRate, dc);
-    ext::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.0));
+    ext::shared_ptr<SimpleQuote> vol = ext::make_shared<SimpleQuote>(0.0);
     ext::shared_ptr<BlackVolTermStructure> volTS = flatVol(today, vol, dc);
 
     Real tolerance = 8.0e-2;
@@ -1239,12 +1240,12 @@ void testFdGreeks() {
     DayCounter dc = Actual360();
     Date today = Settings::instance().evaluationDate();
 
-    ext::shared_ptr<SimpleQuote> spot(new SimpleQuote(0.0));
-    ext::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.0));
+    ext::shared_ptr<SimpleQuote> spot = ext::make_shared<SimpleQuote>(0.0);
+    ext::shared_ptr<SimpleQuote> qRate = ext::make_shared<SimpleQuote>(0.0);
     Handle<YieldTermStructure> qTS(flatRate(qRate, dc));
-    ext::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.0));
+    ext::shared_ptr<SimpleQuote> rRate = ext::make_shared<SimpleQuote>(0.0);
     Handle<YieldTermStructure> rTS(flatRate(rRate, dc));
-    ext::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.0));
+    ext::shared_ptr<SimpleQuote> vol = ext::make_shared<SimpleQuote>(0.0);
     Handle<BlackVolTermStructure> volTS(flatVol(vol, dc));
 
     ext::shared_ptr<StrikedTypePayoff> payoff;
@@ -1509,7 +1510,7 @@ BOOST_AUTO_TEST_CASE(testEscrowedVsSpotAmericanOption) {
     const auto today = Date(27, February, 2021);
     Settings::instance().evaluationDate() = today;
 
-    ext::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.3));
+    ext::shared_ptr<SimpleQuote> vol = ext::make_shared<SimpleQuote>(0.3);
 
     const auto process = ext::make_shared<BlackScholesMertonProcess>(
         Handle<Quote>(ext::make_shared<SimpleQuote>(100)),
@@ -1580,7 +1581,7 @@ BOOST_AUTO_TEST_CASE(testTodayIsDividendDate) {
     const auto today = Date(27, February, 2021);
     Settings::instance().evaluationDate() = today;
 
-    ext::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.3));
+    ext::shared_ptr<SimpleQuote> vol = ext::make_shared<SimpleQuote>(0.3);
 
     const auto process = ext::make_shared<BlackScholesMertonProcess>(
         Handle<Quote>(ext::make_shared<SimpleQuote>(100)),

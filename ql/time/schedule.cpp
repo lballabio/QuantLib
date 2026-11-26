@@ -105,8 +105,9 @@ namespace QuantLib {
                 y = (terminationDate - evalDate)/366 + 1;
                 effectiveDate = terminationDate - y*Years;
             }
-        } else
+        } else {
             QL_REQUIRE(effectiveDate != Date(), "null effective date");
+}
 
         QL_REQUIRE(effectiveDate < terminationDate,
                    "effective date (" << effectiveDate

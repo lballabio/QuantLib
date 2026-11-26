@@ -31,7 +31,7 @@
 #include <ql/methods/finitedifferences/operators/secondderivativeop.hpp>
 #include <ql/termstructures/yieldtermstructure.hpp>
 
-#if defined(QL_PATCH_MSVC)
+#ifdef QL_PATCH_MSVC
 #pragma warning(push)
 #pragma warning(disable:4180)
 #endif
@@ -39,7 +39,7 @@
 #include <boost/numeric/ublas/vector.hpp>
 #include <boost/numeric/ublas/operation.hpp>
 
-#if defined(QL_PATCH_MSVC)
+#ifdef QL_PATCH_MSVC
 #pragma warning(pop)
 #endif
 
@@ -119,11 +119,11 @@ namespace QuantLib {
 
     Array FdmExtOUJumpOp::apply_direction(Size direction,
                                           const Array& r) const {
-        if (direction == 0)
+        if (direction == 0) {
             return ouOp_->apply_direction(direction, r);
-        else if (direction == 1)
+        } else if (direction == 1) {
             return dyMap_.apply(r);
-        else {
+        } else {
             return Array(r.size(), 0.0);
         }
     }

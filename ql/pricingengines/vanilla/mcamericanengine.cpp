@@ -42,7 +42,7 @@ namespace QuantLib {
                    "insufficient polynomial type");
 
         // the payoff gives an additional value
-        v_.emplace_back([&](Real state){ return this->payoff(state); });
+        v_.emplace_back([&](Real state) -> Real { return this->payoff(state); });
 
         const ext::shared_ptr<StrikedTypePayoff> strikePayoff
             = ext::dynamic_pointer_cast<StrikedTypePayoff>(payoff_);

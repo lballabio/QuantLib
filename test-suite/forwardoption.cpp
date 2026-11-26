@@ -31,6 +31,7 @@
 #include <ql/pricingengines/vanilla/binomialengine.hpp>
 #include <ql/pricingengines/vanilla/integralengine.hpp>
 #include <ql/processes/hestonprocess.hpp>
+#include <ql/shared_ptr.hpp>
 #include <ql/termstructures/volatility/equityfx/blackconstantvol.hpp>
 #include <ql/termstructures/yield/flatforward.hpp>
 #include <ql/time/daycounters/actual360.hpp>
@@ -101,12 +102,12 @@ void testForwardGreeks() {
     DayCounter dc = Actual360();
     Date today = Settings::instance().evaluationDate();
 
-    ext::shared_ptr<SimpleQuote> spot(new SimpleQuote(0.0));
-    ext::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.0));
+    ext::shared_ptr<SimpleQuote> spot = ext::make_shared<SimpleQuote>(0.0);
+    ext::shared_ptr<SimpleQuote> qRate = ext::make_shared<SimpleQuote>(0.0);
     Handle<YieldTermStructure> qTS(flatRate(qRate, dc));
-    ext::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.0));
+    ext::shared_ptr<SimpleQuote> rRate = ext::make_shared<SimpleQuote>(0.0);
     Handle<YieldTermStructure> rTS(flatRate(rRate, dc));
-    ext::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.0));
+    ext::shared_ptr<SimpleQuote> vol = ext::make_shared<SimpleQuote>(0.0);
     Handle<BlackVolTermStructure> volTS(flatVol(vol, dc));
 
     ext::shared_ptr<BlackScholesMertonProcess> stochProcess(
@@ -240,12 +241,12 @@ BOOST_AUTO_TEST_CASE(testValues) {
     DayCounter dc = Actual360();
     Date today = Settings::instance().evaluationDate();
 
-    ext::shared_ptr<SimpleQuote> spot(new SimpleQuote(0.0));
-    ext::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.0));
+    ext::shared_ptr<SimpleQuote> spot = ext::make_shared<SimpleQuote>(0.0);
+    ext::shared_ptr<SimpleQuote> qRate = ext::make_shared<SimpleQuote>(0.0);
     Handle<YieldTermStructure> qTS(flatRate(today, qRate, dc));
-    ext::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.0));
+    ext::shared_ptr<SimpleQuote> rRate = ext::make_shared<SimpleQuote>(0.0);
     Handle<YieldTermStructure> rTS(flatRate(today, rRate, dc));
-    ext::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.0));
+    ext::shared_ptr<SimpleQuote> vol = ext::make_shared<SimpleQuote>(0.0);
     Handle<BlackVolTermStructure> volTS(flatVol(today, vol, dc));
 
     ext::shared_ptr<BlackScholesMertonProcess> stochProcess(
@@ -299,12 +300,12 @@ BOOST_AUTO_TEST_CASE(testPerformanceValues) {
     DayCounter dc = Actual360();
     Date today = Settings::instance().evaluationDate();
 
-    ext::shared_ptr<SimpleQuote> spot(new SimpleQuote(0.0));
-    ext::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.0));
+    ext::shared_ptr<SimpleQuote> spot = ext::make_shared<SimpleQuote>(0.0);
+    ext::shared_ptr<SimpleQuote> qRate = ext::make_shared<SimpleQuote>(0.0);
     Handle<YieldTermStructure> qTS(flatRate(today, qRate, dc));
-    ext::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.0));
+    ext::shared_ptr<SimpleQuote> rRate = ext::make_shared<SimpleQuote>(0.0);
     Handle<YieldTermStructure> rTS(flatRate(today, rRate, dc));
-    ext::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.0));
+    ext::shared_ptr<SimpleQuote> vol = ext::make_shared<SimpleQuote>(0.0);
     Handle<BlackVolTermStructure> volTS(flatVol(today, vol, dc));
 
     ext::shared_ptr<BlackScholesMertonProcess> stochProcess(
@@ -373,12 +374,12 @@ BOOST_AUTO_TEST_CASE(testGreeksInitialization) {
    DayCounter dc = Actual360();
    Date today = Settings::instance().evaluationDate();
 
-   ext::shared_ptr<SimpleQuote> spot(new SimpleQuote(100.0));
-   ext::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.04));
+   ext::shared_ptr<SimpleQuote> spot = ext::make_shared<SimpleQuote>(100.0);
+   ext::shared_ptr<SimpleQuote> qRate = ext::make_shared<SimpleQuote>(0.04);
    Handle<YieldTermStructure> qTS(flatRate(qRate, dc));
-   ext::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.01));
+   ext::shared_ptr<SimpleQuote> rRate = ext::make_shared<SimpleQuote>(0.01);
    Handle<YieldTermStructure> rTS(flatRate(rRate, dc));
-   ext::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.11));
+   ext::shared_ptr<SimpleQuote> vol = ext::make_shared<SimpleQuote>(0.11);
    Handle<BlackVolTermStructure> volTS(flatVol(vol, dc));
 
    ext::shared_ptr<BlackScholesMertonProcess> stochProcess(
@@ -584,12 +585,12 @@ BOOST_AUTO_TEST_CASE(testMCPrices) {
    DayCounter dc = Actual360();
    Date today = Settings::instance().evaluationDate();
 
-   ext::shared_ptr<SimpleQuote> spot(new SimpleQuote(s));
-   ext::shared_ptr<SimpleQuote> qRate(new SimpleQuote(q));
+   ext::shared_ptr<SimpleQuote> spot = ext::make_shared<SimpleQuote>(s);
+   ext::shared_ptr<SimpleQuote> qRate = ext::make_shared<SimpleQuote>(q);
    Handle<YieldTermStructure> qTS(flatRate(qRate, dc));
-   ext::shared_ptr<SimpleQuote> rRate(new SimpleQuote(r));
+   ext::shared_ptr<SimpleQuote> rRate = ext::make_shared<SimpleQuote>(r);
    Handle<YieldTermStructure> rTS(flatRate(rRate, dc));
-   ext::shared_ptr<SimpleQuote> vol(new SimpleQuote(sigma));
+   ext::shared_ptr<SimpleQuote> vol = ext::make_shared<SimpleQuote>(sigma);
    Handle<BlackVolTermStructure> volTS(flatVol(vol, dc));
 
    ext::shared_ptr<BlackScholesMertonProcess> stochProcess(
@@ -685,12 +686,12 @@ BOOST_AUTO_TEST_CASE(testHestonMCPrices) {
        Date reset = today + 6 * Months;
        ext::shared_ptr<StrikedTypePayoff> payoff(new PlainVanillaPayoff(optionTypes[type_index], 0.0));
 
-       ext::shared_ptr<SimpleQuote> spot(new SimpleQuote(s));
-       ext::shared_ptr<SimpleQuote> qRate(new SimpleQuote(q));
+       ext::shared_ptr<SimpleQuote> spot = ext::make_shared<SimpleQuote>(s);
+       ext::shared_ptr<SimpleQuote> qRate = ext::make_shared<SimpleQuote>(q);
        Handle<YieldTermStructure> qTS(flatRate(qRate, dc));
-       ext::shared_ptr<SimpleQuote> rRate(new SimpleQuote(r));
+       ext::shared_ptr<SimpleQuote> rRate = ext::make_shared<SimpleQuote>(r);
        Handle<YieldTermStructure> rTS(flatRate(rRate, dc));
-       ext::shared_ptr<SimpleQuote> vol(new SimpleQuote(sigma_bs));
+       ext::shared_ptr<SimpleQuote> vol = ext::make_shared<SimpleQuote>(sigma_bs);
        Handle<BlackVolTermStructure> volTS(flatVol(vol, dc));
 
        ext::shared_ptr<BlackScholesMertonProcess> bsProcess(
@@ -834,10 +835,10 @@ BOOST_AUTO_TEST_CASE(testHestonAnalyticalVsMCPrices) {
        Date reset = today + 6 * Months;
        ext::shared_ptr<StrikedTypePayoff> payoff(new PlainVanillaPayoff(optionTypes[option_type_index], 0.0));
 
-       ext::shared_ptr<SimpleQuote> spot(new SimpleQuote(s));
-       ext::shared_ptr<SimpleQuote> qRate(new SimpleQuote(q));
+       ext::shared_ptr<SimpleQuote> spot = ext::make_shared<SimpleQuote>(s);
+       ext::shared_ptr<SimpleQuote> qRate = ext::make_shared<SimpleQuote>(q);
        Handle<YieldTermStructure> qTS(flatRate(qRate, dc));
-       ext::shared_ptr<SimpleQuote> rRate(new SimpleQuote(r));
+       ext::shared_ptr<SimpleQuote> rRate = ext::make_shared<SimpleQuote>(r);
        Handle<YieldTermStructure> rTS(flatRate(rRate, dc));
 
        ext::shared_ptr<HestonProcess> hestonProcess(

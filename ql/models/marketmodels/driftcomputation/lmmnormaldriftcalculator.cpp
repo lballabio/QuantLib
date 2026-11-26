@@ -63,7 +63,7 @@ namespace QuantLib {
 
     void LMMNormalDriftCalculator::compute(const std::vector<Rate>& fwds,
                                            std::vector<Real>& drifts) const {
-        #if defined(QL_EXTRA_SAFETY_CHECKS)
+        #ifdef QL_EXTRA_SAFETY_CHECKS
             QL_REQUIRE(fwds.size()==numberOfRates_, "numberOfRates <> dim");
             QL_REQUIRE(drifts.size()==numberOfRates_, "drifts.size() <> dim");
         #endif
