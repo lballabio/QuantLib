@@ -65,7 +65,8 @@ namespace QuantLib {
                     if (fixingDate <= settlement)
                         return std::max<Real>(omega * (arguments_.forwards[i] - strike),
                                               0.0) *
-                               arguments_.accrualTimes[i];
+                               arguments_.accrualTimes[i] *
+                               model_->zerobond(paymentDate, Date(), 0.0, discountCurve_);
 
                     // todo add openmp support later on (as in gaussian1dswaptionengine)
 
