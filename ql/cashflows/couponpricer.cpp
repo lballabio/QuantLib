@@ -43,6 +43,7 @@ namespace QuantLib {
 //                              IborCouponPricer                             //
 //===========================================================================//
 
+    QL_DEPRECATED_DISABLE_WARNING
     IborCouponPricer::IborCouponPricer(
             Handle<OptionletVolatilityStructure> v,
             std::optional<bool> useIndexedCoupon)
@@ -52,6 +53,7 @@ namespace QuantLib {
                             !IborCoupon::Settings::instance().usingAtParCoupons()) {
         registerWith(capletVol_);
     }
+    QL_DEPRECATED_ENABLE_WARNING
 
     void IborCouponPricer::initializeCachedData(const IborCoupon& coupon) const {
 
@@ -99,7 +101,10 @@ namespace QuantLib {
 
         initializeCachedData(*coupon_);
 
+        QL_DEPRECATED_DISABLE_WARNING
         index_ = coupon_->iborIndex();
+        QL_DEPRECATED_ENABLE_WARNING
+
         gearing_ = coupon_->gearing();
         spread_ = coupon_->spread();
         accrualPeriod_ = coupon_->accrualPeriod();
@@ -121,7 +126,7 @@ namespace QuantLib {
 
         IborCouponPricer::initialize(coupon);
 
-        const Handle<YieldTermStructure>& rateCurve = index_->forwardingTermStructure();
+        const Handle<YieldTermStructure>& rateCurve = coupon_->iborIndex()->forwardingTermStructure();
 
         if (rateCurve.empty()) {
             discount_ = Null<Real>(); // might not be needed, will be checked later
@@ -213,15 +218,16 @@ namespace QuantLib {
             QL_REQUIRE(!correlation_.empty(), "no correlation given");
             const Date& d4 = coupon_->date();
             const Date& d5 = d4 >= d3 ? d3 : d2;
-            Time tau2 = index_->dayCounter().yearFraction(d5, d4);
+            Time tau2 = coupon_->iborIndex()->dayCounter().yearFraction(d5, d4);
             if (d4 >= d3)
                 adjustment = 0.0;
             // if d4 < d2 (payment before index start) we just apply the
             // Black76 in arrears adjustment
             if (tau2 > 0.0) {
+                const auto& forwardingTermStructure = coupon_->iborIndex()->forwardingTermStructure();
                 Real fixing2 =
-                    (index_->forwardingTermStructure()->discount(d5) /
-                         index_->forwardingTermStructure()->discount(d4) -
+                    (forwardingTermStructure->discount(d5) /
+                         forwardingTermStructure->discount(d4) -
                      1.0) /
                     tau2;
                 adjustment -= shiftedLn

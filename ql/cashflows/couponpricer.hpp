@@ -69,6 +69,10 @@ namespace QuantLib {
             Handle<OptionletVolatilityStructure> v = Handle<OptionletVolatilityStructure>(),
             std::optional<bool> useIndexedCoupon = std::nullopt);
 
+        QL_DEPRECATED_DISABLE_WARNING
+        ~IborCouponPricer() override = default;
+        QL_DEPRECATED_ENABLE_WARNING
+
         bool useIndexedCoupon() const { return useIndexedCoupon_; }
 
         const Handle<OptionletVolatilityStructure>& capletVolatility() const {
@@ -90,7 +94,12 @@ namespace QuantLib {
 
         const IborCoupon* coupon_;
 
+        /*! \deprecated Use coupon_->iborIndex() instead.
+                        Deprecated in version 1.45.
+        */
+        [[deprecated("Use coupon_->iborIndex() instead")]]
         ext::shared_ptr<IborIndex> index_;
+
         Date fixingDate_;
         Real gearing_;
         Spread spread_;
