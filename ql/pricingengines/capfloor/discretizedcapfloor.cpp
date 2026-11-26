@@ -44,15 +44,23 @@ namespace QuantLib {
     }
 
     std::vector<Time> DiscretizedCapFloor::mandatoryTimes() const {
-        std::vector<Time> times = startTimes_;
-        std::copy(endTimes_.begin(), endTimes_.end(),
-                  std::back_inserter(times));
+        // past start and end times (from already-fixed or expired
+        // caplets) are not needed and can't be used in a time grid
+        std::vector<Time> times;
+        for (Time t : startTimes_) {
+            if (t >= 0.0)
+                times.push_back(t);
+        }
+        for (Time t : endTimes_) {
+            if (t >= 0.0)
+                times.push_back(t);
+        }
         return times;
     }
 
     void DiscretizedCapFloor::preAdjustValuesImpl() {
         for (Size i=0; i<startTimes_.size(); i++) {
-            if (isOnTime(startTimes_[i])) {
+            if (startTimes_[i] >= 0.0 && isOnTime(startTimes_[i])) {
                 Time end = endTimes_[i];
                 Time tenor = arguments_.accrualTimes[i];
                 DiscretizedDiscountBond bond;
@@ -90,7 +98,7 @@ namespace QuantLib {
 
     void DiscretizedCapFloor::postAdjustValuesImpl() {
         for (Size i=0; i<endTimes_.size(); i++) {
-            if (isOnTime(endTimes_[i])) {
+            if (endTimes_[i] >= 0.0 && isOnTime(endTimes_[i])) {
                 if (startTimes_[i] < 0.0) {
                     Real nominal = arguments_.nominals[i];
                     Time accrual = arguments_.accrualTimes[i];
