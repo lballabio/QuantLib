@@ -261,6 +261,26 @@ BOOST_AUTO_TEST_CASE(testRateHelperLastRelevantDate) {
     BOOST_CHECK_NO_THROW(curve.discount(1.0));
 }
 
+BOOST_AUTO_TEST_CASE(testStartDateFromNonBusinessEvaluationDate) {
+
+    BOOST_TEST_MESSAGE("Testing that a multiple-resets swap counts settlement "
+                       "days from the actual evaluation date...");
+
+    // Saturday
+    Date today(20, June, 2026);
+    Settings::instance().evaluationDate() = today;
+
+    auto euribor = ext::make_shared<Euribor3M>();
+    Calendar calendar = euribor->fixingCalendar();
+    Date expected = calendar.advance(today, euribor->fixingDays() * Days);
+    Date rolled = calendar.advance(calendar.adjust(today), euribor->fixingDays() * Days);
+    BOOST_CHECK(expected != rolled);
+
+    ext::shared_ptr<MultipleResetsSwap> swap =
+        MakeMultipleResetsSwap(2 * Years, euribor, 2).withFixedRate(0.02);
+    BOOST_CHECK_EQUAL(swap->startDate(), expected);
+}
+
 
 BOOST_AUTO_TEST_SUITE_END()
 
