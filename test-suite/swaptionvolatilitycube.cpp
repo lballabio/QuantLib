@@ -616,7 +616,7 @@ BOOST_AUTO_TEST_CASE(testSpreadedCube) {
                          isParameterFixed,
                          true)));
 
-    ext::shared_ptr<SimpleQuote> spread  = ext::make_shared<SimpleQuote>(0.0001);
+    auto spread  = ext::make_shared<SimpleQuote>(0.0001);
     Handle<Quote> spreadHandle(spread);
     ext::shared_ptr<SwaptionVolatilityStructure> spreadedVolCube(new
         SpreadedSwaptionVolatility(volCube, spreadHandle));

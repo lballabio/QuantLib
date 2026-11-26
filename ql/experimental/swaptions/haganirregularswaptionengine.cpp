@@ -63,7 +63,7 @@ namespace QuantLib {
 
             expiries_.push_back(coupon->date());
 
-            ext::shared_ptr<FixedRateCoupon> newCpn = ext::make_shared<FixedRateCoupon>(
+            auto newCpn = ext::make_shared<FixedRateCoupon>(
                 coupon->date(), 1.0, coupon->rate(), coupon->dayCounter(),
                 coupon->accrualStartDate(), coupon->accrualEndDate(),
                 coupon->referencePeriodStart(), coupon->referencePeriodEnd());
@@ -80,7 +80,7 @@ namespace QuantLib {
                 QL_REQUIRE(coupon, "dynamic cast of float leg coupon failed.");
 
                 if (coupon->date() <= expiries_[i]) {
-                    ext::shared_ptr<IborCoupon> newCpn = ext::make_shared<IborCoupon>(
+                    auto newCpn = ext::make_shared<IborCoupon>(
                         coupon->date(), 1.0, coupon->accrualStartDate(), coupon->accrualEndDate(),
                         coupon->fixingDays(), coupon->iborIndex(), 1.0, coupon->spread(),
                         coupon->referencePeriodStart(), coupon->referencePeriodEnd(),
@@ -258,7 +258,7 @@ namespace QuantLib {
             ext::shared_ptr<IborCoupon> coupon = ext::dynamic_pointer_cast<IborCoupon>(j);
             QL_REQUIRE(coupon, "dynamic cast of float leg coupon failed.");
 
-            ext::shared_ptr<IborCoupon> newCpn = ext::make_shared<IborCoupon>(
+            auto newCpn = ext::make_shared<IborCoupon>(
                 coupon->date(), coupon->nominal(), coupon->accrualStartDate(),
                 coupon->accrualEndDate(), coupon->fixingDays(), coupon->iborIndex(),
                 coupon->gearing(), 0.0, coupon->referencePeriodStart(),
@@ -285,7 +285,7 @@ namespace QuantLib {
             ext::shared_ptr<FixedRateCoupon> coupon = ext::dynamic_pointer_cast<FixedRateCoupon>(i);
             QL_REQUIRE(coupon, "dynamic cast of fixed leg coupon failed.");
 
-            ext::shared_ptr<FixedRateCoupon> newCpn = ext::make_shared<FixedRateCoupon>(
+            auto newCpn = ext::make_shared<FixedRateCoupon>(
                 coupon->date(), coupon->nominal(), coupon->rate() - cpn_adjustment,
                 coupon->dayCounter(), coupon->accrualStartDate(), coupon->accrualEndDate(),
                 coupon->referencePeriodStart(), coupon->referencePeriodEnd());

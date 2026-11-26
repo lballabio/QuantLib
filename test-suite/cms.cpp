@@ -490,11 +490,11 @@ BOOST_AUTO_TEST_CASE(testCmsMarketCalibration) {
         Handle<Quote>(ext::make_shared<SimpleQuote>(0.016)),
         Handle<Quote>(ext::make_shared<SimpleQuote>(0.017))};
     std::vector<ext::shared_ptr<CmsCouponPricer> > pricers = {vars.analyticPricers[0]};
-    ext::shared_ptr<CmsMarket> cmsMarket = ext::make_shared<CmsMarket>(
+    auto cmsMarket = ext::make_shared<CmsMarket>(
         swapLengths, swapIndexes, vars.iborIndex, bidAskSpreads, pricers,
         vars.termStructure);
     Matrix weights(4, 1, 1.0);
-    ext::shared_ptr<EndCriteria> endCriteria =
+    auto endCriteria =
         ext::make_shared<EndCriteria>(20, 10, 1e-6, 1e-6, 1e-6);
     ext::shared_ptr<OptimizationMethod> method =
         ext::make_shared<LevenbergMarquardt>(1e-8, 1e-8, 1e-8);

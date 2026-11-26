@@ -1052,7 +1052,7 @@ void checkSwaptionDelta(bool useBachelierVol)
             today, 
             Handle<Quote>(ext::make_shared<SimpleQuote>(0.0085)), 
             Actual365Fixed()));
-    ext::shared_ptr<DiscountingSwapEngine> swapEngine = ext::make_shared<DiscountingSwapEngine>(
+    auto swapEngine = ext::make_shared<DiscountingSwapEngine>(
         discountHandle);
     
     ext::shared_ptr<IborIndex> idx = ext::make_shared<Euribor6M>(projectionCurveHandle);
@@ -1088,7 +1088,7 @@ void checkSwaptionDelta(bool useBachelierVol)
                         
                         Real fairRate = underlying->fairRate();
 
-                        ext::shared_ptr<Swaption> swaption = ext::make_shared<Swaption>(
+                        auto swaption = ext::make_shared<Swaption>(
                             underlying, 
                             ext::make_shared<EuropeanExercise>(exerciseDate), 
                             types[h], 

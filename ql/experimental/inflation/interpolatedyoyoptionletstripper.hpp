@@ -241,7 +241,7 @@ namespace QuantLib {
                                                  anIndex, CPI::Flat,
                                                  K, nT, p_)));
 
-                ext::shared_ptr<ConstantYoYOptionletVolatility> yoyVolBLACK = ext::make_shared<ConstantYoYOptionletVolatility>(
+                auto yoyVolBLACK = ext::make_shared<ConstantYoYOptionletVolatility>(
                           found, settlementDays,
                                                              cal, bdc, dc,
                                                              lag_, frequency_,

@@ -160,13 +160,13 @@ void testEngineConsistency(EngineType engine,
     DayCounter dc = Actual360();
     Date today = Date::todaysDate();
 
-    ext::shared_ptr<SimpleQuote> spot = ext::make_shared<SimpleQuote>(0.0);
-    ext::shared_ptr<SimpleQuote> vol = ext::make_shared<SimpleQuote>(0.0);
-    ext::shared_ptr<BlackVolTermStructure> volTS = flatVol(today,vol,dc);
-    ext::shared_ptr<SimpleQuote> qRate = ext::make_shared<SimpleQuote>(0.0);
-    ext::shared_ptr<YieldTermStructure> qTS = flatRate(today,qRate,dc);
-    ext::shared_ptr<SimpleQuote> rRate = ext::make_shared<SimpleQuote>(0.0);
-    ext::shared_ptr<YieldTermStructure> rTS = flatRate(today,rRate,dc);
+    auto spot = ext::make_shared<SimpleQuote>(0.0);
+    auto vol = ext::make_shared<SimpleQuote>(0.0);
+    auto volTS = flatVol(today,vol,dc);
+    auto qRate = ext::make_shared<SimpleQuote>(0.0);
+    auto qTS = flatRate(today,qRate,dc);
+    auto rRate = ext::make_shared<SimpleQuote>(0.0);
+    auto rTS = flatRate(today,rRate,dc);
 
     for (auto& type : types) {
         for (Real strike : strikes) {

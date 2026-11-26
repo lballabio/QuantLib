@@ -1177,7 +1177,7 @@ BOOST_AUTO_TEST_CASE(testSwapRateHelperSpotDate) {
 
     ext::shared_ptr<IborIndex> usdLibor3m = ext::make_shared<USDLibor>(3 * Months);
 
-    ext::shared_ptr<SwapRateHelper> helper = ext::make_shared<SwapRateHelper>(
+    auto helper = ext::make_shared<SwapRateHelper>(
         0.02, 5 * Years, UnitedStates(UnitedStates::GovernmentBond), Semiannual, ModifiedFollowing,
         Thirty360(Thirty360::BondBasis), usdLibor3m);
 
@@ -1242,7 +1242,7 @@ BOOST_AUTO_TEST_CASE(testBadPreviousCurve, *precondition(usingAtParCoupons())) {
     RelinkableHandle<YieldTermStructure> h;
     h.linkTo(curve);
 
-    ext::shared_ptr<Euribor1M> index = ext::make_shared<Euribor1M>(h);
+    auto index = ext::make_shared<Euribor1M>(h);
     for (auto& i : data) {
         Period tenor = i.n * i.units;
 
@@ -1427,7 +1427,7 @@ BOOST_AUTO_TEST_CASE(testGlobalBootstrap, *precondition(usingAtParCoupons())) {
 
     // build curve with additional dates and constraints using a global bootstrapper
     typedef PiecewiseYieldCurve<SimpleZeroYield, Linear, GlobalBootstrap> Curve;
-    ext::shared_ptr<Curve> curve = ext::make_shared<Curve>(
+    auto curve = ext::make_shared<Curve>(
         2, TARGET(), helpers, Actual365Fixed(), std::vector<Handle<Quote> >(), std::vector<Date>(),
         Linear(),
         Curve::bootstrap_type(additionalHelpers, additionalDates(),

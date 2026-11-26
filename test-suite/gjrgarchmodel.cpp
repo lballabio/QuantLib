@@ -267,7 +267,7 @@ BOOST_AUTO_TEST_CASE(testDAXCalibration) {
     ext::shared_ptr<GJRGARCHProcess> process(new GJRGARCHProcess(
                              riskFreeTS, dividendTS, s0, v0,
                              omega, alpha, beta, gamma, lambda, daysPerYear));
-    ext::shared_ptr<GJRGARCHModel> model = ext::make_shared<GJRGARCHModel>(process);
+    auto model = ext::make_shared<GJRGARCHModel>(process);
 
     ext::shared_ptr<PricingEngine> engine(
         new AnalyticGJRGARCHEngine(ext::shared_ptr<GJRGARCHModel>(model)));
