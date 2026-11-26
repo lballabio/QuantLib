@@ -22,7 +22,7 @@
 #include <ql/math/integrals/gausslobattointegral.hpp>
 #include <ql/methods/finitedifferences/utilities/bsmrndcalculator.hpp>
 #include <ql/methods/finitedifferences/utilities/hestonrndcalculator.hpp>
-#include <ql/methods/finitedifferences/utilities/hestonsmallsigmaexpansion.hpp>
+#include <ql/models/equity/hestonsmallsigmaexpansion.hpp>
 #include <ql/processes/blackscholesprocess.hpp>
 #include <ql/processes/hestonprocess.hpp>
 #include <ql/termstructures/volatility/equityfx/blackconstantvol.hpp>

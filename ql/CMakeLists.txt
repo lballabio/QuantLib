@@ -524,7 +524,6 @@ set(QL_SOURCES
     methods/finitedifferences/utilities/fdmtimedepdirichletboundary.cpp
     methods/finitedifferences/utilities/gbsmrndcalculator.cpp
     methods/finitedifferences/utilities/hestonrndcalculator.cpp
-    methods/finitedifferences/utilities/hestonsmallsigmaexpansion.cpp
     methods/finitedifferences/utilities/localvolrndcalculator.cpp
     methods/finitedifferences/utilities/riskneutraldensitycalculator.cpp
     methods/finitedifferences/utilities/smilesectionrndcalculator.cpp
@@ -542,6 +541,7 @@ set(QL_SOURCES
     models/equity/hestonmodelhelper.cpp
     models/equity/hestonslvfdmmodel.cpp
     models/equity/hestonslvmcmodel.cpp
+    models/equity/hestonsmallsigmaexpansion.cpp
     models/equity/piecewisetimedependenthestonmodel.cpp
     models/equity/roughhestonmodel.cpp
     models/marketmodels/accountingengine.cpp
@@ -1739,7 +1739,6 @@ set(QL_HEADERS
     methods/finitedifferences/utilities/fdmtimedepdirichletboundary.hpp
     methods/finitedifferences/utilities/gbsmrndcalculator.hpp
     methods/finitedifferences/utilities/hestonrndcalculator.hpp
-    methods/finitedifferences/utilities/hestonsmallsigmaexpansion.hpp
     methods/finitedifferences/utilities/localvolrndcalculator.hpp
     methods/finitedifferences/utilities/riskneutraldensitycalculator.hpp
     methods/finitedifferences/utilities/smilesectionrndcalculator.hpp
@@ -1776,6 +1775,7 @@ set(QL_HEADERS
     models/equity/hestonmodelhelper.hpp
     models/equity/hestonslvfdmmodel.hpp
     models/equity/hestonslvmcmodel.hpp
+    models/equity/hestonsmallsigmaexpansion.hpp
     models/equity/piecewisetimedependenthestonmodel.hpp
     models/equity/roughhestonmodel.hpp
     models/marketmodels/accountingengine.hpp

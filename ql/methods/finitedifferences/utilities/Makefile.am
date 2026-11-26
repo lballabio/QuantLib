@@ -23,7 +23,6 @@ this_include_HEADERS = \
     fdmtimedepdirichletboundary.hpp \
     gbsmrndcalculator.hpp \
     hestonrndcalculator.hpp \
-    hestonsmallsigmaexpansion.hpp \
     localvolrndcalculator.hpp \
     riskneutraldensitycalculator.hpp \
     smilesectionrndcalculator.hpp \
@@ -48,7 +47,6 @@ cpp_files = \
     fdmtimedepdirichletboundary.cpp \
     gbsmrndcalculator.cpp \
     hestonrndcalculator.cpp \
-    hestonsmallsigmaexpansion.cpp \
     localvolrndcalculator.cpp \
     riskneutraldensitycalculator.cpp \
     smilesectionrndcalculator.cpp \

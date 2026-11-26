@@ -28,7 +28,7 @@
 #include <ql/math/solvers1d/brent.hpp>
 #include <ql/math/expm1.hpp>
 #include <ql/math/functional.hpp>
-#include <ql/methods/finitedifferences/utilities/hestonsmallsigmaexpansion.hpp>
+#include <ql/models/equity/hestonsmallsigmaexpansion.hpp>
 #include <ql/pricingengines/blackcalculator.hpp>
 #include <ql/pricingengines/vanilla/analytichestonengine.hpp>
 #include <boost/math/tools/minima.hpp>

@@ -4428,9 +4428,6 @@
     <ClInclude Include="ql\methods\finitedifferences\utilities\hestonrndcalculator.hpp">
       <Filter>methods\finitedifferences\utilities</Filter>
     </ClInclude>
-    <ClInclude Include="ql\methods\finitedifferences\utilities\hestonsmallsigmaexpansion.hpp">
-      <Filter>methods\finitedifferences\utilities</Filter>
-    </ClInclude>
     <ClInclude Include="ql\methods\finitedifferences\utilities\localvolrndcalculator.hpp">
       <Filter>methods\finitedifferences\utilities</Filter>
     </ClInclude>
@@ -4552,6 +4549,9 @@
       <Filter>models\equity</Filter>
     </ClInclude>
     <ClInclude Include="ql\models\equity\hestonslvmcmodel.hpp">
+      <Filter>models\equity</Filter>
+    </ClInclude>
+    <ClInclude Include="ql\models\equity\hestonsmallsigmaexpansion.hpp">
       <Filter>models\equity</Filter>
     </ClInclude>
     <ClInclude Include="ql\pricingengines\barrier\fdhestondoublebarrierengine.hpp">
@@ -7393,9 +7393,6 @@
     <ClCompile Include="ql\methods\finitedifferences\utilities\hestonrndcalculator.cpp">
       <Filter>methods\finitedifferences\utilities</Filter>
     </ClCompile>
-    <ClCompile Include="ql\methods\finitedifferences\utilities\hestonsmallsigmaexpansion.cpp">
-      <Filter>methods\finitedifferences\utilities</Filter>
-    </ClCompile>
     <ClCompile Include="ql\methods\finitedifferences\utilities\localvolrndcalculator.cpp">
       <Filter>methods\finitedifferences\utilities</Filter>
     </ClCompile>
@@ -7490,6 +7487,9 @@
       <Filter>models\equity</Filter>
     </ClCompile>
     <ClCompile Include="ql\models\equity\hestonslvmcmodel.cpp">
+      <Filter>models\equity</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\models\equity\hestonsmallsigmaexpansion.cpp">
       <Filter>models\equity</Filter>
     </ClCompile>
     <ClCompile Include="ql\pricingengines\barrier\fdhestondoublebarrierengine.cpp">

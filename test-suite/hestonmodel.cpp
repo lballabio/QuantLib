@@ -32,10 +32,10 @@
 #include <ql/math/randomnumbers/rngtraits.hpp>
 #include <ql/methods/finitedifferences/meshers/concentrating1dmesher.hpp>
 #include <ql/methods/finitedifferences/operators/numericaldifferentiation.hpp>
-#include <ql/methods/finitedifferences/utilities/hestonsmallsigmaexpansion.hpp>
 #include <ql/methods/montecarlo/pathgenerator.hpp>
 #include <ql/models/equity/hestonmodel.hpp>
 #include <ql/models/equity/hestonmodelhelper.hpp>
+#include <ql/models/equity/hestonsmallsigmaexpansion.hpp>
 #include <ql/models/equity/piecewisetimedependenthestonmodel.hpp>
 #include <ql/pricingengines/barrier/fdblackscholesbarrierengine.hpp>
 #include <ql/pricingengines/barrier/fdhestonbarrierengine.hpp>

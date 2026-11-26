@@ -23,7 +23,7 @@
 
 #include <ql/math/functional.hpp>
 #include <ql/instruments/payoffs.hpp>
-#include <ql/methods/finitedifferences/utilities/hestonsmallsigmaexpansion.hpp>
+#include <ql/models/equity/hestonsmallsigmaexpansion.hpp>
 #include <ql/pricingengines/vanilla/analyticptdhestonengine.hpp>
 #include <ql/pricingengines/blackcalculator.hpp>
 

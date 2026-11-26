@@ -17,7 +17,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/methods/finitedifferences/utilities/hestonsmallsigmaexpansion.hpp>
+#include <ql/models/equity/hestonsmallsigmaexpansion.hpp>
 #include <cmath>
 
 namespace QuantLib {

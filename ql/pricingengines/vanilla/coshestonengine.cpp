@@ -19,7 +19,7 @@
 */
 
 #include <ql/math/functional.hpp>
-#include <ql/methods/finitedifferences/utilities/hestonsmallsigmaexpansion.hpp>
+#include <ql/models/equity/hestonsmallsigmaexpansion.hpp>
 #include <ql/pricingengines/vanilla/coshestonengine.hpp>
 
 namespace QuantLib {
