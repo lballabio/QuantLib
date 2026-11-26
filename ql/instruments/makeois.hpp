@@ -93,11 +93,6 @@ namespace QuantLib {
         MakeOIS& withMaturityEndOfMonth(bool flag = true);
 
         MakeOIS& withFixedLegDayCount(const DayCounter& dc);
-        /*! Sets the compounding convention of the fixed rate; by default,
-            fixed coupons accrue simple interest.  For instance, DI x Pré
-            swaps on the Cdi index use Compounded and Annual together with
-            a Business252 fixed-leg day counter.
-        */
         MakeOIS& withFixedLegCompounding(Compounding compounding, Frequency frequency = Annual);
 
         MakeOIS& withOvernightLegSpread(Spread sp);

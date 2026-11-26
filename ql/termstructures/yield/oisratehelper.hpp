@@ -36,13 +36,6 @@ namespace QuantLib {
     class FloatingRateCouponPricer;
 
     //! Rate helper for bootstrapping over Overnight Indexed Swap rates
-    /*! The optional \c fixedCompounding and \c fixedCompoundingFrequency
-        parameters set the compounding convention of the quoted fixed
-        rate (simple by default.)  For instance, Brazilian DI x Pré swaps
-        on the Cdi index quote an exponential rate on business days, which
-        corresponds to a Business252 fixed day counter with Compounded and
-        Annual; see OvernightIndexedSwap for details.
-    */
     class OISRateHelper : public RelativeDateRateHelper {
       public:
         OISRateHelper(

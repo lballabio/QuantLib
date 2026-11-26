@@ -251,9 +251,7 @@ namespace QuantLib {
         FixedVsFloatingSwap::fetchResults(r);
 
         if (fixedCompounding_ != Simple) {
-            // The base class (and possibly the engine) assumes that the
-            // fixed-leg NPV is linear in the fixed rate, which is not the
-            // case here; we solve for the rate zeroing the swap NPV instead.
+            // the fixed-leg NPV is not linear in the rate; solve for it instead
             fairRate_ = Null<Rate>();
             if (NPV_ != Null<Real>() && legNPV_[0] != Null<Real>()) {
                 try {
@@ -277,8 +275,7 @@ namespace QuantLib {
                    "fixed-leg NPV and BPS not available");
         QL_REQUIRE(legBPS_[0] != 0.0, "null fixed-leg BPS");
 
-        // exact if the fixed leg accrues simple interest, and a
-        // reasonable guess otherwise
+        // exact for simple interest, a starting guess otherwise
         Rate linearRate = fixedRate() + (fixedLegNPV - legNPV_[0]) / (legBPS_[0] / basisPoint);
         if (fixedCompounding_ == Simple)
             return linearRate;
@@ -286,9 +283,7 @@ namespace QuantLib {
         const Leg& leg = fixedLeg();
 
         if (leg.size() == 1) {
-            // Zero-coupon case: the fixed-leg NPV is N D (c(K) - 1) and the
-            // BPS is N D tau times one basis point, which gives us c(K)
-            // without needing the discount curve.
+            // single coupon: c(K) follows from NPV and BPS, no curve needed
             auto coupon = ext::dynamic_pointer_cast<FixedRateCoupon>(leg[0]);
             Real compound = 1.0 + fixedLegNPV * coupon->accrualPeriod() * basisPoint / legBPS_[0];
             QL_REQUIRE(compound > 0.0, "non-positive compound factor ("
@@ -302,7 +297,7 @@ namespace QuantLib {
                 .rate();
         }
 
-        // Several coupons: we need their discount factors, hence the curve.
+        // several coupons: we need the discount curve
         auto engine = ext::dynamic_pointer_cast<DiscountingSwapEngine>(engine_);
         QL_REQUIRE(engine != nullptr,
                    "a DiscountingSwapEngine is required to calculate the fixed rate "

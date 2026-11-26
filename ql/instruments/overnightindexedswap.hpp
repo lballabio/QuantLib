@@ -44,30 +44,14 @@ namespace QuantLib {
     class OvernightIndex;
 
     //! Overnight indexed swap: fix vs compounded overnight rate
-    /*! By default, fixed coupons accrue simple interest, i.e., they pay
-        \f$ N K \tau \f$.  The optional \c fixedCompounding and
-        \c fixedCompoundingFrequency parameters allow the fixed rate to
-        be quoted with a different convention; the fixed coupons then
-        pay \f$ N (c(K, \tau) - 1) \f$, where \f$ c \f$ is the compound
-        factor of an InterestRate with the given day counter,
-        compounding and frequency.
+    /*! The fixed rate accrues simple interest by default; the optional
+        \c fixedCompounding and \c fixedCompoundingFrequency parameters
+        allow other conventions.
 
-        For instance, Brazilian DI x Pré swaps quote the fixed rate as
-        exponential on business days, i.e., \f$ (1+K)^{n/252} - 1 \f$
-        where \f$ n \f$ is the number of business days in the period;
-        they can be modeled by passing Business252, Compounded and
-        Annual, usually with a single (zero-coupon) fixed payment.
-
-        \warning When the fixed compounding is not Simple, the fixed-leg
-                 NPV is not linear in the fixed rate.  The fair rate is
-                 then obtained in closed form for a single fixed coupon
-                 and by CashFlows::impliedFixedRate otherwise; the
-                 latter requires a DiscountingSwapEngine (with other
-                 engines, fairRate() reports that the result is not
-                 available.)  The value of
-                 fixedLegBPS() is still the sum of the discounted
-                 \f$ N \tau \f$ terms (times one basis point) and is no
-                 longer the sensitivity of the fixed-leg NPV to the rate.
+        \warning With non-simple compounding, fairRate() requires a
+                 DiscountingSwapEngine unless the fixed leg has a single
+                 coupon, and fixedLegBPS() is no longer the sensitivity
+                 of the fixed-leg NPV to the rate.
     */
     class OvernightIndexedSwap : public FixedVsFloatingSwap {
       public:
@@ -179,11 +163,7 @@ namespace QuantLib {
         //@{
         Real overnightLegBPS() const { return floatingLegBPS(); }
         Real overnightLegNPV() const { return floatingLegNPV(); }
-        /*! Returns the fixed rate for which the fixed leg, priced as
-            by the current engine, would have the given NPV (with the
-            sign convention of fixedLegNPV().)  It takes the fixed-leg
-            compounding into account; see the class documentation.
-        */
+        //! fixed rate giving the passed fixed-leg NPV, taking compounding into account
         Rate impliedFixedRate(Real fixedLegNPV) const;
         //@}
         // other

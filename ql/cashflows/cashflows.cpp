@@ -606,8 +606,7 @@ namespace QuantLib {
         Real bps = calc.bps();
         QL_REQUIRE(bps != 0.0, "null bps: impossible implied fixed rate");
 
-        // exact for coupons accruing simple interest, and a starting
-        // guess otherwise
+        // exact for simple interest, a starting guess otherwise
         Rate linearRate = targetNpv / bps;
         if (allSimple)
             return linearRate;

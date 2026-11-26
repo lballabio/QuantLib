@@ -211,27 +211,12 @@ namespace QuantLib {
                             Real npv = Null<Real>());
 
         //! Fixed rate giving the required NPV to a leg of fixed-rate coupons.
-        /*! The result is the rate \f$ r \f$ such that, if the rate of
-            every FixedRateCoupon in the leg were replaced by \f$ r \f$
-            (keeping the day counter, compounding, frequency, accrual
-            dates and reference period of each coupon), the NPV of the
-            leg according to the given term structure would equal the
-            required one.  If the required NPV is not given, the input
-            leg's NPV is used instead.  Cash flows that are not coupons
-            are included in the NPV but don't depend on \f$ r \f$.
+        /*! Unlike atmRate(), this takes the compounding of the coupons
+            into account; the two return the same result when all coupons
+            accrue simple interest.  If the NPV is not given, the leg's
+            own NPV is used.
 
-            Unlike atmRate(), which assumes that coupon amounts are
-            linear in the rate (i.e., that each coupon pays
-            \f$ N r \tau \f$) and returns the required NPV divided by
-            the BPS, this function takes the compounding of the fixed
-            coupons into account; e.g., a coupon with compounded
-            interest pays \f$ N ((1+r/f)^{f \tau} - 1) \f$.  When all
-            coupons accrue simple interest, the two functions return
-            the same result; otherwise, the rate is found by a
-            one-dimensional root search.
-
-            \pre All coupons in the leg that have not yet occurred
-                 must be FixedRateCoupon instances.
+            \pre All coupons not yet occurred must be FixedRateCoupon instances.
         */
         static Rate
         impliedFixedRate(const Leg& leg,
