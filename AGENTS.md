@@ -96,11 +96,39 @@ correctly when `Real` is a simple type:
 - For the same reason, instead of `std::max(x, 0.0)` or
   `std::max({ x, x+y, z })`, prefer `std::max<Real>(x, 0.0)`
   and `std::max<Real>({ x, x+y, z })`. The same goes for `std::min`.
+- Likewise for `std::clamp` and any other function template that
+  deduces its type from several arguments; for overloaded functions,
+  convert the arguments, as in `Si(Real(-x))`.  Braced lists of mixed
+  expressions have the same problem outside loops, too: write
+  `{ Real(-tiny), tiny }`.
+- Give `std::accumulate` and `std::inner_product` a `Real` initial
+  value, as in `std::accumulate(b, e, Real(0.0))`; with `0.0` the
+  accumulator is a `double`, which might not compile or might lose the
+  derivative.
 - When redefined, `Real` might not support `constexpr`. Therefore,
   prefer `constexpr double` to `constexpr Real`.
 - Lambdas returning expressions should explicitly define their return
   type as Real using a trailing `-> Real`; this avoids returning an
   expression template that might refer to a dead temporary or argument. 
+- For the same reason, don't use `auto` for the result of arithmetic
+  (`Real beta = a*d + b;`, not `auto beta = ...`).
+- Quantities computed from market data (prices, rates, times, loop
+  variables over them, containers) should be `Real` (or `Rate`,
+  `Time`...), not `double`, as in `for (Real s : strikes)`.  Keep
+  `double` for plain constants and lookup tables, and use `Size` or
+  `Integer` for counts; convert to integers explicitly, as in
+  `static_cast<Size>(r*t)`.
+- Values stored in `additionalResults` should be `Real`, constants
+  included: `Real(0.0)`, `Real(stdDev/std::sqrt(t))`.
+- Call `.rate()` on an `InterestRate` used in arithmetic instead of
+  relying on its implicit conversion to `Rate`.
+- Pass `Real` explicitly to Boost.Math, as in
+  `boost::math::normal_distribution<Real>` or
+  `boost::math::lgamma(Real(x))`, and pass math functions as lambdas
+  rather than as function pointers.
+- Don't return a constant for a special input unless the function is
+  constant around it: `if (x == 0.0) return 0.0;` also sets the
+  derivative to zero.
 
 ### 3.6 Support for recent C++ standards
 
@@ -136,6 +164,11 @@ expression-template type; the former force a conversion to `Real` and
 succeed.  Note that `QL_CHECK_CLOSE` and `QL_CHECK_SMALL` use a function
 called `value`; therefore, when using those macros we should not define
 test variables called `value` because they would shadow the function.
+Prefer `QL_CHECK_CLOSE_FRACTION` to `BOOST_CHECK_CLOSE_FRACTION` as
+well, and write `tolerance<Real>(1e-12)` in
+`BOOST_TEST`.  The `value` function also converts a `Real` to a plain
+number when a test computes a reference value in `double` or
+`long double`, as in `static_cast<long double>(value(x))`.
 
 Tests should be deterministic; therefore, **don't** leave the evaluation
 date free by setting it to `Date::todaysDate()` (either adjusted or not).
