@@ -416,9 +416,12 @@ BOOST_AUTO_TEST_CASE(testNegativeGearing) {
     // pays |g|*max(k - L, 0) with k = (K - s)/g, i.e. it is |g| floors on
     // the index struck at k; a floor on the coupon is |g| caps on the index.
     const Real gearing = -2.0, spread = 0.12, capRate = 0.06, floorRate = 0.02;
-    Leg plainLeg = vars.makeLeg(vars.settlement, 5);
-    Leg inverseLeg = IborLeg(Schedule(vars.settlement,
-                                      vars.calendar.advance(vars.settlement, 5 * Years,
+    // the legs start in the past, so that the first caplet has an
+    // already-fixed rate
+    Date startDate = vars.calendar.advance(vars.settlement, -3 * Months, vars.convention);
+    Leg plainLeg = vars.makeLeg(startDate, 5);
+    Leg inverseLeg = IborLeg(Schedule(startDate,
+                                      vars.calendar.advance(startDate, 5 * Years,
                                                             vars.convention),
                                       Period(vars.frequency), vars.calendar, vars.convention,
                                       vars.convention, DateGeneration::Forward, false),
@@ -447,34 +450,73 @@ BOOST_AUTO_TEST_CASE(testNegativeGearing) {
          ext::make_shared<Gaussian1dCapFloorEngine>(gsr, 64, 7.0, true, true)}
     };
 
-    for (const auto& engine : engines) {
-        Cap cap(inverseLeg, {capRate});
-        Floor floor(inverseLeg, {floorRate});
-        Floor equivalentFloor(plainLeg, {(capRate - spread) / gearing});
-        Cap equivalentCap(plainLeg, {(floorRate - spread) / gearing});
-        for (CapFloor* option : {(CapFloor*)&cap, (CapFloor*)&floor,
-                                 (CapFloor*)&equivalentFloor, (CapFloor*)&equivalentCap})
-            option->setPricingEngine(engine.second);
+    Date pastFixingDate =
+        ext::dynamic_pointer_cast<FloatingRateCoupon>(plainLeg[0])->fixingDate();
+    BOOST_REQUIRE(pastFixingDate < Settings::instance().evaluationDate());
 
-        Real calculated = cap.NPV(), expected = -gearing * equivalentFloor.NPV();
-        if (std::fabs(calculated - expected) > 1.0e-10)
-            BOOST_ERROR("cap on negatively-geared coupons not priced as floor ("
-                        << engine.first << " engine):"
-                        << "\n    calculated: " << calculated
-                        << "\n    expected:   " << expected);
+    // with these fixings, the first coupon is 8% (above the cap) and
+    // -2% (below the floor), respectively
+    for (Rate pastFixing : {0.02, 0.07}) {
+        vars.index->addFixing(pastFixingDate, pastFixing, true);
+        for (const auto& engine : engines) {
+            Cap cap(inverseLeg, {capRate});
+            Floor floor(inverseLeg, {floorRate});
+            Floor equivalentFloor(plainLeg, {(capRate - spread) / gearing});
+            Cap equivalentCap(plainLeg, {(floorRate - spread) / gearing});
+            for (CapFloor* option : {(CapFloor*)&cap, (CapFloor*)&floor,
+                                     (CapFloor*)&equivalentFloor, (CapFloor*)&equivalentCap})
+                option->setPricingEngine(engine.second);
 
-        calculated = floor.NPV();
-        expected = -gearing * equivalentCap.NPV();
-        if (std::fabs(calculated - expected) > 1.0e-10)
-            BOOST_ERROR("floor on negatively-geared coupons not priced as cap ("
-                        << engine.first << " engine):"
-                        << "\n    calculated: " << calculated
-                        << "\n    expected:   " << expected);
+            Real calculated = cap.NPV(), expected = -gearing * equivalentFloor.NPV();
+            if (std::fabs(calculated - expected) > 1.0e-10)
+                BOOST_ERROR("cap on negatively-geared coupons not priced as floor ("
+                            << engine.first << " engine, past fixing "
+                            << io::rate(pastFixing) << "):"
+                            << "\n    calculated: " << calculated
+                            << "\n    expected:   " << expected);
+
+            calculated = floor.NPV();
+            expected = -gearing * equivalentCap.NPV();
+            if (std::fabs(calculated - expected) > 1.0e-10)
+                BOOST_ERROR("floor on negatively-geared coupons not priced as cap ("
+                            << engine.first << " engine, past fixing "
+                            << io::rate(pastFixing) << "):"
+                            << "\n    calculated: " << calculated
+                            << "\n    expected:   " << expected);
+
+            // the already-fixed first caplet and floorlet are worth their
+            // discounted payoffs
+            auto firstCoupon = ext::dynamic_pointer_cast<Coupon>(inverseLeg[0]);
+            Real discountedAccrual = vars.nominals[0] * firstCoupon->accrualPeriod() *
+                                     vars.termStructure->discount(firstCoupon->date());
+            Cap firstCaplet(Leg(1, inverseLeg[0]), {capRate});
+            Floor firstFloorlet(Leg(1, inverseLeg[0]), {floorRate});
+            firstCaplet.setPricingEngine(engine.second);
+            firstFloorlet.setPricingEngine(engine.second);
+
+            calculated = firstCaplet.NPV();
+            expected = discountedAccrual * std::max(firstCoupon->rate() - capRate, 0.0);
+            if (std::fabs(calculated - expected) > 1.0e-10)
+                BOOST_ERROR("already-fixed caplet not priced correctly ("
+                            << engine.first << " engine, past fixing "
+                            << io::rate(pastFixing) << "):"
+                            << "\n    calculated: " << calculated
+                            << "\n    expected:   " << expected);
+
+            calculated = firstFloorlet.NPV();
+            expected = discountedAccrual * std::max(floorRate - firstCoupon->rate(), 0.0);
+            if (std::fabs(calculated - expected) > 1.0e-10)
+                BOOST_ERROR("already-fixed floorlet not priced correctly ("
+                            << engine.first << " engine, past fixing "
+                            << io::rate(pastFixing) << "):"
+                            << "\n    calculated: " << calculated
+                            << "\n    expected:   " << expected);
+        }
     }
 
     // the Black value must also agree with the embedded caps of capped coupons
-    Schedule schedule(vars.settlement,
-                      vars.calendar.advance(vars.settlement, 5 * Years, vars.convention),
+    Schedule schedule(startDate,
+                      vars.calendar.advance(startDate, 5 * Years, vars.convention),
                       Period(vars.frequency), vars.calendar, vars.convention, vars.convention,
                       DateGeneration::Forward, false);
     Leg cappedLeg = IborLeg(schedule, vars.index)
