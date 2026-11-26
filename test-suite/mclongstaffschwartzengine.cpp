@@ -109,7 +109,7 @@ class MCAmericanMaxEngine
                                                     processArray->process(0));
         QL_REQUIRE(process, "generalized Black-Scholes proces required");
 
-        ext::shared_ptr<AmericanMaxPathPricer> earlyExercisePathPricer = ext::make_shared<AmericanMaxPathPricer>(
+        auto earlyExercisePathPricer = ext::make_shared<AmericanMaxPathPricer>(
                           this->arguments_.payoff);
 
         return ext::make_shared<LongstaffSchwartzPathPricer<MultiPath> > (
@@ -278,7 +278,7 @@ BOOST_AUTO_TEST_CASE(testAmericanMaxOption) {
         corr[i][i] = 1.0;
     }
 
-    ext::shared_ptr<StochasticProcessArray> process = ext::make_shared<StochasticProcessArray>(
+    auto process = ext::make_shared<StochasticProcessArray>(
         v, corr);
     VanillaOption americanMaxOption(payoff, americanExercise);
 

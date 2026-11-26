@@ -215,7 +215,7 @@ namespace QuantLib {
         TermStructureFittingParameter phi(termStructure());
         ext::shared_ptr<ShortRateDynamics> numericDynamics(
             new Dynamics(phi, speed(), vol(), f_, fInverse_));
-        ext::shared_ptr<TrinomialTree> trinomial = ext::make_shared<TrinomialTree>(
+        auto trinomial = ext::make_shared<TrinomialTree>(
             numericDynamics->process(), grid);
         ext::shared_ptr<ShortRateTree> numericTree(
             new ShortRateTree(trinomial, numericDynamics, grid));

@@ -101,7 +101,7 @@ BOOST_AUTO_TEST_CASE(testCached) {
     Size fixedSamples = 1023;
     Real minimumTol = 1.0e-2;
 
-    ext::shared_ptr<StochasticProcessArray> process = ext::make_shared<StochasticProcessArray>(
+    auto process = ext::make_shared<StochasticProcessArray>(
                           processes, correlation);
 
     option.setPricingEngine(MakeMCEverestEngine<PseudoRandom>(process)

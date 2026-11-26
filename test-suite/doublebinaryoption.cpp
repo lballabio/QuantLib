@@ -180,13 +180,13 @@ BOOST_AUTO_TEST_CASE(testHaugValues) {
     DayCounter dc = Actual360();
     Date today = Date::todaysDate();
 
-    ext::shared_ptr<SimpleQuote> spot = ext::make_shared<SimpleQuote>(100.0);
-    ext::shared_ptr<SimpleQuote> qRate = ext::make_shared<SimpleQuote>(0.04);
-    ext::shared_ptr<YieldTermStructure> qTS = flatRate(today, qRate, dc);
-    ext::shared_ptr<SimpleQuote> rRate = ext::make_shared<SimpleQuote>(0.01);
-    ext::shared_ptr<YieldTermStructure> rTS = flatRate(today, rRate, dc);
-    ext::shared_ptr<SimpleQuote> vol = ext::make_shared<SimpleQuote>(0.25);
-    ext::shared_ptr<BlackVolTermStructure> volTS = flatVol(today, vol, dc);
+    auto spot = ext::make_shared<SimpleQuote>(100.0);
+    auto qRate = ext::make_shared<SimpleQuote>(0.04);
+    auto qTS = flatRate(today, qRate, dc);
+    auto rRate = ext::make_shared<SimpleQuote>(0.01);
+    auto rTS = flatRate(today, rRate, dc);
+    auto vol = ext::make_shared<SimpleQuote>(0.25);
+    auto volTS = flatVol(today, vol, dc);
 
     for (auto& value : values) {
 
@@ -305,12 +305,12 @@ BOOST_AUTO_TEST_CASE(testPdeDoubleBarrierWithAnalytical) {
     const Handle<YieldTermStructure> rTS(flatRate(r, dc));
     const Handle<YieldTermStructure> qTS(flatRate(q, dc));
 
-    const ext::shared_ptr<HestonModel> hestonModel =
+    const auto hestonModel =
         ext::make_shared<HestonModel>(
             ext::make_shared<HestonProcess>(
                 rTS, qTS, spot, v0, kappa, theta, sigma, rho));
 
-    const ext::shared_ptr<BlackScholesMertonProcess> bsProcess =
+    const auto bsProcess =
         ext::make_shared<BlackScholesMertonProcess>(
             Handle<Quote>(spot),
             Handle<YieldTermStructure>(qTS),

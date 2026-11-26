@@ -83,7 +83,7 @@ class SwingPdePricing {
     : process_(std::move(process)), option_(std::move(option)), shape_(std::move(shape)) {}
 
     Real operator()(Real x) const {
-        const ext::shared_ptr<YieldTermStructure> rTS(flatRate(0.0, Actual365Fixed()));
+        const auto rTS = flatRate(0.0, Actual365Fixed());
 
         const Size gridX = 200;
         const Size gridY = 100;
@@ -217,7 +217,7 @@ BOOST_AUTO_TEST_CASE(testExtOUJumpVanillaEngine) {
     const Time maturity = dc.yearFraction(today, maturityDate);
 
     const Rate irRate = 0.1;
-    ext::shared_ptr<YieldTermStructure> rTS(flatRate(today, irRate, dc));
+    auto rTS = flatRate(today, irRate, dc);
     ext::shared_ptr<StrikedTypePayoff> payoff(
                                      new PlainVanillaPayoff(Option::Call, 30));
     ext::shared_ptr<Exercise> exercise(new EuropeanExercise(maturityDate));
@@ -375,8 +375,7 @@ BOOST_AUTO_TEST_CASE(testExtOUJumpSwingOption) {
     ext::shared_ptr<ExtOUWithJumpsProcess> jumpProcess = createKlugeProcess();
 
     const Rate irRate = 0.1;
-    ext::shared_ptr<YieldTermStructure> rTS(
-                                flatRate(settlementDate, irRate, dayCounter));
+    auto rTS = flatRate(settlementDate, irRate, dayCounter);
 
     ext::shared_ptr<PricingEngine> swingEngine(
                 new FdSimpleExtOUJumpSwingEngine(jumpProcess, rTS, 25, 50, 25));
@@ -480,7 +479,7 @@ BOOST_AUTO_TEST_CASE(testKlugeChFVanillaPricing) {
     const Real alpha = 4.0;
     const Real sig = 1.0;
 
-    const ext::shared_ptr<ExtOUWithJumpsProcess> klugeProcess =
+    const auto klugeProcess =
         ext::make_shared<ExtOUWithJumpsProcess>(
             ext::make_shared<ExtendedOrnsteinUhlenbeckProcess>(
                     alpha, sig, x0, constant_b(0.0)),
@@ -488,13 +487,13 @@ BOOST_AUTO_TEST_CASE(testKlugeChFVanillaPricing) {
 
     const Real strike = f0;
 
-    const ext::shared_ptr<VanillaOption> option =
+    const auto option =
         ext::make_shared<VanillaOption>(
             ext::make_shared<PlainVanillaPayoff>(Option::Call, strike),
             ext::make_shared<EuropeanExercise>(maturityDate));
 
     typedef FdSimpleExtOUJumpSwingEngine::Shape Shape;
-    const ext::shared_ptr<Shape> shape(ext::make_shared<Shape>());
+    const auto shape = ext::make_shared<Shape>();
 
     const Real ps = std::log(f0)
         - sig*sig/(4*alpha)*(1-std::exp(-2*alpha*t))

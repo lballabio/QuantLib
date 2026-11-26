@@ -58,7 +58,7 @@ BOOST_AUTO_TEST_CASE(testObservable) {
 
     BOOST_TEST_MESSAGE("Testing observability of quotes...");
 
-    ext::shared_ptr<SimpleQuote> me = ext::make_shared<SimpleQuote>(0.0);
+    auto me = ext::make_shared<SimpleQuote>(0.0);
     Flag f;
     f.registerWith(me);
     me->setValue(3.14);
@@ -72,7 +72,7 @@ BOOST_AUTO_TEST_CASE(testObservableHandle) {
 
     BOOST_TEST_MESSAGE("Testing observability of quote handles...");
 
-    ext::shared_ptr<SimpleQuote> me1 = ext::make_shared<SimpleQuote>(0.0);
+    auto me1 = ext::make_shared<SimpleQuote>(0.0);
     RelinkableHandle<Quote> h(me1);
     Flag f;
     f.registerWith(h);
@@ -82,7 +82,7 @@ BOOST_AUTO_TEST_CASE(testObservableHandle) {
         BOOST_FAIL("Observer was not notified of quote change");
 
     f.lower();
-    ext::shared_ptr<SimpleQuote> me2 = ext::make_shared<SimpleQuote>(0.0);
+    auto me2 = ext::make_shared<SimpleQuote>(0.0);
     h.linkTo(me2);
     if (!f.isUp())
         BOOST_FAIL("Observer was not notified of quote change");
@@ -173,7 +173,7 @@ BOOST_AUTO_TEST_CASE(testForwardValueQuoteAndImpliedStdevQuote){
     Real forwardRate = .05;
     DayCounter dc = ActualActual(ActualActual::ISDA);
     Calendar calendar = TARGET();
-    ext::shared_ptr<SimpleQuote> forwardQuote = ext::make_shared<SimpleQuote>(forwardRate);
+    auto forwardQuote = ext::make_shared<SimpleQuote>(forwardRate);
     Handle<Quote> forwardHandle(forwardQuote);
     Date evaluationDate = Settings::instance().evaluationDate();
     ext::shared_ptr<YieldTermStructure>yc (new FlatForward(
@@ -212,7 +212,7 @@ BOOST_AUTO_TEST_CASE(testForwardValueQuoteAndImpliedStdevQuote){
     Volatility guess = .15;
     Real accuracy = 1.0e-6;
     Option::Type optionType = Option::Call;
-    ext::shared_ptr<SimpleQuote> priceQuote = ext::make_shared<SimpleQuote>(price);
+    auto priceQuote = ext::make_shared<SimpleQuote>(price);
     Handle<Quote> priceHandle(priceQuote);
     ext::shared_ptr<ImpliedStdDevQuote> impliedStdevQuote(new
         ImpliedStdDevQuote(optionType, forwardHandle, priceHandle,

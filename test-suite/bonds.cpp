@@ -414,7 +414,7 @@ BOOST_AUTO_TEST_CASE(testTheoretical) {
                 Date issue = dated;
                 Date maturity = vars.calendar.advance(issue, length, Years);
 
-                ext::shared_ptr<SimpleQuote> rate = ext::make_shared<SimpleQuote>(0.0);
+                auto rate = ext::make_shared<SimpleQuote>(0.0);
                 Handle<YieldTermStructure> discountCurve(flatRate(vars.today, rate, bondDayCount));
 
                 Schedule sch(dated, maturity, Period(frequency), vars.calendar, accrualConvention,

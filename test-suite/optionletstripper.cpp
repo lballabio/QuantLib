@@ -581,7 +581,7 @@ BOOST_AUTO_TEST_CASE(testTermVolatilityStripping1) {
                            Null<Rate>(),
                            vars.accuracy));
 
-    ext::shared_ptr<StrippedOptionletAdapter> strippedOptionletAdapter =
+    auto strippedOptionletAdapter =
         ext::make_shared<StrippedOptionletAdapter>(optionletStripper1);
 
     Handle<OptionletVolatilityStructure> vol(strippedOptionletAdapter);
@@ -640,7 +640,7 @@ BOOST_AUTO_TEST_CASE(testTermVolatilityStrippingNormalVol) {
                                Null< Rate >(), vars.accuracy, 100,
                                vars.discountingYTS, Normal));
 
-    ext::shared_ptr< StrippedOptionletAdapter > strippedOptionletAdapter =
+    auto strippedOptionletAdapter =
         ext::make_shared< StrippedOptionletAdapter >(
             optionletStripper1);
 
@@ -709,7 +709,7 @@ BOOST_AUTO_TEST_CASE(testTermVolatilityStrippingShiftedLogNormalVol) {
                                vars.discountingYTS, ShiftedLognormal, shift,
                                true));
 
-    ext::shared_ptr< StrippedOptionletAdapter > strippedOptionletAdapter =
+    auto strippedOptionletAdapter =
         ext::make_shared< StrippedOptionletAdapter >(
             optionletStripper1);
 
@@ -845,7 +845,7 @@ BOOST_AUTO_TEST_CASE(testTermVolatilityStripping2) {
                            Null<Rate>(),
                            vars.accuracy));
 
-  ext::shared_ptr<StrippedOptionletAdapter> strippedOptionletAdapter1 =
+  auto strippedOptionletAdapter1 =
         ext::make_shared<StrippedOptionletAdapter>(optionletStripper1);
 
   Handle<OptionletVolatilityStructure> vol1(strippedOptionletAdapter1);

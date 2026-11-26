@@ -181,9 +181,8 @@ namespace QuantLib {
                 const FdmSchemeDesc trDesc
                     = FdmSchemeDesc::CraigSneyd();
 
-                const ext::shared_ptr<CraigSneydScheme> hsEvolver(
-                    ext::make_shared<CraigSneydScheme>(
-                        trDesc.theta, trDesc.mu, map_, bcSet_));
+                const auto hsEvolver = ext::make_shared<CraigSneydScheme>(
+                        trDesc.theta, trDesc.mu, map_, bcSet_);
 
                 TrBDF2Scheme<CraigSneydScheme> trBDF2(
                     schemeDesc_.theta, map_, hsEvolver, bcSet_,schemeDesc_.mu);

@@ -291,7 +291,7 @@ struct CommonVars {
                                              flatSwaptionVolatilityCube1ptr));
         flatSwaptionVolatilityCube1->enableExtrapolation();
 
-        ext::shared_ptr<InterpolatedSwaptionVolatilityCube>
+        auto
             flatSwaptionVolatilityCube2ptr = ext::make_shared<InterpolatedSwaptionVolatilityCube>(atmVol,
                                                              optionTenors,
                                                              swapTenors,

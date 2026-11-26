@@ -142,7 +142,7 @@ BOOST_AUTO_TEST_CASE_TEMPLATE(testHW, T, dataSets) {
     std::vector<Handle<DefaultProbabilityTermStructure>> basket;
     ext::shared_ptr<DefaultProbabilityTermStructure> ptr(
         new FlatHazardRate(asofDate, hazardRate, ActualActual(ActualActual::ISDA)));
-    ext::shared_ptr<Pool> pool = ext::make_shared<Pool>();
+    auto pool = ext::make_shared<Pool>();
     std::vector<std::string> names;
     // probability key items
     std::vector<Issuer> issuers;
@@ -162,7 +162,7 @@ BOOST_AUTO_TEST_CASE_TEMPLATE(testHW, T, dataSets) {
                   NorthAmericaCorpDefaultKey(EURCurrency(), QuantLib::SeniorSec, Period(), 1.));
     }
 
-    ext::shared_ptr<SimpleQuote> correlation = ext::make_shared<SimpleQuote>(0.0);
+    auto correlation = ext::make_shared<SimpleQuote>(0.0);
     Handle<Quote> hCorrelation(correlation);
     QL_REQUIRE(std::size(hwAttachment) == std::size(hwDetachment), "data length does not match");
 

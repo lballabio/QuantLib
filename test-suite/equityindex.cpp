@@ -247,7 +247,7 @@ BOOST_AUTO_TEST_CASE(testFixingObservability) {
 
     CommonVars vars;
 
-    ext::shared_ptr<EquityIndex> i1 =
+    auto i1 =
         ext::make_shared<EquityIndex>("observableEquityIndex", vars.calendar, EURCurrency());
 
     Flag flag;

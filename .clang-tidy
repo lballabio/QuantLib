@@ -89,6 +89,8 @@ Checks: >
           -readability-suspicious-call-argument,
           -readability-use-anyofallof,
           -readability-use-std-min-max,
+        custom-use-auto-make-shared,
+        custom-use-auto-flat-rate-vol,
 HeaderFilterRegex: '.*'
 FormatStyle: none
 CheckOptions:

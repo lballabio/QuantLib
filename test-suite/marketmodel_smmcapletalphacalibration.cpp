@@ -463,7 +463,7 @@ void testAlphaCalibration(bool maximizeHomogeneity) {
                                       longTermCorrelation_,
                                       beta_));
 
-    ext::shared_ptr<LMMCurveState> cs = ext::make_shared<LMMCurveState>(rateTimes_);
+    auto cs = ext::make_shared<LMMCurveState>(rateTimes_);
     cs->setOnForwardRates(todaysForwards_);
 
     ext::shared_ptr<PiecewiseConstantCorrelation> corr(new

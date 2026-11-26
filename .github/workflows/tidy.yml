@@ -11,7 +11,13 @@ jobs:
     - name: Setup
       run: |
         sudo apt-get update
-        sudo apt-get install -y clang-tidy-22 libboost-dev
+        sudo apt-get install -y clang-tidy-22 libboost-dev llvm-22-dev libclang-22-dev cmake ninja-build
+    - name: Build custom check
+      run: |
+        cd .ci/clang-tidy
+        cmake -B build -G Ninja
+        cmake --build build
+        ls -lh build
     - name: Check
       run: |
         cmake --preset linux-ci-build-with-clang-tidy

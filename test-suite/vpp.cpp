@@ -250,7 +250,7 @@ BOOST_AUTO_TEST_CASE(testGemanRoncoroniProcess) {
     Settings::instance().evaluationDate() = today;
     const DayCounter dc = ActualActual(ActualActual::ISDA);
 
-    ext::shared_ptr<YieldTermStructure> rTS = flatRate(today, 0.03, dc);
+    auto rTS = flatRate(today, 0.03, dc);
 
     const Real x0     = 3.3;
     const Real beta   = 0.05;
@@ -270,7 +270,7 @@ BOOST_AUTO_TEST_CASE(testGemanRoncoroniProcess) {
     const Real theta3 = 0.10;
     const Real psi    = 1.9;
 
-    ext::shared_ptr<GemanRoncoroniProcess> grProcess = ext::make_shared<GemanRoncoroniProcess>(
+    auto grProcess = ext::make_shared<GemanRoncoroniProcess>(
                 x0, alpha, beta, gamma, delta,
                                           eps, zeta, d, k, tau, sig2, a, b,
                                           theta1, theta2, theta3, psi);
@@ -369,7 +369,7 @@ BOOST_AUTO_TEST_CASE(testSimpleExtOUStorageEngine) {
     while (exerciseDates.back() < maturityDate) {
         exerciseDates.push_back(exerciseDates.back()+Period(1, Days));
     }
-    ext::shared_ptr<BermudanExercise> bermudanExercise = ext::make_shared<BermudanExercise>(
+    auto bermudanExercise = ext::make_shared<BermudanExercise>(
                                         exerciseDates);
 
     const Real x0 = 3.0;
@@ -381,8 +381,7 @@ BOOST_AUTO_TEST_CASE(testSimpleExtOUStorageEngine) {
         new ExtendedOrnsteinUhlenbeckProcess(speed, volatility, x0,
                                              constant_b(x0)));
 
-    ext::shared_ptr<YieldTermStructure> rTS(
-                                flatRate(settlementDate, irRate, dayCounter));
+    auto rTS = flatRate(settlementDate, irRate, dayCounter);
 
     ext::shared_ptr<PricingEngine> storageEngine(
                new FdSimpleExtOUStorageEngine(ouProcess, rTS, 1, 25));
@@ -430,8 +429,7 @@ BOOST_AUTO_TEST_CASE(testKlugeExtOUSpreadOption) {
         new ExtendedOrnsteinUhlenbeckProcess(speed, vol, x0G, f,
                            ExtendedOrnsteinUhlenbeckProcess::Trapezodial));
 
-    ext::shared_ptr<YieldTermStructure> rTS(
-                                flatRate(settlementDate, irRate, dayCounter));
+    auto rTS = flatRate(settlementDate, irRate, dayCounter);
 
     ext::shared_ptr<KlugeExtOUProcess> klugeOUProcess(
                     new KlugeExtOUProcess(rho, klugeProcess, extOUProcess));
@@ -573,7 +571,7 @@ BOOST_AUTO_TEST_CASE(testVPPPricing) {
     const Rate irRate       = 0.00;
     const Real fuelCostAddon  = 3.0;
 
-    const ext::shared_ptr<YieldTermStructure> rTS
+    const auto rTS
         = flatRate(today, irRate, dc);
 
     const Size nHours = powerPrices.size();

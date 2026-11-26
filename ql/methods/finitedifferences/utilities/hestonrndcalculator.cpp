@@ -143,8 +143,7 @@ namespace {
         const Volatility expVol
             = std::sqrt(theta + (v0-theta)*(1-std::exp(-kappa*t))/(t*kappa));
 
-        const ext::shared_ptr<BlackScholesMertonProcess> bsmProcess(
-            ext::make_shared<BlackScholesMertonProcess>(
+        const auto bsmProcess = ext::make_shared<BlackScholesMertonProcess>(
                 hestonProcess_->s0(),
                 hestonProcess_->dividendYield(),
                 hestonProcess_->riskFreeRate(),
@@ -153,7 +152,7 @@ namespace {
                             hestonProcess_->riskFreeRate()->referenceDate(),
                             NullCalendar(),
                             expVol,
-                            hestonProcess_->riskFreeRate()->dayCounter()))));
+                            hestonProcess_->riskFreeRate()->dayCounter())));
 
         const Real guess = BSMRNDCalculator(bsmProcess).invcdf(p, t);
 
