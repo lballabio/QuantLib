@@ -134,7 +134,7 @@ namespace QuantLib {
         QL_REQUIRE(d!=Date(), "null date");
         if (n == 0) {
             return adjust(d,c);
-        } else if (unit == Days) {
+        } else if (unit == Days || unit == BusinessDays) {
             Date d1 = d;
             if (n > 0) {
                 while (n > 0) {
@@ -152,7 +152,7 @@ namespace QuantLib {
                 }
             }
             return d1;
-        } else if (unit == Weeks) {
+        } else if (unit == CalendarDays || unit == Weeks) {
             Date d1 = d + n*unit;
             return adjust(d1,c);
         } else {

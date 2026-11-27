@@ -64,21 +64,46 @@ namespace QuantLib {
         QL_REQUIRE(str.length()>1, "single period require a string of at "
                    "least 2 characters");
 
-        Size iPos = str.find_first_of("DdWwMmYy");
-        QL_REQUIRE(iPos==str.length()-1, "unknown '" <<
-                   str.substr(str.length()-1, str.length()) << "' unit");
-        TimeUnit units = Days;
-        char abbr = static_cast<char>(std::toupper(str[iPos]));
-        if      (abbr == 'D') units = Days;
-        else if (abbr == 'W') units = Weeks;
-        else if (abbr == 'M') units = Months;
-        else if (abbr == 'Y') units = Years;
+        const char last = static_cast<char>(
+            std::toupper(static_cast<unsigned char>(str.back())));
+        QL_REQUIRE(last == 'D' || last == 'W' || last == 'M' || last == 'Y',
+                   "unknown '" << str.back() << "' unit");
 
-        Size nPos = str.find_first_of("-+0123456789");
-        QL_REQUIRE(nPos<iPos, "no numbers of " << units << " provided");
+        Size unitLength = 1;
+        TimeUnit units;
+        if (last == 'D' && str.length() > 2) {
+            const char prefix = static_cast<char>(
+                std::toupper(static_cast<unsigned char>(str[str.length()-2])));
+            if (prefix == 'C') {
+                units = CalendarDays;
+                unitLength = 2;
+            } else if (prefix == 'B') {
+                units = BusinessDays;
+                unitLength = 2;
+            } else {
+                units = Days;
+            }
+        } else if (last == 'D') {
+            units = Days;
+        } else if (last == 'W') {
+            units = Weeks;
+        } else if (last == 'M') {
+            units = Months;
+        } else {
+            units = Years;
+        }
+
+        const Size numberLength = str.length() - unitLength;
+        const Size numberPos = str.find_first_of("-+0123456789");
+        QL_REQUIRE(numberPos == 0 && numberLength > 0,
+                   "no valid number of " << units << " provided");
         Integer n;
         try {
-            n = std::stoi(str.substr(nPos,iPos));
+            const std::string number = str.substr(0, numberLength);
+            Size parsedLength;
+            n = std::stoi(number, &parsedLength);
+            QL_REQUIRE(parsedLength == number.length(),
+                       "invalid number of " << units << " in '" << str << "'");
         } catch (std::exception& e) {
             QL_FAIL("unable to parse the number of units of " << units <<
                     " in '" << str << "'. Error:" << e.what());
