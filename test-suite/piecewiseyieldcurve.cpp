@@ -2576,7 +2576,10 @@ BOOST_AUTO_TEST_CASE(testSwapRateHelperWithCouponPricer) {
 
     // the pricer keeps the last index it priced with, which links back to the
     // curve through the handle; unlink it, or the curve and its helpers leak
-    // and keep reacting to evaluation-date changes in later tests
+    // and keep reacting to evaluation-date changes in later tests.
+
+    // This can be removed after we remove from IborCoupoonPricer the
+    // index_ data member, deprecated in version 1.45.
     curveHandle.linkTo(ext::shared_ptr<YieldTermStructure>());
 }
 
