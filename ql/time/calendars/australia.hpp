@@ -29,7 +29,8 @@
 namespace QuantLib {
 
     //! Australian calendar
-    /*! Holidays:
+    /*! The settlement calendar follows Sydney (New South Wales) banking holidays.
+        Settlement holidays:
         <ul>
         <li>Saturdays</li>
         <li>Sundays</li>
@@ -37,10 +38,13 @@ namespace QuantLib {
         <li>Australia Day, January 26th (possibly moved to Monday)</li>
         <li>Good Friday</li>
         <li>Easter Monday</li>
-        <li>ANZAC Day. April 25th (possibly moved to Monday)</li>
+        <li>ANZAC Day, April 25th (with a Monday holiday when it falls on
+            Sunday up to 2010, and additional holidays on April 27, 2026
+            and April 26, 2027)</li>
         <li>Queen's Birthday, second Monday in June</li>
         <li>Bank Holiday, first Monday in August</li>
         <li>Labour Day, first Monday in October</li>
+        <li>APEC public holiday in Sydney, September 7, 2007</li>
         <li>Christmas, December 25th (possibly moved to Monday or Tuesday)</li>
         <li>Boxing Day, December 26th (possibly moved to Monday or
             Tuesday)</li>
@@ -62,7 +66,7 @@ namespace QuantLib {
             bool isBusinessDay(const Date&) const override;
         };
       public:
-        enum Market { Settlement,     //!< generic settlement calendar
+        enum Market { Settlement,     //!< Sydney banking settlement calendar
                       ASX,       //!< Australia ASX calendar
         };
         Australia(Market market = Settlement);
