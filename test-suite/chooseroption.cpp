@@ -19,7 +19,9 @@
 
 #include "toplevelfixture.hpp"
 #include "utilities.hpp"
+#include <ql/quotes/simplequote.hpp>
 #include <ql/time/daycounters/actual360.hpp>
+#include <ql/time/daycounters/actual365fixed.hpp>
 #include <ql/instruments/simplechooseroption.hpp>
 #include <ql/instruments/complexchooseroption.hpp>
 #include <ql/pricingengines/exotic/analyticsimplechooserengine.hpp>
@@ -216,6 +218,51 @@ BOOST_AUTO_TEST_CASE(testComplexChooserWithEqualTermsMatchesSimpleChooser) {
                     }
                 }
             }
+        }
+    }
+}
+
+BOOST_AUTO_TEST_CASE(testComplexChooserIsHomogeneousInPriceInputs) {
+    BOOST_TEST_MESSAGE("Testing that the complex chooser value scales with the price inputs...");
+
+    /* Multiplying the spot and both strikes by k multiplies the value by k. The reference
+       values are the discounted expectation at the choosing date of max(call, put), by
+       numerical integration over the spot at that date, at k = 1. */
+    DayCounter dc = Actual365Fixed();
+    Date today = Settings::instance().evaluationDate();
+
+    struct Case {
+        Real callStrike, putStrike, riskFreeRate, dividendYield;
+        Integer choosingDays, callDays, putDays;
+        Real expected;
+    };
+    Case cases[] = {
+        {100.0, 95.0, 0.05, 0.02, 90, 540, 365, 15.289760942723},
+        {100.0, 100.0, 0.05, 0.0, 90, 365, 365, 15.111955531868},
+    };
+
+    for (const auto& c : cases) {
+        Real unscaled = 0.0;
+        for (Real k : std::vector<Real>{1.0, 1.0e3, 1.0e-2, 1.0e-4, 1.0e-6}) {
+            auto process = ext::make_shared<BlackScholesMertonProcess>(
+                Handle<Quote>(ext::make_shared<SimpleQuote>(100.0 * k)),
+                Handle<YieldTermStructure>(flatRate(today, c.dividendYield, dc)),
+                Handle<YieldTermStructure>(flatRate(today, c.riskFreeRate, dc)),
+                Handle<BlackVolTermStructure>(flatVol(today, 0.25, dc)));
+            ComplexChooserOption option(
+                today + c.choosingDays, c.callStrike * k, c.putStrike * k,
+                ext::make_shared<EuropeanExercise>(today + c.callDays),
+                ext::make_shared<EuropeanExercise>(today + c.putDays));
+            option.setPricingEngine(ext::make_shared<AnalyticComplexChooserEngine>(process));
+
+            BOOST_TEST_MESSAGE("    scale " << k << ", strikes " << c.callStrike << ", "
+                                            << c.putStrike);
+            Real scaled = option.NPV() / k;
+            if (k == 1.0)
+                unscaled = scaled;
+            // the engine's bivariate normal approximation limits the agreement with the reference
+            QL_CHECK_CLOSE(scaled, c.expected, 1.0e-3);
+            QL_CHECK_CLOSE(scaled, unscaled, 1.0e-8);
         }
     }
 }
