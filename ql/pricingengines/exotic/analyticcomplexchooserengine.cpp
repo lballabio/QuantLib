@@ -124,8 +124,11 @@ namespace QuantLib {
         const Real Xp = strike(Option::Put);
 
         // Newton-Raphson process; the residual tolerance is relative to the strikes so that the
-        // value is homogeneous of degree one in the prices. The critical value lies near the
-        // strikes, so the tolerance needs no term in the iterate.
+        // value is homogeneous of degree one in the prices. At the root both option values are
+        // bounded by the larger discounted strike, and the terms of the Black-Scholes formulas
+        // are of that size too, so the rounding error of the residual is a small multiple of
+        // 1.0e-16 times the larger strike however far the critical value lies from the strikes;
+        // the tolerance therefore needs no term in the iterate.
         while (std::fabs(yi) > 1.0e-10 * std::max<Real>(Xc, Xp)) {
             Sv = Sv - yi / di;
 
