@@ -208,7 +208,19 @@ namespace QuantLib {
                 Date temp = nullCalendar.advance(seed,
                     -periods*(*tenor_), convention, *endOfMonth_);
                 isRegular_.push_back(temp == nextToLastDate_);
-                seed = nextToLastDate_;
+                if (temp == nextToLastDate_) {
+                    // The supplied date is exactly the regular date at this
+                    // step (possibly a month-end clamped one, e.g. a 30th
+                    // cycle stepping back to February 28th or 29th).  Keep
+                    // the anchor instead of re-seeding from the clamped
+                    // date, so earlier dates stay on the cycle of the
+                    // termination date (e.g. the 30th).  A supplied date
+                    // that differs from the computed one is a genuine stub
+                    // and re-anchors the cycle as before.
+                    ++periods;
+                } else {
+                    seed = nextToLastDate_;
+                }
             }
 
             exitDate = effectiveDate;
@@ -283,11 +295,16 @@ namespace QuantLib {
                 dates_.push_back(firstDate_);
                 Date temp = nullCalendar.advance(seed, periods*(*tenor_),
                                                  convention, *endOfMonth_);
-                if (temp!=firstDate_)
-                    isRegular_.push_back(false);
-                else
-                    isRegular_.push_back(true);
-                seed = firstDate_;
+                isRegular_.push_back(temp == firstDate_);
+                if (temp == firstDate_) {
+                    // Same as the Backward case: keep the anchor when the
+                    // supplied date is exactly the regular (possibly
+                    // clamped) date at this step; a differing date is a
+                    // genuine stub and re-anchors the cycle as before.
+                    ++periods;
+                } else {
+                    seed = firstDate_;
+                }
             } else if (*rule_ == DateGeneration::Twentieth ||
                        *rule_ == DateGeneration::TwentiethIMM ||
                        *rule_ == DateGeneration::OldCDS ||
