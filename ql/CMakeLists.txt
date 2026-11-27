@@ -541,6 +541,7 @@ set(QL_SOURCES
     models/equity/hestonmodelhelper.cpp
     models/equity/hestonslvfdmmodel.cpp
     models/equity/hestonslvmcmodel.cpp
+    models/equity/hestonsmallsigmaexpansion.cpp
     models/equity/piecewisetimedependenthestonmodel.cpp
     models/equity/roughhestonmodel.cpp
     models/marketmodels/accountingengine.cpp
@@ -1774,6 +1775,7 @@ set(QL_HEADERS
     models/equity/hestonmodelhelper.hpp
     models/equity/hestonslvfdmmodel.hpp
     models/equity/hestonslvmcmodel.hpp
+    models/equity/hestonsmallsigmaexpansion.hpp
     models/equity/piecewisetimedependenthestonmodel.hpp
     models/equity/roughhestonmodel.hpp
     models/marketmodels/accountingengine.hpp

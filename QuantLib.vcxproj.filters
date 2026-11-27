@@ -4551,6 +4551,9 @@
     <ClInclude Include="ql\models\equity\hestonslvmcmodel.hpp">
       <Filter>models\equity</Filter>
     </ClInclude>
+    <ClInclude Include="ql\models\equity\hestonsmallsigmaexpansion.hpp">
+      <Filter>models\equity</Filter>
+    </ClInclude>
     <ClInclude Include="ql\pricingengines\barrier\fdhestondoublebarrierengine.hpp">
       <Filter>pricingengines\barrier</Filter>
     </ClInclude>
@@ -7484,6 +7487,9 @@
       <Filter>models\equity</Filter>
     </ClCompile>
     <ClCompile Include="ql\models\equity\hestonslvmcmodel.cpp">
+      <Filter>models\equity</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\models\equity\hestonsmallsigmaexpansion.cpp">
       <Filter>models\equity</Filter>
     </ClCompile>
     <ClCompile Include="ql\pricingengines\barrier\fdhestondoublebarrierengine.cpp">

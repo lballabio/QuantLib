@@ -23,6 +23,7 @@
 
 #include <ql/math/functional.hpp>
 #include <ql/instruments/payoffs.hpp>
+#include <ql/models/equity/hestonsmallsigmaexpansion.hpp>
 #include <ql/pricingengines/vanilla/analyticptdhestonengine.hpp>
 #include <ql/pricingengines/blackcalculator.hpp>
 
@@ -94,25 +95,38 @@ namespace QuantLib {
                 const Real kappa = model_->kappa(t);
                 const Real theta = model_->theta(t);
 
-                const Real sigma2 = sigma*sigma;
-                const Real t0 = kappa - ((j_== 1)? Real(rho*sigma) : 0);
-                const Real rpsig = rho*sigma*phi;
+                // the classic Heston P1/P2 (Gatheral) formula below is this
+                // segment's Riccati step evaluated at z=phi (j=2) resp.
+                // z=phi-i (j=1); as sigma -> 0 its 1/sigma^2 prefactors
+                // multiply vanishing differences (see hestonSmallSigmaStep).
+                if (sigma > 1e-6 || kappa < 1e-8) {
+                    const Real sigma2 = sigma*sigma;
+                    const Real t0 = kappa - ((j_== 1)? Real(rho*sigma) : 0);
+                    const Real rpsig = rho*sigma*phi;
 
-                const std::complex<Real> t1 = t0+std::complex<Real>(0, -rpsig);
-                const std::complex<Real> d  = std::sqrt(t1*t1 - sigma2*phi
-                                 *std::complex<Real>(-phi, (j_== 1)? 1 : -1));
-                const std::complex<Real> g = (t1-d)/(t1+d);
-                const std::complex<Real> gt
-                                       = (t1-d - D*sigma2)/(t1+d - D*sigma2);
+                    const std::complex<Real> t1 = t0+std::complex<Real>(0, -rpsig);
+                    const std::complex<Real> d  = std::sqrt(t1*t1 - sigma2*phi
+                                     *std::complex<Real>(-phi, (j_== 1)? 1 : -1));
+                    const std::complex<Real> g = (t1-d)/(t1+d);
+                    const std::complex<Real> gt
+                                           = (t1-d - D*sigma2)/(t1+d - D*sigma2);
 
-                D = (t1+d)/sigma2*(g-gt*std::exp(-d*tau))
-                    /(1.0-gt*std::exp(-d*tau));
+                    D = (t1+d)/sigma2*(g-gt*std::exp(-d*tau))
+                        /(1.0-gt*std::exp(-d*tau));
 
-                const std::complex<Real> lng
-                    = std::log((1.0 - gt*std::exp(-d*tau))/(1.0 - gt));
+                    const std::complex<Real> lng
+                        = std::log((1.0 - gt*std::exp(-d*tau))/(1.0 - gt));
 
-                C =(kappa*theta)/sigma2*((t1-d)*tau-2.0*lng)
-                    + std::complex<Real>(0.0, phi*(r_[i-1]-q_[i-1])*tau) + C;
+                    C =(kappa*theta)/sigma2*((t1-d)*tau-2.0*lng)
+                        + std::complex<Real>(0.0, phi*(r_[i-1]-q_[i-1])*tau) + C;
+                } else {
+                    const std::complex<Real> z(phi, (j_== 1)? -1.0 : 0.0);
+                    const auto [Dnew, Cinc] = detail::hestonSmallSigmaStep(
+                        kappa, theta, sigma, rho, tau, z, D);
+
+                    D = Dnew;
+                    C = Cinc + std::complex<Real>(0.0, phi*(r_[i-1]-q_[i-1])*tau) + C;
+                }
             }
         }
         return std::exp(v0_*D+C+std::complex<Real>(0.0, phi*(x_ - sx_))).imag()
@@ -181,23 +195,34 @@ namespace QuantLib {
             const Real theta = model_->theta(t);
             const Real rho   = model_->rho(t);
 
-            const Real sigma2 = sigma*sigma;
+            // as sigma -> 0 this segment's Riccati step has a removable
+            // singularity; hestonSmallSigmaStep handles it for this segment's
+            // (possibly nonzero) terminal value D carried in from later
+            // segments.
+            if (sigma > 1e-6 || kappa < 1e-8) {
+                const Real sigma2 = sigma*sigma;
 
-            const std::complex<Real> k
-                = kappa + rho*sigma*std::complex<Real>(z.imag(), -z.real());
+                const std::complex<Real> k
+                    = kappa + rho*sigma*std::complex<Real>(z.imag(), -z.real());
 
-            const std::complex<Real> d = std::sqrt(
-                k*k + (z*z + std::complex<Real>(-z.imag(), z.real()))*sigma2);
+                const std::complex<Real> d = std::sqrt(
+                    k*k + (z*z + std::complex<Real>(-z.imag(), z.real()))*sigma2);
 
-            const std::complex<Real> g = (k-d)/(k+d);
+                const std::complex<Real> g = (k-d)/(k+d);
 
-            const std::complex<Real> gt = (k-d-D*sigma2)/(k+d-D*sigma2);
+                const std::complex<Real> gt = (k-d-D*sigma2)/(k+d-D*sigma2);
 
-            C += kappa*theta/sigma2*( (k-d)*tau
-                   - 2.0*std::log((1.0-gt*std::exp(-d*tau))/(1.0-gt)));
+                C += kappa*theta/sigma2*( (k-d)*tau
+                       - 2.0*std::log((1.0-gt*std::exp(-d*tau))/(1.0-gt)));
 
-            D = (k+d)/sigma2 * (g - gt*std::exp(-d*tau))
-                    /(1.0 - gt*std::exp(-d*tau));
+                D = (k+d)/sigma2 * (g - gt*std::exp(-d*tau))
+                        /(1.0 - gt*std::exp(-d*tau));
+            } else {
+                const auto [Dnew, Cinc] = detail::hestonSmallSigmaStep(
+                    kappa, theta, sigma, rho, tau, z, D);
+                C += Cinc;
+                D = Dnew;
+            }
         }
 
         return D*v0 + C;

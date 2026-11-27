@@ -10,6 +10,7 @@ this_include_HEADERS = \
     hestonmodelhelper.hpp \
     hestonslvfdmmodel.hpp \
     hestonslvmcmodel.hpp \
+    hestonsmallsigmaexpansion.hpp \
     piecewisetimedependenthestonmodel.hpp \
     roughhestonmodel.hpp
 
@@ -20,6 +21,7 @@ cpp_files = \
     hestonmodelhelper.cpp \
     hestonslvfdmmodel.cpp \
     hestonslvmcmodel.cpp \
+    hestonsmallsigmaexpansion.cpp \
     piecewisetimedependenthestonmodel.cpp \
     roughhestonmodel.cpp
 
