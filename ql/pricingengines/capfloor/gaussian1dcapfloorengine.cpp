@@ -48,156 +48,100 @@ namespace QuantLib {
 
             if (paymentDate > settlement) {
 
-                Real f = arguments_.nominals[i] * arguments_.gearings[i];
+                // with a negative gearing, a cap on the coupon is a floor on
+                // the index and vice versa; the effective strikes are
+                // already adjusted by CapFloor::setupArguments
+                Real gearing = arguments_.gearings[i];
+                Real sign = gearing >= 0.0 ? 1.0 : -1.0;
+                Real f = arguments_.nominals[i] * std::fabs(gearing);
                 Date fixingDate = arguments_.fixingDates[i];
                 Time fixingTime =
                     model_->termStructure()->timeFromReference(fixingDate);
 
-                Real strike;
+                // value per unit of nominal and gearing of an option paying
+                // max(omega * (L - strike), 0), with omega = 1 for a call
+                // on the index and -1 for a put
+                auto optionlet = [&](Rate strike, Real omega) -> Real {
+                    if (fixingDate <= settlement)
+                        return std::max<Real>(omega * (arguments_.forwards[i] - strike),
+                                              0.0) *
+                               arguments_.accrualTimes[i] *
+                               model_->zerobond(paymentDate, Date(), 0.0, discountCurve_);
 
-                if (type == CapFloor::Cap || type == CapFloor::Collar) {
-                    strike = arguments_.capRates[i];
-                    if (fixingDate <= settlement) {
-                        values[i] =
-                            std::max(arguments_.forwards[i] - strike, 0.0) * f *
-                            arguments_.accrualTimes[i];
-                    } else {
+                    // todo add openmp support later on (as in gaussian1dswaptionengine)
 
-                        // todo add openmp support later on (as in gaussian1dswaptionengine)
-
-                        for (Size j = 0; j < z.size(); j++) {
-                            Real floatingLegNpv;
-                            if (iborIndex != nullptr)
-                                floatingLegNpv =
-                                    arguments_.accrualTimes[i] *
-                                    model_->forwardRate(fixingDate, fixingDate,
-                                                        z[j], iborIndex) *
-                                    model_->zerobond(paymentDate, fixingDate,
-                                                     z[j], discountCurve_);
-                            else
-                                floatingLegNpv =
-                                    (model_->zerobond(valueDate, fixingDate,
-                                                      z[j]) -
-                                     model_->zerobond(paymentDate, fixingDate,
-                                                      z[j]));
-                            Real fixedLegNpv =
-                                arguments_.capRates[i] *
+                    for (Size j = 0; j < z.size(); j++) {
+                        Real floatingLegNpv;
+                        if (iborIndex != nullptr)
+                            floatingLegNpv =
                                 arguments_.accrualTimes[i] *
-                                model_->zerobond(paymentDate, fixingDate, z[j]);
-                            p[j] =
-                                std::max((floatingLegNpv - fixedLegNpv), 0.0) /
-                                model_->numeraire(fixingTime, z[j],
-                                                  discountCurve_);
-                        }
-                        CubicInterpolation payoff(
-                            z.begin(), z.end(), p.begin(),
-                            CubicInterpolation::Spline, true,
-                            CubicInterpolation::Lagrange, 0.0,
-                            CubicInterpolation::Lagrange, 0.0);
-                        Real price = 0.0;
-                        for (Size j = 0; j < z.size() - 1; j++) {
-                            price += Gaussian1dModel::gaussianShiftedPolynomialIntegral(
-                                0.0, payoff.cCoefficients()[j],
-                                payoff.bCoefficients()[j],
-                                payoff.aCoefficients()[j], p[j], z[j], z[j],
-                                z[j + 1]);
-                        }
-                        if (extrapolatePayoff_) {
-                            if (flatPayoffExtrapolation_) {
-                                price +=
-                                    Gaussian1dModel::gaussianShiftedPolynomialIntegral(
-                                        0.0, 0.0, 0.0, 0.0, p[z.size() - 2],
-                                        z[z.size() - 2], z[z.size() - 1],
-                                        100.0);
-                                price +=
-                                    Gaussian1dModel::gaussianShiftedPolynomialIntegral(
-                                        0.0, 0.0, 0.0, 0.0, p[0], z[0], -100.0,
-                                        z[0]);
-                            } else {
-                                price +=
-                                    Gaussian1dModel::gaussianShiftedPolynomialIntegral(
-                                        0.0,
-                                        payoff.cCoefficients()[z.size() - 2],
-                                        payoff.bCoefficients()[z.size() - 2],
-                                        payoff.aCoefficients()[z.size() - 2],
-                                        p[z.size() - 2], z[z.size() - 2],
-                                        z[z.size() - 1], 100.0);
-                            }
-                        }
-                        values[i] =
-                            price *
-                            model_->numeraire(0.0, 0.0, discountCurve_) * f;
+                                model_->forwardRate(fixingDate, fixingDate,
+                                                    z[j], iborIndex) *
+                                model_->zerobond(paymentDate, fixingDate,
+                                                 z[j], discountCurve_);
+                        else
+                            floatingLegNpv =
+                                (model_->zerobond(valueDate, fixingDate,
+                                                  z[j]) -
+                                 model_->zerobond(paymentDate, fixingDate,
+                                                  z[j]));
+                        Real fixedLegNpv =
+                            strike * arguments_.accrualTimes[i] *
+                            model_->zerobond(paymentDate, fixingDate, z[j]);
+                        p[j] = std::max<Real>(omega * (floatingLegNpv - fixedLegNpv), 0.0) /
+                               model_->numeraire(fixingTime, z[j], discountCurve_);
                     }
-                }
+                    CubicInterpolation payoff(
+                        z.begin(), z.end(), p.begin(),
+                        CubicInterpolation::Spline, true,
+                        CubicInterpolation::Lagrange, 0.0,
+                        CubicInterpolation::Lagrange, 0.0);
+                    Real price = 0.0;
+                    for (Size j = 0; j < z.size() - 1; j++) {
+                        price += Gaussian1dModel::gaussianShiftedPolynomialIntegral(
+                            0.0, payoff.cCoefficients()[j],
+                            payoff.bCoefficients()[j],
+                            payoff.aCoefficients()[j], p[j], z[j], z[j],
+                            z[j + 1]);
+                    }
+                    if (extrapolatePayoff_) {
+                        if (flatPayoffExtrapolation_) {
+                            price +=
+                                Gaussian1dModel::gaussianShiftedPolynomialIntegral(
+                                    0.0, 0.0, 0.0, 0.0, p[z.size() - 2],
+                                    z[z.size() - 2], z[z.size() - 1],
+                                    100.0);
+                            price +=
+                                Gaussian1dModel::gaussianShiftedPolynomialIntegral(
+                                    0.0, 0.0, 0.0, 0.0, p[0], z[0], -100.0,
+                                    z[0]);
+                        } else if (omega > 0.0) {
+                            // a call pays for high rates
+                            price +=
+                                Gaussian1dModel::gaussianShiftedPolynomialIntegral(
+                                    0.0,
+                                    payoff.cCoefficients()[z.size() - 2],
+                                    payoff.bCoefficients()[z.size() - 2],
+                                    payoff.aCoefficients()[z.size() - 2],
+                                    p[z.size() - 2], z[z.size() - 2],
+                                    z[z.size() - 1], 100.0);
+                        } else {
+                            // a put pays for low rates
+                            price +=
+                                Gaussian1dModel::gaussianShiftedPolynomialIntegral(
+                                    0.0, payoff.cCoefficients()[0],
+                                    payoff.bCoefficients()[0],
+                                    payoff.aCoefficients()[0], p[0], z[0],
+                                    -100.0, z[0]);
+                        }
+                    }
+                    return price * model_->numeraire(0.0, 0.0, discountCurve_);
+                };
+
+                if (type == CapFloor::Cap || type == CapFloor::Collar)
+                    values[i] = optionlet(arguments_.capRates[i], sign) * f;
                 if (type == CapFloor::Floor || type == CapFloor::Collar) {
-                    strike = arguments_.floorRates[i];
-                    Real floorlet;
-                    if (fixingDate <= settlement) {
-                        floorlet =
-                            std::max(-(arguments_.forwards[i] - strike), 0.0) *
-                            f * arguments_.accrualTimes[i];
-                    } else {
-                        for (Size j = 0; j < z.size(); j++) {
-                            Real floatingLegNpv;
-                            if (iborIndex != nullptr)
-                                floatingLegNpv =
-                                    arguments_.accrualTimes[i] *
-                                    model_->forwardRate(fixingDate, fixingDate,
-                                                        z[j], iborIndex) *
-                                    model_->zerobond(paymentDate, fixingDate,
-                                                     z[j], discountCurve_);
-                            else
-                                floatingLegNpv =
-                                    (model_->zerobond(valueDate, fixingDate,
-                                                      z[j]) -
-                                     model_->zerobond(paymentDate, fixingDate,
-                                                      z[j]));
-                            Real fixedLegNpv =
-                                arguments_.floorRates[i] *
-                                arguments_.accrualTimes[i] *
-                                model_->zerobond(paymentDate, fixingDate, z[j]);
-                            p[j] =
-                                std::max(-(floatingLegNpv - fixedLegNpv), 0.0) /
-                                model_->numeraire(fixingTime, z[j],
-                                                  discountCurve_);
-                        }
-                        CubicInterpolation payoff(
-                            z.begin(), z.end(), p.begin(),
-                            CubicInterpolation::Spline, true,
-                            CubicInterpolation::Lagrange, 0.0,
-                            CubicInterpolation::Lagrange, 0.0);
-                        Real price = 0.0;
-                        for (Size j = 0; j < z.size() - 1; j++) {
-                            price += Gaussian1dModel::gaussianShiftedPolynomialIntegral(
-                                0.0, payoff.cCoefficients()[j],
-                                payoff.bCoefficients()[j],
-                                payoff.aCoefficients()[j], p[j], z[j], z[j],
-                                z[j + 1]);
-                        }
-                        if (extrapolatePayoff_) {
-                            if (flatPayoffExtrapolation_) {
-                                price +=
-                                    Gaussian1dModel::gaussianShiftedPolynomialIntegral(
-                                        0.0, 0.0, 0.0, 0.0, p[z.size() - 2],
-                                        z[z.size() - 2], z[z.size() - 1],
-                                        100.0);
-                                price +=
-                                    Gaussian1dModel::gaussianShiftedPolynomialIntegral(
-                                        0.0, 0.0, 0.0, 0.0, p[0], z[0], -100.0,
-                                        z[0]);
-                            } else {
-                                price +=
-                                    Gaussian1dModel::gaussianShiftedPolynomialIntegral(
-                                        0.0, payoff.cCoefficients()[0],
-                                        payoff.bCoefficients()[0],
-                                        payoff.aCoefficients()[0], p[0], z[0],
-                                        -100.0, z[0]);
-                            }
-                        }
-                        floorlet = price *
-                                   model_->numeraire(0.0, 0.0, discountCurve_) *
-                                   f;
-                    }
+                    Real floorlet = optionlet(arguments_.floorRates[i], -sign) * f;
                     if (type == CapFloor::Floor) {
                         values[i] = floorlet;
                     } else {

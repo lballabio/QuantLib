@@ -95,7 +95,7 @@ namespace QuantLib {
         }
 
       protected:
-        ext::shared_ptr<path_pricer_type> pathPricer() const {
+        ext::shared_ptr<path_pricer_type> pathPricer() const override {
             Date referenceDate = model_->termStructure()->referenceDate();
             DayCounter dayCounter = model_->termStructure()->dayCounter();
             Time forwardMeasureTime =
@@ -105,7 +105,7 @@ namespace QuantLib {
                                                          forwardMeasureTime);
         }
 
-        TimeGrid timeGrid() const {
+        TimeGrid timeGrid() const override {
 
             Date referenceDate = model_->termStructure()->referenceDate();
             DayCounter dayCounter = model_->termStructure()->dayCounter();
@@ -125,7 +125,7 @@ namespace QuantLib {
             return TimeGrid(times.begin(), times.end());
         }
 
-        ext::shared_ptr<path_generator_type> pathGenerator() const {
+        ext::shared_ptr<path_generator_type> pathGenerator() const override {
 
             Handle<YieldTermStructure> curve = model_->termStructure();
             Date referenceDate = curve->referenceDate();

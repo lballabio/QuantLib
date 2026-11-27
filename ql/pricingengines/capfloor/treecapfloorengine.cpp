@@ -20,6 +20,7 @@
 #include <ql/models/shortrate/onefactormodel.hpp>
 #include <ql/pricingengines/capfloor/discretizedcapfloor.hpp>
 #include <ql/pricingengines/capfloor/treecapfloorengine.hpp>
+#include <algorithm>
 #include <utility>
 
 namespace QuantLib {
@@ -68,8 +69,9 @@ namespace QuantLib {
             lattice = model_->tree(timeGrid);
         }
 
-        Time firstTime = dayCounter.yearFraction(referenceDate,
-                                                 arguments_.startDates.front());
+        // if the first caplet is already fixed, we roll back to today
+        Time firstTime = std::max<Time>(
+            dayCounter.yearFraction(referenceDate, arguments_.startDates.front()), 0.0);
         Time lastTime = dayCounter.yearFraction(referenceDate,
                                                 arguments_.endDates.back());
         capfloor.initialize(lattice, lastTime);
