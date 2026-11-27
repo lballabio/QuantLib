@@ -821,6 +821,36 @@ BOOST_AUTO_TEST_CASE(testIterativeSolvers) {
     }
 }
 
+BOOST_AUTO_TEST_CASE(testBiCGstabConvergenceOnLastIteration) {
+    BOOST_TEST_MESSAGE("Testing BiCGstab convergence on the last permitted iteration...");
+
+    // This system converges exactly on the second iteration, so a
+    // maxIter of 2 must return the solution instead of reporting that
+    // the iteration budget was exceeded.
+    Matrix A(3, 3);
+    A[0][0] = 1.0;  A[0][1] = -2.0; A[0][2] = -3.0;
+    A[1][0] = -2.0; A[1][1] = 2.0;  A[1][2] = -2.0;
+    A[2][0] = -1.0; A[2][1] = -3.0; A[2][2] = -2.0;
+
+    Array b(3, 1.0);
+    b[2] = 2.0;
+
+    constexpr double relTol = 1e-12;
+
+    const BiCGStabResult result = BiCGstab(MatrixMult(A), 2, relTol).solve(b);
+    const Array expected = {-0.5, -0.3, -0.3};
+
+    for (Size i = 0; i < 3; ++i) {
+        if (std::abs(result.x[i] - expected[i]) > relTol) {
+            BOOST_FAIL("Failed to return the converged solution when "
+                       "convergence lands on the last permitted iteration"
+                    << "\n  component       : " << i
+                    << "\n  calculated      : " << result.x[i]
+                    << "\n  expected        : " << expected[i]);
+        }
+    }
+}
+
 BOOST_AUTO_TEST_CASE(testGmresExactBreakdown) {
     BOOST_TEST_MESSAGE("Testing GMRES exact Krylov breakdown...");
 
