@@ -49,7 +49,7 @@ namespace QuantLib {
         </ul>
 
         Other holidays for which no rule is given
-        (data available for 2002-2026 only:)
+        (data available for 2002-2027 only:)
         <ul>
         <li>Chinese Lunar New Year</li>
         <li>Tomb Sweeping Day</li>

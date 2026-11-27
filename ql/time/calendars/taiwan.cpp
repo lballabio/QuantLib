@@ -485,6 +485,26 @@ namespace QuantLib {
                 return false;
         }
 
+        if (y == 2027) {
+            if (// no trading, the market opens only for clearing and settlement
+                (d >= 2 && d <= 3 && m == February)
+                // Lunar New Year
+                || (d >= 4 && d <= 5 && m == February)
+                || (d == 8 && m == February)
+                // adjusted holiday
+                || (d >= 9 && d <= 10 && m == February)
+                // Tomb-sweeping Day
+                || (d == 5 && m == April)
+                // adjusted holiday (Children's Day falls on Sunday)
+                || (d == 6 && m == April)
+                // Dragon Boat Festival
+                || (d == 9 && m == June)
+                // Mid-Autumn Festival
+                || (d == 15 && m == September)
+                )
+                return false;
+        }
+
         return true;
     }
 
