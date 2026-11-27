@@ -50,7 +50,24 @@ namespace QuantLib {
     class ExponentialSplinesFitting
         : public FittedBondDiscountCurve::FittingMethod {
       public:
-        explicit ExponentialSplinesFitting(bool constrainAtZero = true,
+        explicit ExponentialSplinesFitting(const Array& weights = Array(),
+                                           const ext::shared_ptr<OptimizationMethod>& optimizationMethod = {},
+                                           const Array& l2 = Array(),
+                                           Real minCutoffTime = 0.0,
+                                           Real maxCutoffTime = QL_MAX_REAL,
+                                           Size numCoeffs = 9,
+                                           Real fixedKappa = Null<Real>(),
+                                           Constraint constraint = NoConstraint());
+        ExponentialSplinesFitting(Size numCoeffs,
+                                  Real fixedKappa,
+                                  const Array& weights = Array(),
+                                  Constraint constraint = NoConstraint());
+
+        /*! \deprecated Use the constructors without constrainAtZero.
+                        Deprecated in version 1.45.
+        */
+        [[deprecated("Use the constructors without constrainAtZero")]]
+        explicit ExponentialSplinesFitting(bool constrainAtZero,
                                            const Array& weights = Array(),
                                            const ext::shared_ptr<OptimizationMethod>& optimizationMethod = {},
                                            const Array& l2 = Array(),
@@ -59,6 +76,11 @@ namespace QuantLib {
                                            Size numCoeffs = 9,
                                            Real fixedKappa = Null<Real>(),
                                            Constraint constraint = NoConstraint());
+
+        /*! \deprecated Use the constructors without constrainAtZero.
+                        Deprecated in version 1.45.
+        */
+        [[deprecated("Use the constructors without constrainAtZero")]]
         ExponentialSplinesFitting(bool constrainAtZero,
                                   const Array& weights,
                                   const Array& l2,
@@ -67,6 +89,11 @@ namespace QuantLib {
                                   Size numCoeffs = 9,
                                   Real fixedKappa = Null<Real>(),
                                   Constraint constraint = NoConstraint());
+
+        /*! \deprecated Use the constructors without constrainAtZero.
+                        Deprecated in version 1.45.
+        */
+        [[deprecated("Use the constructors without constrainAtZero")]]
         ExponentialSplinesFitting(bool constrainAtZero, 
                                   Size numCoeffs, 
                                   Real fixedKappa, 
@@ -170,13 +197,30 @@ namespace QuantLib {
         : public FittedBondDiscountCurve::FittingMethod {
       public:
         explicit CubicBSplinesFitting(const std::vector<Time>& knotVector,
-                                      bool constrainAtZero = true,
                                       const Array& weights = Array(),
                                       const ext::shared_ptr<OptimizationMethod>& optimizationMethod = {},
                                       const Array& l2 = Array(),
                                       Real minCutoffTime = 0.0,
                                       Real maxCutoffTime = QL_MAX_REAL,
                                       Constraint constraint = NoConstraint());
+
+        /*! \deprecated Use the constructors without constrainAtZero.
+                        Deprecated in version 1.45.
+        */
+        [[deprecated("Use the constructors without constrainAtZero")]]
+        explicit CubicBSplinesFitting(const std::vector<Time>& knotVector,
+                                      bool constrainAtZero,
+                                      const Array& weights = Array(),
+                                      const ext::shared_ptr<OptimizationMethod>& optimizationMethod = {},
+                                      const Array& l2 = Array(),
+                                      Real minCutoffTime = 0.0,
+                                      Real maxCutoffTime = QL_MAX_REAL,
+                                      Constraint constraint = NoConstraint());
+
+        /*! \deprecated Use the constructors without constrainAtZero.
+                        Deprecated in version 1.45.
+        */
+        [[deprecated("Use the constructors without constrainAtZero")]]
         CubicBSplinesFitting(const std::vector<Time>& knotVector,
                              bool constrainAtZero,
                              const Array& weights,
@@ -248,13 +292,30 @@ namespace QuantLib {
         : public FittedBondDiscountCurve::FittingMethod {
       public:
         explicit SimplePolynomialFitting(Natural degree,
-                                         bool constrainAtZero = true,
                                          const Array& weights = Array(),
                                          const ext::shared_ptr<OptimizationMethod>& optimizationMethod = {},
                                          const Array& l2 = Array(),
                                          Real minCutoffTime = 0.0,
                                          Real maxCutoffTime = QL_MAX_REAL,
                                          Constraint constraint = NoConstraint());
+
+        /*! \deprecated Use the constructors without constrainAtZero.
+                        Deprecated in version 1.45.
+        */
+        [[deprecated("Use the constructors without constrainAtZero")]]
+        explicit SimplePolynomialFitting(Natural degree,
+                                         bool constrainAtZero,
+                                         const Array& weights = Array(),
+                                         const ext::shared_ptr<OptimizationMethod>& optimizationMethod = {},
+                                         const Array& l2 = Array(),
+                                         Real minCutoffTime = 0.0,
+                                         Real maxCutoffTime = QL_MAX_REAL,
+                                         Constraint constraint = NoConstraint());
+
+        /*! \deprecated Use the constructors without constrainAtZero.
+                        Deprecated in version 1.45.
+        */
+        [[deprecated("Use the constructors without constrainAtZero")]]
         SimplePolynomialFitting(Natural degree,
                                 bool constrainAtZero,
                                 const Array& weights,
