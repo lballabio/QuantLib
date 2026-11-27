@@ -51,6 +51,7 @@
 #include <ql/pricingengines/vanilla/mceuropeanhestonengine.hpp>
 #include <ql/processes/hestonprocess.hpp>
 #include <ql/quotes/simplequote.hpp>
+#include <ql/shared_ptr.hpp>
 #include <ql/termstructures/volatility/equityfx/hestonblackvolsurface.hpp>
 #include <ql/termstructures/yield/flatforward.hpp>
 #include <ql/termstructures/yield/zerocurve.hpp>
@@ -167,7 +168,7 @@ void reportOnIntegrationMethodTest(VanillaOption& option,
     if (integration.isAdaptiveIntegration() != isAdaptive)
         BOOST_ERROR(method << " is not an adaptive integration routine");
 
-    const ext::shared_ptr<AnalyticHestonEngine> engine =
+    const auto engine =
         ext::make_shared<AnalyticHestonEngine>(
                 model, formula, integration, 1e-9);
 
@@ -274,11 +275,10 @@ BOOST_AUTO_TEST_CASE(testBlackCalibration) {
         const Real theta=0.02;
         const Real rho=-0.75;
 
-        ext::shared_ptr<HestonProcess> process(
-            ext::make_shared<HestonProcess>(riskFreeTS, dividendTS,
-                              s0, v0, kappa, theta, sigma, rho));
+        auto process = ext::make_shared<HestonProcess>(riskFreeTS, dividendTS,
+                              s0, v0, kappa, theta, sigma, rho);
 
-        ext::shared_ptr<HestonModel> model(ext::make_shared<HestonModel>(process));
+        auto model = ext::make_shared<HestonModel>(process);
         ext::shared_ptr<PricingEngine> engine(
             ext::make_shared<AnalyticHestonEngine>(model, 96));
 
@@ -335,12 +335,10 @@ BOOST_AUTO_TEST_CASE(testDAXCalibration) {
     const Real sigma=0.5;
     const Real rho=-0.5;
 
-    const ext::shared_ptr<HestonProcess> process(
-        ext::make_shared<HestonProcess>(
-            riskFreeTS, dividendTS, s0, v0, kappa, theta, sigma, rho));
+    const auto process = ext::make_shared<HestonProcess>(
+            riskFreeTS, dividendTS, s0, v0, kappa, theta, sigma, rho);
 
-    const ext::shared_ptr<HestonModel> model(
-        ext::make_shared<HestonModel>(process));
+    const auto model = ext::make_shared<HestonModel>(process);
 
     const ext::shared_ptr<PricingEngine> engines[] = {
         ext::make_shared<AnalyticHestonEngine>(model, 64),
@@ -396,8 +394,8 @@ BOOST_AUTO_TEST_CASE(testAnalyticVsBlack) {
     const Real sigma=1.0e-4;
     const Real rho=0.0;
 
-    ext::shared_ptr<HestonProcess> process(ext::make_shared<HestonProcess>(
-                   riskFreeTS, dividendTS, s0, v0, kappa, theta, sigma, rho));
+    auto process = ext::make_shared<HestonProcess>(
+                   riskFreeTS, dividendTS, s0, v0, kappa, theta, sigma, rho);
 
     VanillaOption option(payoff, exercise);
     ext::shared_ptr<PricingEngine> engine(
@@ -462,14 +460,13 @@ BOOST_AUTO_TEST_CASE(testAnalyticVsCached) {
     const Real sigma = 0.4;
     const Real rho = -0.2;
 
-    ext::shared_ptr<HestonProcess> process(ext::make_shared<HestonProcess>(
-                   riskFreeTS, dividendTS, s0, v0, kappa, theta, sigma, rho));
+    auto process = ext::make_shared<HestonProcess>(
+                   riskFreeTS, dividendTS, s0, v0, kappa, theta, sigma, rho);
 
     VanillaOption option(payoff, exercise);
 
-    ext::shared_ptr<AnalyticHestonEngine> engine(
-        ext::make_shared<AnalyticHestonEngine>(
-            ext::make_shared<HestonModel>(process), 64));
+    auto engine = ext::make_shared<AnalyticHestonEngine>(
+            ext::make_shared<HestonModel>(process), 64);
 
     option.setPricingEngine(engine);
 
@@ -506,9 +503,8 @@ BOOST_AUTO_TEST_CASE(testAnalyticVsCached) {
         Real s = riskFreeTS->discount(0.7)/dividendTS->discount(0.7);
         Handle<Quote> s0(ext::make_shared<SimpleQuote>(s));
 
-        ext::shared_ptr<HestonProcess> process(
-            ext::make_shared<HestonProcess>(
-                   riskFreeTS, dividendTS, s0, 0.09, 1.2, 0.08, 1.8, -0.45));
+        auto process = ext::make_shared<HestonProcess>(
+                   riskFreeTS, dividendTS, s0, 0.09, 1.2, 0.08, 1.8, -0.45);
 
         VanillaOption option(payoff, exercise);
 
@@ -556,10 +552,9 @@ BOOST_AUTO_TEST_CASE(testMcVsCached) {
 
     Handle<Quote> s0(ext::make_shared<SimpleQuote>(1.05));
 
-    ext::shared_ptr<HestonProcess> process(
-        ext::make_shared<HestonProcess>(
+    auto process = ext::make_shared<HestonProcess>(
                    riskFreeTS, dividendTS, s0, 0.3, 1.16, 0.2, 0.8, 0.8,
-                   HestonProcess::QuadraticExponentialMartingale));
+                   HestonProcess::QuadraticExponentialMartingale);
 
     VanillaOption option(payoff, exercise);
 
@@ -608,9 +603,8 @@ BOOST_AUTO_TEST_CASE(testFdBarrierVsCached) {
     ext::shared_ptr<StrikedTypePayoff> payoff(
         ext::make_shared<PlainVanillaPayoff>(Option::Call, 90.0));
 
-    ext::shared_ptr<HestonProcess> process(
-        ext::make_shared<HestonProcess>(
-            rTS, qTS, s0, 0.25*0.25, 1.0, 0.25*0.25, 0.001, 0.0));
+    auto process = ext::make_shared<HestonProcess>(
+            rTS, qTS, s0, 0.25*0.25, 1.0, 0.25*0.25, 0.001, 0.0);
 
     ext::shared_ptr<PricingEngine> engine;
     engine = ext::make_shared<FdHestonBarrierEngine>(
@@ -665,9 +659,8 @@ BOOST_AUTO_TEST_CASE(testFdVanillaVsCached) {
 
     VanillaOption option(payoff, exercise);
 
-    ext::shared_ptr<HestonProcess> process(
-        ext::make_shared<HestonProcess>(
-                   riskFreeTS, dividendTS, s0, 0.3, 1.16, 0.2, 0.8, 0.8));
+    auto process = ext::make_shared<HestonProcess>(
+                   riskFreeTS, dividendTS, s0, 0.3, 1.16, 0.2, 0.8, 0.8);
 
     option.setPricingEngine(
         MakeFdHestonVanillaEngine(ext::make_shared<HestonModel>(process))
@@ -770,8 +763,7 @@ BOOST_AUTO_TEST_CASE(testFdAmerican) {
 
     Handle<BlackVolTermStructure> volTS(flatVol(settlementDate, 0.2,
                                                   dayCounter));
-    ext::shared_ptr<BlackScholesMertonProcess> ref_process(
-        ext::make_shared<BlackScholesMertonProcess>(s0, dividendTS, riskFreeTS, volTS));
+    auto ref_process = ext::make_shared<BlackScholesMertonProcess>(s0, dividendTS, riskFreeTS, volTS);
     ext::shared_ptr<PricingEngine> ref_engine(
         ext::make_shared<FdBlackScholesVanillaEngine>(ref_process, 200, 400));
     option.setPricingEngine(ref_engine);
@@ -835,8 +827,8 @@ BOOST_AUTO_TEST_CASE(testKahlJaeckelCase) {
     const Real expected = 4.95212;
 
     for (const auto& description : descriptions) {
-        const ext::shared_ptr<HestonProcess> process(ext::make_shared<HestonProcess>(
-            riskFreeTS, dividendTS, s0, v0, kappa, theta, sigma, rho, description.discretization));
+        const auto process = ext::make_shared<HestonProcess>(
+            riskFreeTS, dividendTS, s0, v0, kappa, theta, sigma, rho, description.discretization);
 
         const ext::shared_ptr<PricingEngine> engine =
             MakeMCEuropeanHestonEngine<PseudoRandom>(process)
@@ -893,11 +885,10 @@ BOOST_AUTO_TEST_CASE(testKahlJaeckelCase) {
     }
 
 
-    const ext::shared_ptr<HestonModel> hestonModel(
-        ext::make_shared<HestonModel>(
+    const auto hestonModel = ext::make_shared<HestonModel>(
             ext::make_shared<HestonProcess>(
                 riskFreeTS, dividendTS, s0, v0,
-                kappa, theta, sigma, rho)));
+                kappa, theta, sigma, rho));
 
     option.setPricingEngine(
         ext::make_shared<FdHestonVanillaEngine>(hestonModel, 200, 401, 101));
@@ -987,32 +978,25 @@ BOOST_AUTO_TEST_CASE(testDifferentIntegrals) {
          iter != params.end(); ++iter) {
 
         Handle<Quote> s0(ext::make_shared<SimpleQuote>(1.0));
-        ext::shared_ptr<HestonProcess> process(
-            ext::make_shared<HestonProcess>(
+        auto process = ext::make_shared<HestonProcess>(
             riskFreeTS, dividendTS,
             s0, iter->v0, iter->kappa,
-            iter->theta, iter->sigma, iter->rho));
+            iter->theta, iter->sigma, iter->rho);
 
-        ext::shared_ptr<HestonModel> model(
-            ext::make_shared<HestonModel>(process));
+        auto model = ext::make_shared<HestonModel>(process);
 
-        ext::shared_ptr<AnalyticHestonEngine> lobattoEngine(
-            ext::make_shared<AnalyticHestonEngine>(model, 1e-10,
-                                                       1000000));
-        ext::shared_ptr<AnalyticHestonEngine> laguerreEngine(
-            ext::make_shared<AnalyticHestonEngine>(model, 128));
-        ext::shared_ptr<AnalyticHestonEngine> legendreEngine(
-            ext::make_shared<AnalyticHestonEngine>(
+        auto lobattoEngine = ext::make_shared<AnalyticHestonEngine>(model, 1e-10,
+                                                       1000000);
+        auto laguerreEngine = ext::make_shared<AnalyticHestonEngine>(model, 128);
+        auto legendreEngine = ext::make_shared<AnalyticHestonEngine>(
                 model, AnalyticHestonEngine::Gatheral,
-                AnalyticHestonEngine::Integration::gaussLegendre(512)));
-        ext::shared_ptr<AnalyticHestonEngine> chebyshevEngine(
-            ext::make_shared<AnalyticHestonEngine>(
+                AnalyticHestonEngine::Integration::gaussLegendre(512));
+        auto chebyshevEngine = ext::make_shared<AnalyticHestonEngine>(
                 model, AnalyticHestonEngine::Gatheral,
-                AnalyticHestonEngine::Integration::gaussChebyshev(512)));
-        ext::shared_ptr<AnalyticHestonEngine> chebyshev2ndEngine(
-            ext::make_shared<AnalyticHestonEngine>(
+                AnalyticHestonEngine::Integration::gaussChebyshev(512));
+        auto chebyshev2ndEngine = ext::make_shared<AnalyticHestonEngine>(
                 model, AnalyticHestonEngine::Gatheral,
-                AnalyticHestonEngine::Integration::gaussChebyshev2nd(512)));
+                AnalyticHestonEngine::Integration::gaussChebyshev2nd(512));
 
         Real maxLegendreDiff    = 0.0;
         Real maxChebyshevDiff   = 0.0;
@@ -1095,18 +1079,14 @@ BOOST_AUTO_TEST_CASE(testMultipleStrikesEngine) {
 
     Handle<Quote> s0(ext::make_shared<SimpleQuote>(1.05));
 
-    ext::shared_ptr<HestonProcess> process(
-        ext::make_shared<HestonProcess>(
-                     riskFreeTS, dividendTS, s0, 0.16, 2.5, 0.09, 0.8, -0.8));
-    ext::shared_ptr<HestonModel> model(
-		ext::make_shared<HestonModel>(process));
+    auto process = ext::make_shared<HestonProcess>(
+                     riskFreeTS, dividendTS, s0, 0.16, 2.5, 0.09, 0.8, -0.8);
+    auto model = ext::make_shared<HestonModel>(process);
 
     std::vector<Real> strikes = {1.0, 0.5, 0.75, 1.5, 2.0};
 
-    ext::shared_ptr<FdHestonVanillaEngine> singleStrikeEngine(
-		ext::make_shared<FdHestonVanillaEngine>(model, 20, 400, 50));
-    ext::shared_ptr<FdHestonVanillaEngine> multiStrikeEngine(
-        ext::make_shared<FdHestonVanillaEngine>(model, 20, 400, 50));
+    auto singleStrikeEngine = ext::make_shared<FdHestonVanillaEngine>(model, 20, 400, 50);
+    auto multiStrikeEngine = ext::make_shared<FdHestonVanillaEngine>(model, 20, 400, 50);
     multiStrikeEngine->enableMultipleStrikesCaching(strikes);
 
     Real relTol = 5e-3;
@@ -1185,7 +1165,7 @@ BOOST_AUTO_TEST_CASE(testAnalyticPiecewiseTimeDependent) {
     ConstantParameter sigma(4.40, PositiveConstraint());
     ConstantParameter rho  (-0.8, BoundaryConstraint(-1.0, 1.0));
 
-    ext::shared_ptr<PiecewiseTimeDependentHestonModel> model =
+    auto model =
         ext::make_shared<PiecewiseTimeDependentHestonModel>(
                                               riskFreeTS, dividendTS,
                                               s0, v0, theta, kappa, 
@@ -1193,11 +1173,10 @@ BOOST_AUTO_TEST_CASE(testAnalyticPiecewiseTimeDependent) {
     
     VanillaOption option(payoff, exercise);
 
-    ext::shared_ptr<HestonProcess> hestonProcess(
-        ext::make_shared<HestonProcess>(
+    auto hestonProcess = ext::make_shared<HestonProcess>(
                           riskFreeTS, dividendTS, s0, v0,
-                          kappa(0.0), theta(0.0), sigma(0.0), rho(0.0)));
-    ext::shared_ptr<HestonModel> hestonModel =
+                          kappa(0.0), theta(0.0), sigma(0.0), rho(0.0));
+    auto hestonModel =
         ext::make_shared<HestonModel>(hestonProcess);
     option.setPricingEngine(
         ext::make_shared<AnalyticHestonEngine>(hestonModel));
@@ -1258,7 +1237,7 @@ BOOST_AUTO_TEST_CASE(testDAXCalibrationOfTimeDependentModel) {
         kappa.setParam(i, 10.0);
     }
 
-    ext::shared_ptr<PiecewiseTimeDependentHestonModel> model =
+    auto model =
         ext::make_shared<PiecewiseTimeDependentHestonModel>(
                                               riskFreeTS, dividendTS,
                                               s0, v0, theta, kappa, 
@@ -1326,11 +1305,9 @@ BOOST_AUTO_TEST_CASE(testAlanLewisReferencePrices) {
     const Real kappa =  4.0;
     const Real theta =  0.25;
 
-    const ext::shared_ptr<HestonProcess> process(
-        ext::make_shared<HestonProcess>(
-            riskFreeTS, dividendTS, s0, v0, kappa, theta, sigma, rho));
-    const ext::shared_ptr<HestonModel> model(
-        ext::make_shared<HestonModel>(process));
+    const auto process = ext::make_shared<HestonProcess>(
+            riskFreeTS, dividendTS, s0, v0, kappa, theta, sigma, rho);
+    const auto model = ext::make_shared<HestonModel>(process);
 
     const ext::shared_ptr<PricingEngine> laguerreEngine(
         ext::make_shared<AnalyticHestonEngine>(model, 128U));
@@ -1448,10 +1425,10 @@ BOOST_AUTO_TEST_CASE(testExpansionOnAlanLewisReference) {
     const Real kappa =  4.0;
     const Real theta =  0.25;
 
-    const ext::shared_ptr<HestonProcess> process =
+    const auto process =
         ext::make_shared<HestonProcess>(riskFreeTS, dividendTS, s0, v0,
                                           kappa, theta, sigma, rho);
-    const ext::shared_ptr<HestonModel> model =
+    const auto model =
         ext::make_shared<HestonModel>(process);
 
     const ext::shared_ptr<PricingEngine> lpp2Engine =
@@ -1597,7 +1574,7 @@ BOOST_AUTO_TEST_CASE(testAllIntegrationMethods) {
     const Real kappa =  4.0;
     const Real theta =  0.05;
 
-    const ext::shared_ptr<HestonModel> model =
+    const auto model =
         ext::make_shared<HestonModel>(
             ext::make_shared<HestonProcess>(
                 riskFreeTS, dividendTS,
@@ -1828,13 +1805,13 @@ BOOST_AUTO_TEST_CASE(testCosHestonCumulants) {
     const Real kappa =  4.0;
     const Real theta =  0.25;
 
-    const ext::shared_ptr<HestonModel> model =
+    const auto model =
         ext::make_shared<HestonModel>(
             ext::make_shared<HestonProcess>(
                 riskFreeTS, dividendTS,
                 s0, v0, kappa, theta, sigma, rho));
 
-    const ext::shared_ptr<COSHestonEngine> cosEngine =
+    const auto cosEngine =
         ext::make_shared<COSHestonEngine>(model);
 
     const Real tol = 1e-7;
@@ -1918,7 +1895,7 @@ BOOST_AUTO_TEST_CASE(testCosHestonEngine) {
     const Real kappa =  4.0;
     const Real theta =  0.22;
 
-    const ext::shared_ptr<HestonModel> model =
+    const auto model =
         ext::make_shared<HestonModel>(
             ext::make_shared<HestonProcess>(
                 riskFreeTS, dividendTS,
@@ -1990,8 +1967,8 @@ BOOST_AUTO_TEST_CASE(testCosHestonEngineTruncation) {
 
     ext::shared_ptr<HestonProcess> hestonProcess(
             new HestonProcess(riskFreeTS, dividendTS, underlyingH, .007, .8, .007, .1, -.2));
-    ext::shared_ptr<HestonModel> hestonModel(
-            new HestonModel(hestonProcess));
+    auto hestonModel = ext::make_shared<HestonModel>(
+            hestonProcess);
     
     europeanOption.setPricingEngine(ext::shared_ptr<PricingEngine>(
                 new COSHestonEngine(hestonModel)));
@@ -2026,7 +2003,7 @@ BOOST_AUTO_TEST_CASE(testCharacteristicFct) {
     const Real kappa =  2.0;
     const Real theta =  0.15;
 
-    const ext::shared_ptr<HestonModel> model =
+    const auto model =
         ext::make_shared<HestonModel>(
             ext::make_shared<HestonProcess>(
                 riskFreeTS, dividendTS,
@@ -2074,54 +2051,48 @@ BOOST_AUTO_TEST_CASE(testAndersenPiterbargPricing) {
     const Real kappa =  1.0;
     const Real theta =  0.1;
 
-    const ext::shared_ptr<HestonModel> model =
+    const auto model =
         ext::make_shared<HestonModel>(
             ext::make_shared<HestonProcess>(
                 riskFreeTS, dividendTS,
                 s0, v0, kappa, theta, sigma, rho));
 
-    const ext::shared_ptr<AnalyticHestonEngine>
-        andersenPiterbargLaguerreEngine(
-            ext::make_shared<AnalyticHestonEngine>(
+    const auto
+        andersenPiterbargLaguerreEngine = ext::make_shared<AnalyticHestonEngine>(
                 model,
                 AnalyticHestonEngine::AndersenPiterbarg,
-                AnalyticHestonEngine::Integration::gaussLaguerre()));
+                AnalyticHestonEngine::Integration::gaussLaguerre());
 
-    const ext::shared_ptr<AnalyticHestonEngine>
-        andersenPiterbargLobattoEngine(
-            ext::make_shared<AnalyticHestonEngine>(
+    const auto
+        andersenPiterbargLobattoEngine = ext::make_shared<AnalyticHestonEngine>(
                 model,
                 AnalyticHestonEngine::AndersenPiterbarg,
                 AnalyticHestonEngine::Integration::gaussLobatto(
-                    Null<Real>(), 1e-9, 10000), 1e-9));
+                    Null<Real>(), 1e-9, 10000), 1e-9);
 
-    const ext::shared_ptr<AnalyticHestonEngine>
-        andersenPiterbargSimpsonEngine(
-            ext::make_shared<AnalyticHestonEngine>(
+    const auto
+        andersenPiterbargSimpsonEngine = ext::make_shared<AnalyticHestonEngine>(
                 model,
                 AnalyticHestonEngine::AndersenPiterbarg,
                 AnalyticHestonEngine::Integration::discreteSimpson(256),
-                1e-8));
+                1e-8);
 
-    const ext::shared_ptr<AnalyticHestonEngine>
-        andersenPiterbargTrapezoidEngine(
-            ext::make_shared<AnalyticHestonEngine>(
+    const auto
+        andersenPiterbargTrapezoidEngine = ext::make_shared<AnalyticHestonEngine>(
                 model,
                 AnalyticHestonEngine::AndersenPiterbarg,
                 AnalyticHestonEngine::Integration::discreteTrapezoid(164),
-                1e-8));
+                1e-8);
 
-    const ext::shared_ptr<AnalyticHestonEngine>
-        andersenPiterbargTrapezoidEngine2(
-            ext::make_shared<AnalyticHestonEngine>(
+    const auto
+        andersenPiterbargTrapezoidEngine2 = ext::make_shared<AnalyticHestonEngine>(
                 model,
                 AnalyticHestonEngine::AndersenPiterbarg,
                 AnalyticHestonEngine::Integration::trapezoid(1e-8, 256),
-                1e-8));
+                1e-8);
 
-    const ext::shared_ptr<ExponentialFittingHestonEngine>
-        andersenPiterbargExponentialFittingEngine(
-            ext::make_shared<ExponentialFittingHestonEngine>(model));
+    const auto
+        andersenPiterbargExponentialFittingEngine = ext::make_shared<ExponentialFittingHestonEngine>(model);
 
     const ext::shared_ptr<PricingEngine> engines[] = {
         andersenPiterbargLaguerreEngine,
@@ -2215,19 +2186,16 @@ BOOST_AUTO_TEST_CASE(testAndersenPiterbargControlVariateIntegrand) {
     const Real kappa =  4.0;
     const Real theta =  0.05;
 
-    const ext::shared_ptr<HestonModel> hestonModel(
-        ext::make_shared<HestonModel>(
+    const auto hestonModel = ext::make_shared<HestonModel>(
             ext::make_shared<HestonProcess>(
-                rTS, qTS, s0, v0, kappa, theta, sigma, rho)));
+                rTS, qTS, s0, v0, kappa, theta, sigma, rho));
 
-    const ext::shared_ptr<COSHestonEngine> cosEngine(
-        ext::make_shared<COSHestonEngine>(hestonModel));
+    const auto cosEngine = ext::make_shared<COSHestonEngine>(hestonModel);
 
-    const ext::shared_ptr<AnalyticHestonEngine> engine(
-        ext::make_shared<AnalyticHestonEngine>(
+    const auto engine = ext::make_shared<AnalyticHestonEngine>(
             hestonModel,
             AnalyticHestonEngine::AndersenPiterbarg,
-            AnalyticHestonEngine::Integration::gaussLaguerre()));
+            AnalyticHestonEngine::Integration::gaussLaguerre());
 
     VanillaOption option(
         ext::make_shared<PlainVanillaPayoff>(Option::Call, strike),
@@ -2333,10 +2301,9 @@ BOOST_AUTO_TEST_CASE(testAndersenPiterbargConvergence) {
     const Real kappa =  4.0;
     const Real theta =  0.25;
 
-    const ext::shared_ptr<HestonModel> hestonModel(
-        ext::make_shared<HestonModel>(
+    const auto hestonModel = ext::make_shared<HestonModel>(
             ext::make_shared<HestonProcess>(
-                rTS, qTS, s0, v0, kappa, theta, sigma, rho)));
+                rTS, qTS, s0, v0, kappa, theta, sigma, rho));
 
     VanillaOption option(
         ext::make_shared<PlainVanillaPayoff>(Option::Call, s0->value()),
@@ -2390,18 +2357,16 @@ BOOST_AUTO_TEST_CASE(testPiecewiseTimeDependentChFvsHestonChF) {
     const ConstantParameter sigmaP(sigma, PositiveConstraint());
     const ConstantParameter rhoP  (rho, BoundaryConstraint(-1.0, 1.0));
 
-    const ext::shared_ptr<AnalyticHestonEngine> analyticEngine(
-        ext::make_shared<AnalyticHestonEngine>(
+    const auto analyticEngine = ext::make_shared<AnalyticHestonEngine>(
             ext::make_shared<HestonModel>(
                 ext::make_shared<HestonProcess>(
-                    rTS, qTS, s0, v0, kappa, theta, sigma, rho))));
+                    rTS, qTS, s0, v0, kappa, theta, sigma, rho)));
 
-    const ext::shared_ptr<AnalyticPTDHestonEngine> ptdHestonEngine(
-        ext::make_shared<AnalyticPTDHestonEngine>(
+    const auto ptdHestonEngine = ext::make_shared<AnalyticPTDHestonEngine>(
             ext::make_shared<PiecewiseTimeDependentHestonModel>(
                 rTS, qTS, s0, v0, thetaP, kappaP, sigmaP, rhoP,
                 TimeGrid(dayCounter.yearFraction(settlementDate, maturityDate),
-                         10))));
+                         10)));
 
     constexpr double tol = 100 * QL_EPSILON;
     for (Real r = 0.1; r < 4; r+=0.25) {
@@ -2460,22 +2425,19 @@ BOOST_AUTO_TEST_CASE(testPiecewiseTimeDependentComparison) {
         ext::make_shared<PlainVanillaPayoff>(Option::Call, s0->value()),
         ext::make_shared<EuropeanExercise>(maturityDate));
 
-    const ext::shared_ptr<PiecewiseTimeDependentHestonModel> ptdModel(
-        ext::make_shared<PiecewiseTimeDependentHestonModel>(
-            rTS, qTS, s0, v0, theta, kappa, sigma, rho, modelGrid));
+    const auto ptdModel = ext::make_shared<PiecewiseTimeDependentHestonModel>(
+            rTS, qTS, s0, v0, theta, kappa, sigma, rho, modelGrid);
 
-    const ext::shared_ptr<AnalyticPTDHestonEngine> ptdHestonEngine(
-        ext::make_shared<AnalyticPTDHestonEngine>(ptdModel));
+    const auto ptdHestonEngine = ext::make_shared<AnalyticPTDHestonEngine>(ptdModel);
 
     option.setPricingEngine(ptdHestonEngine);
     const Real calculatedGatheral = option.NPV();
 
-    const ext::shared_ptr<AnalyticPTDHestonEngine> ptdAPEngine(
-        ext::make_shared<AnalyticPTDHestonEngine>(
+    const auto ptdAPEngine = ext::make_shared<AnalyticPTDHestonEngine>(
             ptdModel,
             AnalyticPTDHestonEngine::AndersenPiterbarg,
             AnalyticPTDHestonEngine::Integration::discreteTrapezoid(128),
-            1e-12));
+            1e-12);
     option.setPricingEngine(ptdAPEngine);
     const Real calculatedAndersenPiterbarg = option.NPV();
 
@@ -2486,10 +2448,9 @@ BOOST_AUTO_TEST_CASE(testPiecewiseTimeDependentComparison) {
                 << "\n  Difference          : "
                 << std::fabs(calculatedGatheral - calculatedAndersenPiterbarg));
 
-    const ext::shared_ptr<HestonProcess> firstPartProcess(
-        ext::make_shared<HestonProcess>(
+    const auto firstPartProcess = ext::make_shared<HestonProcess>(
             rTS, qTS, s0, v0, 1.0, 0.1, 0.30, -0.75,
-            HestonProcess::QuadraticExponentialMartingale));
+            HestonProcess::QuadraticExponentialMartingale);
 
     typedef PseudoRandom::rsg_type rsg_type;
     typedef PseudoRandom::urng_type urng_type;
@@ -2594,18 +2555,16 @@ BOOST_AUTO_TEST_CASE(testPiecewiseTimeDependentChFAsymtotic) {
     }
 
     const Handle<Quote> s0(ext::make_shared<SimpleQuote>(100.0));
-    const ext::shared_ptr<PiecewiseTimeDependentHestonModel> ptdModel(
-        ext::make_shared<PiecewiseTimeDependentHestonModel>(
-            rTS, rTS, s0, v0, theta, kappa, sigma, rho, modelGrid));
+    const auto ptdModel = ext::make_shared<PiecewiseTimeDependentHestonModel>(
+            rTS, rTS, s0, v0, theta, kappa, sigma, rho, modelGrid);
 
     const Real eps = 1e-8;
 
-    const ext::shared_ptr<AnalyticPTDHestonEngine> ptdHestonEngine(
-        ext::make_shared<AnalyticPTDHestonEngine>(
+    const auto ptdHestonEngine = ext::make_shared<AnalyticPTDHestonEngine>(
             ptdModel,
             AnalyticPTDHestonEngine::AndersenPiterbarg,
             AnalyticPTDHestonEngine::Integration::discreteTrapezoid(128),
-            eps));
+            eps);
 
     const std::complex<Real> D_u_inf = -
         std::complex<Real>(std::sqrt(1-rhos[0]*rhos[0]),rhos[0])/sigmas[0];
@@ -2708,12 +2667,12 @@ BOOST_AUTO_TEST_CASE(testSmallSigmaExpansion) {
     const Real sigma = 1e-9;
     const Real rho = -0.9;
 
-    const ext::shared_ptr<HestonModel> hestonModel =
+    const auto hestonModel =
         ext::make_shared<HestonModel>(
             ext::make_shared<HestonProcess>(
                 rTS, rTS, spot, v0, kappa, theta, sigma, rho));
 
-    const ext::shared_ptr<AnalyticHestonEngine> engine =
+    const auto engine =
         ext::make_shared<AnalyticHestonEngine>(hestonModel);
 
     const std::complex<Real> expectedChF(
@@ -2961,7 +2920,7 @@ BOOST_AUTO_TEST_CASE(testExponentialFitting4StrikesAndMaturities) {
             9.25756999394709285e-21
     };
 
-    const ext::shared_ptr<HestonModel> model =
+    const auto model =
         ext::make_shared<HestonModel>(
             ext::make_shared<HestonProcess>(
                 rTS, qTS, s0, v0, kappa, theta, sigma, rho));
@@ -2985,8 +2944,8 @@ BOOST_AUTO_TEST_CASE(testExponentialFitting4StrikesAndMaturities) {
                 std::exp(-moneyness[j]*std::sqrt(theta*t))*fwd;
 
             for (Size k=0; k < 2; ++k) {
-                const ext::shared_ptr<PlainVanillaPayoff> payoff =
-                    ext::make_shared<PlainVanillaPayoff>((k) != 0U ? Option::Put : Option::Call,
+                const auto payoff =
+                    ext::make_shared<PlainVanillaPayoff>(k != 0U ? Option::Put : Option::Call,
                                                          strike);
 
                 VanillaOption option(payoff, exercise);
@@ -3093,7 +3052,7 @@ BOOST_AUTO_TEST_CASE(testAsymptoticControlVariate) {
     const Real kappa =  0.1;
     const Real theta =  0.01;
 
-    const ext::shared_ptr<HestonModel> model =
+    const auto model =
         ext::make_shared<HestonModel>(
             ext::make_shared<HestonProcess>(
                 rTS, rTS, s0, v0, kappa, theta, sigma, rho));
@@ -3133,7 +3092,7 @@ BOOST_AUTO_TEST_CASE(testAsymptoticControlVariate) {
 
             const Real strike = std::exp(-moneyness*std::sqrt(theta*t));
 
-            const ext::shared_ptr<PlainVanillaPayoff> payoff =
+            const auto payoff =
                 ext::make_shared<PlainVanillaPayoff>(
                     strike > 1.0 ? Option::Call : Option::Put, strike);
 
@@ -3432,7 +3391,7 @@ BOOST_AUTO_TEST_CASE(testAsymptoticCVwithDifferentAlpha) {
             for (Real kappa: kappas) {
                 for (Real theta: thetas) {
         
-                    const ext::shared_ptr<HestonModel> model =
+                    const auto model =
                         ext::make_shared<HestonModel>(
                             ext::make_shared<HestonProcess>(
                                 riskFreeTS, dividendTS, s0, v0, kappa, theta, sigma, rho
@@ -3446,7 +3405,7 @@ BOOST_AUTO_TEST_CASE(testAsymptoticCVwithDifferentAlpha) {
                         ext::make_shared<EuropeanExercise>(maturityDate)
                     );
                 
-                    const ext::shared_ptr<AnalyticHestonEngine> engine = 
+                    const auto engine = 
                         ext::make_shared<AnalyticHestonEngine>(
                             model,
                             AnalyticHestonEngine::AngledContour,
@@ -3528,6 +3487,72 @@ BOOST_AUTO_TEST_CASE(testAsymptoticCVwithDifferentAlpha) {
 
 
 
+BOOST_AUTO_TEST_CASE(testPiecewiseTimeDependentZeroMaturity) {
+    BOOST_TEST_MESSAGE("Testing piecewise time dependent Heston engine "
+                       "at zero time to maturity...");
+
+    const Date settlementDate(5, July, 2017);
+    Settings::instance().evaluationDate() = settlementDate;
+    const DayCounter dayCounter = Actual365Fixed();
+
+    const Handle<YieldTermStructure> rTS(flatRate(0.01, dayCounter));
+    const Handle<YieldTermStructure> qTS(flatRate(0.02, dayCounter));
+    const Handle<Quote> s0(ext::shared_ptr<Quote>(new SimpleQuote(100.0)));
+
+    const Real v0 = 0.1;
+    ConstantParameter theta(0.09, PositiveConstraint());
+    ConstantParameter kappa(3.16, PositiveConstraint());
+    ConstantParameter sigma(4.40, PositiveConstraint());
+    ConstantParameter rho(-0.8, BoundaryConstraint(-1.0, 1.0));
+
+    auto model =
+        ext::make_shared<PiecewiseTimeDependentHestonModel>(
+            rTS, qTS, s0, v0, theta, kappa, sigma, rho, TimeGrid(20.0, 2));
+
+    // expiry on the reference date: with includeReferenceDateEvents the
+    // instrument is not expired, the engine runs, and its time argument
+    // is zero - where the PTD expansion is not defined. The value must
+    // degenerate to the undiscounted payoff.
+    Settings::instance().includeReferenceDateEvents() = true;
+
+    const Real strike = 90.0;
+    ext::shared_ptr<StrikedTypePayoff> payoff(
+        ext::make_shared<PlainVanillaPayoff>(Option::Call, strike));
+    ext::shared_ptr<Exercise> exercise(
+        ext::make_shared<EuropeanExercise>(settlementDate));
+    VanillaOption option(payoff, exercise);
+
+    const Real expected = 10.0; // spot 100, strike 90: undiscounted payoff
+
+    option.setPricingEngine(ext::shared_ptr<PricingEngine>(
+        new AnalyticPTDHestonEngine(
+            model,
+            AnalyticPTDHestonEngine::Gatheral,
+            AnalyticPTDHestonEngine::Integration::gaussLaguerre(5))));
+    const Real laguerre = option.NPV();
+    if (std::fabs(laguerre - expected) > 1e-12) {
+        BOOST_ERROR("failed to return the payoff at zero maturity "
+                    "(Gatheral/gaussLaguerre)"
+                    << "\n    calculated: " << laguerre
+                    << "\n    expected:   " << expected);
+    }
+
+    option.setPricingEngine(ext::shared_ptr<PricingEngine>(
+        new AnalyticPTDHestonEngine(
+            model,
+            AnalyticPTDHestonEngine::AndersenPiterbarg,
+            AnalyticPTDHestonEngine::Integration::gaussLobatto(
+                1e-12, Null<Real>(), 100000))));
+    const Real lobatto = option.NPV();
+    if (std::fabs(lobatto - expected) > 1e-12) {
+        BOOST_ERROR("failed to return the payoff at zero maturity "
+                    "(AndersenPiterbarg/gaussLobatto)"
+                    << "\n    calculated: " << lobatto
+                    << "\n    expected:   " << expected);
+    }
+}
+
+
 BOOST_AUTO_TEST_SUITE_END()
 
 BOOST_AUTO_TEST_SUITE(HestonModelExperimentalTest)
@@ -3550,14 +3575,12 @@ BOOST_AUTO_TEST_CASE(testAnalyticPDFHestonEngine) {
     const Real kappa =  4.0;
     const Real theta =  0.05;
 
-    const ext::shared_ptr<HestonModel> model(
-        ext::make_shared<HestonModel>(
+    const auto model = ext::make_shared<HestonModel>(
             ext::make_shared<HestonProcess>(riskFreeTS, dividendTS,
-                                            s0, v0, kappa, theta, sigma, rho)));
+                                            s0, v0, kappa, theta, sigma, rho));
 
     const Real tol = 1e-6;
-    const ext::shared_ptr<AnalyticPDFHestonEngine> pdfEngine(
-        ext::make_shared<AnalyticPDFHestonEngine>(model, tol));
+    const auto pdfEngine = ext::make_shared<AnalyticPDFHestonEngine>(model, tol);
 
     const ext::shared_ptr<PricingEngine> analyticEngine(
         ext::make_shared<AnalyticHestonEngine>(model, 178));

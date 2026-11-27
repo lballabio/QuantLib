@@ -528,9 +528,9 @@ namespace QuantLib {
             }
         }
 
-        if (targetNpv==Null<Real>())
+        if (targetNpv==Null<Real>()) {
             targetNpv = npv - calc.nonSensNPV();
-        else {
+        } else {
             targetNpv *= discountCurve.discount(npvDate);
             targetNpv -= calc.nonSensNPV();
         }
@@ -966,7 +966,7 @@ namespace QuantLib {
         if (npvDate == Date())
             npvDate = settlementDate;
 
-#if defined(QL_EXTRA_SAFETY_CHECKS)
+#ifdef QL_EXTRA_SAFETY_CHECKS
         QL_REQUIRE(std::adjacent_find(leg.begin(), leg.end(),
                                       CashFlowLater()) == leg.end(),
                    "cashflows must be sorted in ascending order w.r.t. their payment dates");
@@ -1333,7 +1333,7 @@ namespace QuantLib {
                                                 Handle<Quote>(zSpreadQuote),
                                                 compounding,
                                                 frequency);
-        auto objFunction = [&](Rate zSpread) {
+        auto objFunction = [&](Rate zSpread) -> Real {
             zSpreadQuote->setValue(zSpread);
             Real NPV = CashFlows::npv(leg, spreadedCurve,
                                       includeSettlementDateFlows,

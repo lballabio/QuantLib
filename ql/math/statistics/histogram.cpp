@@ -81,7 +81,7 @@ namespace QuantLib {
     }
 
     Size Histogram::counts(Size i) const {
-        #if defined(QL_EXTRA_SAFETY_CHECKS)
+        #ifdef QL_EXTRA_SAFETY_CHECKS
         return counts_.at(i);
         #else
         return counts_[i];
@@ -89,7 +89,7 @@ namespace QuantLib {
     }
 
     Real Histogram::frequency(Size i) const {
-        #if defined(QL_EXTRA_SAFETY_CHECKS)
+        #ifdef QL_EXTRA_SAFETY_CHECKS
         return frequency_.at(i);
         #else
         return frequency_[i];

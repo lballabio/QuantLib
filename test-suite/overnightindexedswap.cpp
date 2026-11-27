@@ -236,7 +236,7 @@ void testBootstrap(bool telescopicValueDates,
 
     for (auto& i : depositData) {
         Real rate = 0.01 * i.rate;
-        ext::shared_ptr<SimpleQuote> simple = ext::make_shared<SimpleQuote>(rate);
+        auto simple = ext::make_shared<SimpleQuote>(rate);
         ext::shared_ptr<Quote> quote (simple);
         Period term = i.n * i.unit;
         auto helper = ext::make_shared<DepositRateHelper>(
@@ -249,7 +249,7 @@ void testBootstrap(bool telescopicValueDates,
 
     for (auto& i : estrSwapData) {
         Real rate = 0.01 * i.rate;
-        ext::shared_ptr<SimpleQuote> simple = ext::make_shared<SimpleQuote>(rate);
+        auto simple = ext::make_shared<SimpleQuote>(rate);
         ext::shared_ptr<Quote> quote (simple);
         Period term = i.n * i.unit;
         auto helper = ext::make_shared<OISRateHelper>(i.settlementDays,
@@ -452,7 +452,7 @@ BOOST_AUTO_TEST_CASE(testBootstrapWithCustomPricer) {
 
     for (auto& i : estrSwapData) {
         Real rate = 0.01 * i.rate;
-        ext::shared_ptr<SimpleQuote> simple = ext::make_shared<SimpleQuote>(rate);
+        auto simple = ext::make_shared<SimpleQuote>(rate);
         ext::shared_ptr<Quote> quote (simple);
         Period term = i.n * i.unit;
         auto helper = ext::make_shared<OISRateHelper>(i.settlementDays,

@@ -46,6 +46,7 @@
 #include <ql/methods/montecarlo/genericlsregression.hpp>
 #include <ql/legacy/libormarketmodels/lmlinexpcorrmodel.hpp>
 #include <ql/legacy/libormarketmodels/lmextlinexpvolmodel.hpp>
+#include <ql/shared_ptr.hpp>
 #include <ql/time/schedule.hpp>
 #include <ql/time/calendars/nullcalendar.hpp>
 #include <ql/time/daycounters/simpledaycounter.hpp>
@@ -227,7 +228,7 @@ BOOST_AUTO_TEST_CASE(testFunction) {
                                       longTermCorrelation_,
                                       beta_));
 
-    ext::shared_ptr<LMMCurveState> cs(new LMMCurveState(rateTimes_));
+    auto cs = ext::make_shared<LMMCurveState>(rateTimes_);
     cs->setOnForwardRates(todaysForwards_);
 
     ext::shared_ptr<PiecewiseConstantCorrelation> corr(new

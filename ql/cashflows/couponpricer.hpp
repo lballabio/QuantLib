@@ -66,8 +66,12 @@ namespace QuantLib {
     class IborCouponPricer : public FloatingRateCouponPricer {
       public:
         explicit IborCouponPricer(
-            Handle<OptionletVolatilityStructure> v = Handle<OptionletVolatilityStructure>(),
+            Handle<OptionletVolatilityStructure> v = {},
             std::optional<bool> useIndexedCoupon = std::nullopt);
+
+        QL_DEPRECATED_DISABLE_WARNING
+        ~IborCouponPricer() override = default;
+        QL_DEPRECATED_ENABLE_WARNING
 
         bool useIndexedCoupon() const { return useIndexedCoupon_; }
 
@@ -76,7 +80,7 @@ namespace QuantLib {
         }
         void setCapletVolatility(
                             const Handle<OptionletVolatilityStructure>& v =
-                                    Handle<OptionletVolatilityStructure>()) {
+                                    {}) {
             unregisterWith(capletVol_);
             capletVol_ = v;
             registerWith(capletVol_);
@@ -90,7 +94,12 @@ namespace QuantLib {
 
         const IborCoupon* coupon_;
 
+        /*! \deprecated Use coupon_->iborIndex() instead.
+                        Deprecated in version 1.45.
+        */
+        [[deprecated("Use coupon_->iborIndex() instead")]]
         ext::shared_ptr<IborIndex> index_;
+
         Date fixingDate_;
         Real gearing_;
         Spread spread_;
@@ -112,7 +121,7 @@ namespace QuantLib {
       public:
         enum TimingAdjustment { Black76, BivariateLognormal };
         explicit BlackIborCouponPricer(
-            const Handle<OptionletVolatilityStructure>& v = Handle<OptionletVolatilityStructure>(),
+            const Handle<OptionletVolatilityStructure>& v = {},
             const TimingAdjustment timingAdjustment = Black76,
             Handle<Quote> correlation = Handle<Quote>(ext::shared_ptr<Quote>(new SimpleQuote(1.0))),
             const std::optional<bool> useIndexedCoupon = std::nullopt)
@@ -124,6 +133,7 @@ namespace QuantLib {
             }
             registerWith(correlation_);
         };
+        TimingAdjustment timingAdjustment() const { return timingAdjustment_; }
         void initialize(const FloatingRateCoupon& coupon) override;
         Real swapletPrice() const override;
         Rate swapletRate() const override;
@@ -149,7 +159,7 @@ namespace QuantLib {
     class CmsCouponPricer : public FloatingRateCouponPricer {
       public:
         explicit CmsCouponPricer(
-            Handle<SwaptionVolatilityStructure> v = Handle<SwaptionVolatilityStructure>())
+            Handle<SwaptionVolatilityStructure> v = {})
         : swaptionVol_(std::move(v)) {
             registerWith(swaptionVol_);
         }
@@ -159,7 +169,7 @@ namespace QuantLib {
         }
         void setSwaptionVolatility(
                             const Handle<SwaptionVolatilityStructure>& v=
-                                    Handle<SwaptionVolatilityStructure>()) {
+                                    {}) {
             unregisterWith(swaptionVol_);
             swaptionVol_ = v;
             registerWith(swaptionVol_);

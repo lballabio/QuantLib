@@ -23,6 +23,7 @@
 #include <ql/pricingengines/exotic/analyticcompoundoptionengine.hpp>
 #include <ql/instruments/europeanoption.hpp>
 #include <ql/pricingengines/vanilla/analyticeuropeanengine.hpp>
+#include <ql/shared_ptr.hpp>
 #include <ql/time/calendars/target.hpp>
 #include <ql/time/calendars/nullcalendar.hpp>
 #include <ql/time/daycounters/actual360.hpp>
@@ -108,10 +109,10 @@ BOOST_AUTO_TEST_CASE(testPutCallParity){
     DayCounter dc = Actual360();
     Date todaysDate = Settings::instance().evaluationDate();
 
-    ext::shared_ptr<SimpleQuote> spot(new SimpleQuote(0.0));
-    ext::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.0));
-    ext::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.0));
-    ext::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.0));
+    auto spot = ext::make_shared<SimpleQuote>(0.0);
+    auto rRate = ext::make_shared<SimpleQuote>(0.0);
+    auto qRate = ext::make_shared<SimpleQuote>(0.0);
+    auto vol = ext::make_shared<SimpleQuote>(0.0);
 
     ext::shared_ptr<YieldTermStructure> rTS(
               new FlatForward(0, NullCalendar(), Handle<Quote>(rRate), dc));
@@ -238,10 +239,10 @@ BOOST_AUTO_TEST_CASE(testValues){
     DayCounter dc = Actual360();
     Date todaysDate = Settings::instance().evaluationDate();
 
-    ext::shared_ptr<SimpleQuote> spot(new SimpleQuote(0.0));
-    ext::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.0));
-    ext::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.0));
-    ext::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.0));
+    auto spot = ext::make_shared<SimpleQuote>(0.0);
+    auto rRate = ext::make_shared<SimpleQuote>(0.0);
+    auto qRate = ext::make_shared<SimpleQuote>(0.0);
+    auto vol = ext::make_shared<SimpleQuote>(0.0);
 
     ext::shared_ptr<YieldTermStructure> rTS(
               new FlatForward(0, NullCalendar(), Handle<Quote>(rRate), dc));

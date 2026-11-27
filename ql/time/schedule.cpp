@@ -105,8 +105,9 @@ namespace QuantLib {
                 y = (terminationDate - evalDate)/366 + 1;
                 effectiveDate = terminationDate - y*Years;
             }
-        } else
+        } else {
             QL_REQUIRE(effectiveDate != Date(), "null effective date");
+}
 
         QL_REQUIRE(effectiveDate < terminationDate,
                    "effective date (" << effectiveDate
@@ -188,6 +189,9 @@ namespace QuantLib {
         switch (*rule_) {
 
           case DateGeneration::Zero:
+            QL_REQUIRE(!*endOfMonth_,
+                       "endOfMonth convention incompatible with " << *rule_ <<
+                       " date generation rule");
             tenor_ = 0*Years;
             dates_.push_back(effectiveDate);
             dates_.push_back(terminationDate);
@@ -381,9 +385,13 @@ namespace QuantLib {
         }
 
         if (*endOfMonth_ && calendar_.isEndOfMonth(seed)) {
-            // adjust to end of month
-            for (Size i=1; i<dates_.size()-1; ++i)
-                dates_[i] = calendar_.adjust(Date::endOfMonth(dates_[i]), convention);
+            // adjust to end of month, except for explicit stub dates
+            for (Size i=1; i<dates_.size()-1; ++i) {
+                if (dates_[i] == firstDate_ || dates_[i] == nextToLastDate_)
+                    dates_[i] = calendar_.adjust(dates_[i], convention);
+                else
+                    dates_[i] = calendar_.adjust(Date::endOfMonth(dates_[i]), convention);
+            }
         } else {
             for (Size i=1; i<dates_.size()-1; ++i)
                 dates_[i] = calendar_.adjust(dates_[i], convention);

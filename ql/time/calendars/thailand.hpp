@@ -54,7 +54,7 @@ namespace QuantLib {
         </ul>
 
         Other holidays for which no rule is given
-        (data available for 2000-2025 with some years missing)
+        (data available for 2000-2027 with some years missing)
         <ul>
         <li>Makha Bucha Day</li>
         <li>Wisakha Bucha Day</li>

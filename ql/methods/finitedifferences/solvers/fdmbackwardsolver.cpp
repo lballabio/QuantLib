@@ -83,7 +83,7 @@ namespace QuantLib {
         const ext::shared_ptr<FdmStepConditionComposite>& condition,
         const FdmSchemeDesc& schemeDesc)
     : map_(std::move(map)), bcSet_(std::move(bcSet)),
-      condition_((condition) != nullptr ?
+      condition_(condition != nullptr ?
                      condition :
                      ext::make_shared<FdmStepConditionComposite>(
                          std::list<std::vector<Time> >(), FdmStepConditionComposite::Conditions())),
@@ -181,9 +181,8 @@ namespace QuantLib {
                 const FdmSchemeDesc trDesc
                     = FdmSchemeDesc::CraigSneyd();
 
-                const ext::shared_ptr<CraigSneydScheme> hsEvolver(
-                    ext::make_shared<CraigSneydScheme>(
-                        trDesc.theta, trDesc.mu, map_, bcSet_));
+                const auto hsEvolver = ext::make_shared<CraigSneydScheme>(
+                        trDesc.theta, trDesc.mu, map_, bcSet_);
 
                 TrBDF2Scheme<CraigSneydScheme> trBDF2(
                     schemeDesc_.theta, map_, hsEvolver, bcSet_,schemeDesc_.mu);

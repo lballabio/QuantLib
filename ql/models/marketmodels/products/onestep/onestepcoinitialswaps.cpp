@@ -49,12 +49,12 @@ namespace QuantLib {
         for (Size indexOfTime=0;indexOfTime<lastIndex_;indexOfTime++) {
             Rate liborRate = currentState.forwardRate(indexOfTime);
             for (Size i=indexOfTime;i<lastIndex_;i++) {
-                genCashFlows[i][(indexOfTime)*2].timeIndex = indexOfTime;
-                genCashFlows[i][(indexOfTime)*2].amount =
+                genCashFlows[i][indexOfTime*2].timeIndex = indexOfTime;
+                genCashFlows[i][indexOfTime*2].amount =
                     -fixedRate_*fixedAccruals_[indexOfTime];
 
-                genCashFlows[i][(indexOfTime)*2+1].timeIndex = indexOfTime;
-                genCashFlows[i][(indexOfTime)*2+1].amount =
+                genCashFlows[i][indexOfTime*2+1].timeIndex = indexOfTime;
+                genCashFlows[i][indexOfTime*2+1].amount =
                     liborRate*floatingAccruals_[indexOfTime];
 
                 numberCashFlowsThisStep[i] += 2;

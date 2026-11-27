@@ -152,9 +152,9 @@ class SviInterpolation : public Interpolation {
                      Real m, bool aIsFixed, bool bIsFixed, bool sigmaIsFixed,
                      bool rhoIsFixed, bool mIsFixed, bool vegaWeighted = true,
                      const ext::shared_ptr<EndCriteria> &endCriteria =
-                         ext::shared_ptr<EndCriteria>(),
+                         {},
                      const ext::shared_ptr<OptimizationMethod> &optMethod =
-                         ext::shared_ptr<OptimizationMethod>(),
+                         {},
                      const Real errorAccept = 0.0020,
                      const bool useMaxError = false,
                      const Size maxGuesses = 50) {
@@ -203,8 +203,8 @@ class Svi {
         bool rhoIsFixed,
         bool mIsFixed,
         bool vegaWeighted = false,
-        ext::shared_ptr<EndCriteria> endCriteria = ext::shared_ptr<EndCriteria>(),
-        ext::shared_ptr<OptimizationMethod> optMethod = ext::shared_ptr<OptimizationMethod>(),
+        ext::shared_ptr<EndCriteria> endCriteria = {},
+        ext::shared_ptr<OptimizationMethod> optMethod = {},
         const Real errorAccept = 0.0020,
         const bool useMaxError = false,
         const Size maxGuesses = 50)

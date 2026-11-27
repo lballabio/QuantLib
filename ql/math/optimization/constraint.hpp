@@ -72,7 +72,7 @@ namespace QuantLib {
             return result;
         }
         Real update(Array& p, const Array& direction, Real beta) const;
-        Constraint(ext::shared_ptr<Impl> impl = ext::shared_ptr<Impl>());
+        Constraint(ext::shared_ptr<Impl> impl = {});
     };
 
     //! No constraint

@@ -65,9 +65,9 @@ namespace QuantLib {
     }
 
     Array FdmHullWhiteOp::apply_direction(Size direction, const Array& r) const {
-        if (direction == direction_)
+        if (direction == direction_) {
             return mapT_.apply(r);
-        else {
+        } else {
             return Array(r.size(), 0.0);
         }
     }

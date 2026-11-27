@@ -39,6 +39,7 @@
 #include <ql/processes/blackscholesprocess.hpp>
 #include <ql/processes/hestonprocess.hpp>
 #include <ql/quotes/simplequote.hpp>
+#include <ql/shared_ptr.hpp>
 #include <ql/termstructures/volatility/atmsmilesection.hpp>
 #include <ql/termstructures/volatility/equityfx/hestonblackvolsurface.hpp>
 #include <ql/termstructures/volatility/equityfx/localconstantvol.hpp>
@@ -303,12 +304,10 @@ BOOST_AUTO_TEST_CASE(testLocalVolatilityRND) {
 
     const ext::shared_ptr<Quote> spot(
         ext::make_shared<SimpleQuote>(s0));
-    const ext::shared_ptr<YieldTermStructure> rTS(
-        flatRate(todaysDate, r, dayCounter));
-    const ext::shared_ptr<YieldTermStructure> qTS(
-        flatRate(todaysDate, q, dayCounter));
+    const auto rTS = flatRate(todaysDate, r, dayCounter);
+    const auto qTS = flatRate(todaysDate, q, dayCounter);
 
-    const ext::shared_ptr<TimeGrid> timeGrid(new TimeGrid(1.0, 101));
+    const auto timeGrid = ext::make_shared<TimeGrid>(1.0, 101);
 
     const ext::shared_ptr<LocalVolRNDCalculator> constVolCalc(
         new LocalVolRNDCalculator(
@@ -408,8 +407,8 @@ BOOST_AUTO_TEST_CASE(testLocalVolatilityRND) {
     const std::vector<Time> adaptiveGrid
         = adaptiveTimeGrid(400, 50, 5.0, 3.0);
 
-    const ext::shared_ptr<TimeGrid> dumasTimeGrid(
-        new TimeGrid(adaptiveGrid.begin(), adaptiveGrid.end()));
+    const auto dumasTimeGrid = ext::make_shared<TimeGrid>(
+        adaptiveGrid.begin(), adaptiveGrid.end());
 
     const ext::shared_ptr<LocalVolRNDCalculator> dumasVolCalc(
         new LocalVolRNDCalculator(
@@ -585,9 +584,8 @@ BOOST_AUTO_TEST_CASE(testBlackScholesWithSkew) {
     const Handle<YieldTermStructure> qTS(flatRate(todaysDate, q, dc));
     const Handle<Quote> spot(ext::make_shared<SimpleQuote>(s0));
 
-    const ext::shared_ptr<HestonProcess> hestonProcess(
-        ext::make_shared<HestonProcess>(
-            rTS, qTS, spot, v0, kappa, theta, sigma, rho));
+    const auto hestonProcess = ext::make_shared<HestonProcess>(
+            rTS, qTS, spot, v0, kappa, theta, sigma, rho);
 
     const Handle<BlackVolTermStructure> hestonSurface(
         ext::make_shared<HestonBlackVolSurface>(
@@ -595,7 +593,7 @@ BOOST_AUTO_TEST_CASE(testBlackScholesWithSkew) {
             AnalyticHestonEngine::AndersenPiterbarg,
             AnalyticHestonEngine::Integration::discreteTrapezoid(128)));
 
-    const ext::shared_ptr<TimeGrid> timeGrid(new TimeGrid(maturity, 51));
+    const auto timeGrid = ext::make_shared<TimeGrid>(maturity, 51);
 
     const ext::shared_ptr<LocalVolTermStructure> localVol(
         ext::make_shared<NoExceptLocalVolSurface>(
@@ -731,7 +729,7 @@ BOOST_AUTO_TEST_CASE(testMassAtZeroCEVProcessRND) {
         const Real alpha = param.first;
         const Real beta = param.second;
 
-        const ext::shared_ptr<CEVRNDCalculator> calculator =
+        const auto calculator =
             ext::make_shared<CEVRNDCalculator>(f0, alpha, beta);
 
         const Real ax = 15.0*std::sqrt(t)*alpha*std::pow(f0, beta);
@@ -763,7 +761,7 @@ BOOST_AUTO_TEST_CASE(testCEVCDF) {
     const Real tol = 1e-6;
     for (Size i = 1; i < std::size(betas); ++i) {
         const Real beta = betas[i];
-        const ext::shared_ptr<CEVRNDCalculator> calculator =
+        const auto calculator =
             ext::make_shared<CEVRNDCalculator>(f0, alpha, beta);
 
         for (Real x = 1.3; x < 3.1; x+=0.1) {
@@ -802,7 +800,7 @@ BOOST_AUTO_TEST_CASE(testSmileSectionRNDvsBSM) {
     const Handle<YieldTermStructure> rTS(flatRate(today, r, dc));
     const Handle<YieldTermStructure> qTS(flatRate(today, q, dc));
 
-    const ext::shared_ptr<BlackScholesMertonProcess> bsmProcess =
+    const auto bsmProcess =
         ext::make_shared<BlackScholesMertonProcess>(
             spot, qTS, rTS,
             Handle<BlackVolTermStructure>(flatVol(today, v, dc)));

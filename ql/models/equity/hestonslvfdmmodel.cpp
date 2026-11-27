@@ -319,6 +319,7 @@ namespace QuantLib {
         }
 
         const auto timeGrid = ext::make_shared<TimeGrid>(times.begin(), times.end());
+        const std::vector<Time> gridTimes(timeGrid->begin(), timeGrid->end());
 
         // build 1d meshers
         const LocalVolRNDCalculator localVolRND(
@@ -359,8 +360,9 @@ namespace QuantLib {
                         : timeGrid->back(),
                     vGrid, v0, params_));
             }
-            else
+            else {
                 vMesher.push_back(vMesher.back());
+}
         }
 
         // start probability distribution
@@ -395,7 +397,7 @@ namespace QuantLib {
         }
 
         const auto leverageFct =
-            ext::make_shared<FixedLocalVolSurface>(referenceDate, times, vStrikes, L, dc);
+            ext::make_shared<FixedLocalVolSurface>(referenceDate, gridTimes, vStrikes, L, dc);
 
         auto hestonFwdOp =
             ext::make_shared<FdmHestonFwdOp>(mesher, hestonProcess, trafoType, leverageFct, mixingFactor_);
@@ -409,7 +411,7 @@ namespace QuantLib {
             logEntries_.push_back(entry);
         }
 
-        for (Size i=2; i < times.size(); ++i) {
+        for (Size i=2; i < timeGrid->size(); ++i) {
             const Time t = timeGrid->at(i);
             const Time dt = t - timeGrid->at(i-1);
 
@@ -514,7 +516,7 @@ namespace QuantLib {
 
     const std::list<HestonSLVFDMModel::LogEntry>& HestonSLVFDMModel::logEntries()
     const {
-        performCalculations();
+        calculate();
         return logEntries_;
     }
 }

@@ -611,7 +611,7 @@ BOOST_AUTO_TEST_CASE(testIsdaEngine) {
                             0.037246,
                             0.037605};
 
-    ext::shared_ptr<IborIndex> isda_ibor = ext::make_shared<IborIndex>(
+    auto isda_ibor = ext::make_shared<IborIndex>(
         "IsdaIbor", 3 * Months, 2, USDCurrency(), WeekendsOnly(),
         ModifiedFollowing, false, Actual360());
     for(size_t i = 0; i < sizeof(swap_tenors) / sizeof(int); i++) {
@@ -683,7 +683,7 @@ BOOST_AUTO_TEST_CASE(testIsdaEngine) {
                 probabilityCurve.linkTo(
                     ext::make_shared<FlatHazardRate>(0, WeekendsOnly(), h, Actual365Fixed()));
 
-                ext::shared_ptr<IsdaCdsEngine> engine = ext::make_shared<IsdaCdsEngine>(
+                auto engine = ext::make_shared<IsdaCdsEngine>(
                     probabilityCurve, recovery, discountCurve, std::nullopt, IsdaCdsEngine::Taylor,
                     IsdaCdsEngine::HalfDayBias, IsdaCdsEngine::Piecewise);
 
@@ -793,7 +793,7 @@ BOOST_AUTO_TEST_CASE(testIsdaCalculatorReconcileSingleQuote) {
                             0.002940,
                             0.002820};
 
-    ext::shared_ptr<IborIndex> isda_ibor = ext::make_shared<IborIndex>(
+    auto isda_ibor = ext::make_shared<IborIndex>(
         "IsdaIbor", 6 * Months, 2, EURCurrency(), WeekendsOnly(),
         ModifiedFollowing, false, Actual360());
     for(size_t i = 0; i < sizeof(swap_tenors) / sizeof(int); i++) {
@@ -826,7 +826,7 @@ BOOST_AUTO_TEST_CASE(testIsdaCalculatorReconcileSingleQuote) {
     probabilityCurve.linkTo(
         ext::make_shared<FlatHazardRate>(0, WeekendsOnly(), h, Actual365Fixed()));
 
-    ext::shared_ptr<IsdaCdsEngine> engine = ext::make_shared<IsdaCdsEngine>(
+    auto engine = ext::make_shared<IsdaCdsEngine>(
         probabilityCurve, recovery, discountCurve, std::nullopt, IsdaCdsEngine::Taylor,
         IsdaCdsEngine::HalfDayBias, IsdaCdsEngine::Piecewise);
 
@@ -901,7 +901,7 @@ BOOST_AUTO_TEST_CASE(testIsdaCalculatorReconcileSingleWithIssueDateInThePast) {
                             0.002940,
                             0.002820};
 
-    ext::shared_ptr<IborIndex> isda_ibor = ext::make_shared<IborIndex>(
+    auto isda_ibor = ext::make_shared<IborIndex>(
         "IsdaIbor", 6 * Months, 2, EURCurrency(), WeekendsOnly(),
         ModifiedFollowing, false, Actual360());
     for(size_t i = 0; i < sizeof(swap_tenors) / sizeof(int); i++) {
@@ -938,7 +938,7 @@ BOOST_AUTO_TEST_CASE(testIsdaCalculatorReconcileSingleWithIssueDateInThePast) {
     probabilityCurve.linkTo(
         ext::make_shared<FlatHazardRate>(0, WeekendsOnly(), h, Actual365Fixed()));
 
-    ext::shared_ptr<IsdaCdsEngine> engine = ext::make_shared<IsdaCdsEngine>(
+    auto engine = ext::make_shared<IsdaCdsEngine>(
         probabilityCurve, recovery, discountCurve, std::nullopt, IsdaCdsEngine::Taylor,
         IsdaCdsEngine::HalfDayBias, IsdaCdsEngine::Piecewise);
 

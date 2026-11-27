@@ -18,13 +18,14 @@
 */
 
 #include <ql/math/integrals/integral.hpp>
+#include <ql/utilities/null.hpp>
 #include <ql/errors.hpp>
 
 namespace QuantLib {
 
     Integrator::Integrator(Real absoluteAccuracy,
                           Size maxEvaluations)
-    : absoluteAccuracy_(absoluteAccuracy),
+    : absoluteAccuracy_(absoluteAccuracy), absoluteError_(Null<Real>()),
       maxEvaluations_(maxEvaluations) {
         QL_REQUIRE(absoluteAccuracy > QL_EPSILON,
                    std::scientific << "required tolerance (" <<
@@ -77,8 +78,12 @@ namespace QuantLib {
                                 Real a,
                                 Real b) const {
         evaluations_ = 0;
-        if (a == b)
+        // no estimate, unless the integrator provides one
+        absoluteError_ = Null<Real>();
+        if (a == b) {
+            absoluteError_ = 0.0;
             return 0.0;
+        }
         if (b > a)
             return integrate(f, a, b);
         else

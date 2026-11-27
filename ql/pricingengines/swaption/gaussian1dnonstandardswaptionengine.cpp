@@ -394,9 +394,9 @@ namespace QuantLib {
                                                 arguments_
                                                     .floatingPayDates[l])));
                         Real amount;
-                        if (arguments_.floatingIsRedemptionFlow[l])
+                        if (arguments_.floatingIsRedemptionFlow[l]) {
                             amount = arguments_.floatingCoupons[l];
-                        else {
+                        } else {
                             const Real floatingRate = onCoupons[l] != nullptr
                                 ? model_->compoundedRate(
                                       *onCoupons[l], expiry0, z[k],

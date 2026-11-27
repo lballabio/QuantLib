@@ -43,6 +43,12 @@ namespace QuantLib {
         For more details, refer to
         https://www.isda.org/a/pIJEE/The-Actual-Actual-Day-Count-Fraction-1999.pdf
 
+        \warning The ISDA convention (and its aliases Historical and
+                 Actual365) cannot be used if the earlier of the two
+                 dates falls in 2199, the last year supported by the
+                 Date class; the calculation needs the first day of the
+                 following year.
+
         \ingroup daycounters
 
         \test the correctness of the results is checked against known

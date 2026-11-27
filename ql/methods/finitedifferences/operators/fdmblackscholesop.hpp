@@ -44,7 +44,7 @@ namespace QuantLib {
             bool localVol = false,
             Real illegalLocalVolOverwrite = -Null<Real>(),
             Size direction = 0,
-            ext::shared_ptr<FdmQuantoHelper> quantoHelper = ext::shared_ptr<FdmQuantoHelper>());
+            ext::shared_ptr<FdmQuantoHelper> quantoHelper = {});
 
         Size size() const override;
         void setTime(Time t1, Time t2) override;

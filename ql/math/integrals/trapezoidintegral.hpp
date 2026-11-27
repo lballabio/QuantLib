@@ -69,9 +69,12 @@ namespace QuantLib {
                 increaseNumberOfEvaluations(N*(IntegrationPolicy::nbEvalutions()-1));
                 N *= IntegrationPolicy::nbEvalutions();
                 // good enough? Also, don't run away immediately
-                if (std::fabs(I-newI) <= absoluteAccuracy() && i > 5)
+                const Real error = std::fabs(I-newI);
+                if (error <= absoluteAccuracy() && i > 5) {
                     // ok, exit
+                    setAbsoluteError(error);
                     return newI;
+                }
                 // oh well. Another step.
                 I = newI;
                 i++;

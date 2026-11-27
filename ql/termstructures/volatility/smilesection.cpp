@@ -56,8 +56,9 @@ namespace QuantLib {
         if (isFloating_) {
             registerWith(Settings::instance().evaluationDate());
             referenceDate_ = Settings::instance().evaluationDate();
-        } else
+        } else {
             referenceDate_ = referenceDate;
+}
         SmileSection::initializeExerciseTime();
     }
 

@@ -141,7 +141,7 @@ namespace QuantLib {
                           int adjustments,
                           std::vector<Real> smileMoneyCheckpoints = std::vector<Real>(),
                           ext::shared_ptr<CustomSmileFactory> customSmileFactory =
-                              ext::shared_ptr<CustomSmileFactory>())
+                              {})
             : yGridPoints_(yGridPoints), yStdDevs_(yStdDevs),
               gaussHermitePoints_(gaussHermitePoints), digitalGap_(digitalGap),
               marketRateAccuracy_(marketRateAccuracy), lowerRateBound_(lowerRateBound),
@@ -159,9 +159,9 @@ namespace QuantLib {
                     addAdjustment(KahaleInterpolation);
                 }
 
-                const int smileTreatments = ((adjustments_ & KahaleSmile) != 0) +
-                                            ((adjustments_ & SabrSmile) != 0) +
-                                            ((adjustments_ & CustomSmile) != 0);
+                const int smileTreatments = static_cast<int>((adjustments_ & KahaleSmile) != 0) +
+                                            static_cast<int>((adjustments_ & SabrSmile) != 0) +
+                                            static_cast<int>((adjustments_ & CustomSmile) != 0);
                 QL_REQUIRE(smileTreatments <= 1,
                            "At most one of KahaleSmile, SabrSmile and CustomSmile "
                            "can be specified at the same time");
@@ -440,7 +440,7 @@ namespace QuantLib {
             const Date& referenceDate = Date(),
             Real y = 0.0,
             bool zeroFixingDays = false,
-            ext::shared_ptr<IborIndex> iborIdx = ext::shared_ptr<IborIndex>()) const;
+            ext::shared_ptr<IborIndex> iborIdx = {}) const;
 
         Real
         swapRateInternal(const Date& fixing,
@@ -448,7 +448,7 @@ namespace QuantLib {
                          const Date& referenceDate = Date(),
                          Real y = 0.0,
                          bool zeroFixingDays = false,
-                         ext::shared_ptr<SwapIndex> swapIdx = ext::shared_ptr<SwapIndex>()) const;
+                         ext::shared_ptr<SwapIndex> swapIdx = {}) const;
 
         Real swapAnnuityInternal(
             const Date& fixing,
@@ -456,7 +456,7 @@ namespace QuantLib {
             const Date& referenceDate = Date(),
             Real y = 0.0,
             bool zeroFixingDays = false,
-            ext::shared_ptr<SwapIndex> swapIdx = ext::shared_ptr<SwapIndex>()) const;
+            ext::shared_ptr<SwapIndex> swapIdx = {}) const;
 
         Real capletPriceInternal(
             const Option::Type& type,
@@ -465,7 +465,7 @@ namespace QuantLib {
             const Date& referenceDate = Date(),
             Real y = 0.0,
             bool zeroFixingDays = false,
-            ext::shared_ptr<IborIndex> iborIdx = ext::shared_ptr<IborIndex>()) const;
+            ext::shared_ptr<IborIndex> iborIdx = {}) const;
 
         Real swaptionPriceInternal(
             const Option::Type& type,
@@ -475,7 +475,7 @@ namespace QuantLib {
             const Date& referenceDate = Date(),
             Real y = 0.0,
             bool zeroFixingDays = false,
-            const ext::shared_ptr<SwapIndex>& swapIdx = ext::shared_ptr<SwapIndex>()) const;
+            const ext::shared_ptr<SwapIndex>& swapIdx = {}) const;
 
         class ZeroHelper {
           public:

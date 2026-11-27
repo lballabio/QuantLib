@@ -129,9 +129,9 @@ namespace QuantLib {
 
             Real forwardSk = Sk * dividendDiscount / riskFreeDiscount;
 
-            Real alpha = -2.0*std::log(riskFreeDiscount)/(variance);
+            Real alpha = -2.0*std::log(riskFreeDiscount)/variance;
             Real beta = 2.0*std::log(dividendDiscount/riskFreeDiscount)/
-                                                (variance);
+                                                variance;
             Real h = 1 - riskFreeDiscount;
             Real phi;
             switch (payoff->optionType()) {
@@ -182,7 +182,7 @@ namespace QuantLib {
 
             Real b = (1-h) * alpha_lambda_prime / (2*(2*lambda + beta - 1));
             Real c = - ((1 - h) / (2 * lambda + beta - 1)) *
-                (alpha_V_E_h / (hA) + alphaOverH +
+                (alpha_V_E_h / hA + alphaOverH +
                  alpha_lambda_prime / (2*lambda + beta - 1));
             Real temp_spot_ratio = std::log(spot / Sk);
             Real chi = temp_spot_ratio * (b * temp_spot_ratio + c);

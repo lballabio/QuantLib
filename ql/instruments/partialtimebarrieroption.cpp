@@ -49,8 +49,7 @@ namespace QuantLib {
     }
 
     PartialTimeBarrierOption::arguments::arguments()
-    : barrierType(Barrier::Type(-1)),
-      barrierRange(PartialBarrier::Range(-1)),
+    : 
       barrier(Null<Real>()), rebate(Null<Real>()) {}
 
     void PartialTimeBarrierOption::arguments::validate() const {

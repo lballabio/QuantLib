@@ -144,15 +144,17 @@ namespace QuantLib {
                 const Real dp = std::log(S_*dq/(b_t*dr))/v + 0.5*v;
                 r = 2*z*(r_*K_*dr*Phi_(-dp+v) - q_*S_*dq*Phi_(-dp));
             }
-            else
+            else {
                 r = 0.0;
+}
         }
-        else if (close_enough(S_*dq, b_t*dr))
+        else if (close_enough(S_*dq, b_t*dr)) {
             r = z*(r_*K_*dr - q_*S_*dq);
-        else if (b_t*dr > S_*dq)
+        } else if (b_t*dr > S_*dq) {
             r = 2*z*(r_*K_*dr - q_*S_*dq);
-        else
+        } else {
             r = 0.0;
+}
 
         return r;
     }
@@ -167,6 +169,12 @@ namespace QuantLib {
     void detail::QdPutCallParityEngine::calculate() const {
         QL_REQUIRE(arguments_.exercise->type() == Exercise::American,
                    "not an American option");
+
+        const auto ex =
+            ext::dynamic_pointer_cast<AmericanExercise>(arguments_.exercise);
+        QL_REQUIRE(ex, "non-American exercise given");
+        QL_REQUIRE(!ex->payoffAtExpiry(),
+                   "payoff at expiry not handled");
 
         const auto payoff =
             ext::dynamic_pointer_cast<StrikedTypePayoff>(arguments_.payoff);
@@ -354,7 +362,7 @@ namespace QuantLib {
 
         return ext::make_shared<ChebyshevInterpolation>(
             interpolationPoints_,
-            [&, this](Real z) {
+            [&, this](Real z) -> Real {
                 const Real x_sq = 0.25*T*squared(1+z);
                 return squared(std::log(
                     this->putExerciseBoundaryAtTau(S, K, r, q, vol, T, x_sq)

@@ -22,6 +22,7 @@
 #include <ql/experimental/exoticoptions/himalayaoption.hpp>
 #include <ql/experimental/exoticoptions/mchimalayaengine.hpp>
 #include <ql/math/randomnumbers/rngtraits.hpp>
+#include <ql/shared_ptr.hpp>
 #include <ql/time/daycounters/actual360.hpp>
 #include <ql/quotes/simplequote.hpp>
 
@@ -98,8 +99,8 @@ BOOST_AUTO_TEST_CASE(testCached) {
     BigNatural seed = 86421;
     Size fixedSamples = 1023;
 
-    ext::shared_ptr<StochasticProcessArray> process(
-                          new StochasticProcessArray(processes, correlation));
+    auto process = ext::make_shared<StochasticProcessArray>(
+                          processes, correlation);
 
     option.setPricingEngine(MakeMCHimalayaEngine<PseudoRandom>(process)
                             .withSamples(fixedSamples)

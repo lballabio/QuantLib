@@ -116,7 +116,7 @@ namespace QuantLib {
                 ext::shared_ptr<Payoff> payoff,
                 const Date& valueDate,
                 const Date& maturityDate,
-                Handle<YieldTermStructure> discountCurve = Handle<YieldTermStructure>());
+                Handle<YieldTermStructure> discountCurve = {});
 
         void performCalculations() const override;
         /*! derived classes must set this, typically via spotIncome() */

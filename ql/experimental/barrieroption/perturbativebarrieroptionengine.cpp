@@ -258,7 +258,7 @@ namespace QuantLib {
             tmp=taumin+dt*(double)(2*i-1)*0.5;
             p=0.5*integs(tmp,taumax);
 
-            dtp=(taumax-tmp)/(double)(npoint2);
+            dtp=(taumax-tmp)/(double)npoint2;
             const Real outerPerturbation = alpha(tmp)-gm*0.5*sigmaq(tmp);
 
             for(j=1;j<=npoint2; j++) {
@@ -358,9 +358,9 @@ namespace QuantLib {
         /*
           |Z| > 37
         */
-        if (ZABS > 37)
+        if (ZABS > 37) {
             P = 0;
-        else
+        } else
         {
             /*
               |Z| <= 37
@@ -380,7 +380,7 @@ namespace QuantLib {
         }
         if ( Z > 0 ) P = 1 - P;
 
-        return(P);
+        return P;
     }
 
 
@@ -427,7 +427,7 @@ namespace QuantLib {
         aa=exp((a-b)*(a-b)/(4.0*tt))*exp((1.0-gm)*(1.0-gm)*tt/4.0)*std::sqrt(tt);
         result=caux/aa;
 
-        return(result);
+        return result;
     }
 
     /*
@@ -448,7 +448,7 @@ namespace QuantLib {
         caux=ND2(-xx,-yy,rho);
 
         bvnd=2.0*sqrtPi*exp(-a*b*0.5)*exp(aa*(tt-p))*caux;
-        return(bvnd);
+        return bvnd;
     }
 
     /*
@@ -491,7 +491,7 @@ namespace QuantLib {
         caux2=ND2(-xx,-yy,rho);
         caux2=caux2/aa;
         result=(caux+caux1+caux2)/(2.0*sqrtPi);
-        return(result);
+        return result;
     }
 
     /*
@@ -523,7 +523,7 @@ namespace QuantLib {
         aa=exp((b*b-(1.0-gm)*(1.0-gm))*(tt-s)/4.0);
 
         result=(caux+caux1+caux2)*aa;
-        return(result);
+        return result;
     }
 
 
@@ -562,7 +562,7 @@ namespace QuantLib {
 
         result=(caux+caux1)*aa;
 
-        return(result);
+        return result;
     }
 
     /*
@@ -617,7 +617,7 @@ namespace QuantLib {
 
 
         result=(caux+caux1+caux2+caux3+caux4)*aa;
-        return(result);
+        return result;
     }
 
     /*
@@ -686,7 +686,7 @@ namespace QuantLib {
         aa=exp((bx*bx-(1.0-gm)*(1.0-gm))*(tt-s)/4.0);
 
         result=(caux+caux1)*aa;
-        return(result);
+        return result;
     }
 
     /*
@@ -749,7 +749,7 @@ namespace QuantLib {
         aux=exp((1.0-gm)*(1.0-gm)*tt/4.0)*std::sqrt(tt);
 
         result=(caux+caux1+caux2+caux3+caux4+caux5+caux6)/(aux*2.0*sqrtPi);
-        return(result);
+        return result;
     }
 
     /*
@@ -795,7 +795,7 @@ namespace QuantLib {
                     }
 
             }
-        return(deriv);
+        return deriv;
     }
 
 
@@ -879,17 +879,17 @@ namespace QuantLib {
         }
 
         TVT = 0.0;
-        if ( (fabs(H1) + fabs(H2) + fabs(H3)) < EPS ) TVT = ( 1 + ( asin(R12) + asin(R13) + asin(R23) )/PT )/8.0;
+        if ( (fabs(H1) + fabs(H2) + fabs(H3)) < EPS ) { TVT = ( 1 + ( asin(R12) + asin(R13) + asin(R23) )/PT )/8.0;
 
-        else  if ( (NU < 1) && ( (fabs(R12) + fabs(R13)) < EPS) )  TVT = PHID(H1)*BVTL( NU, H2, H3, R23 );
+        } else  if ( (NU < 1) && ( (fabs(R12) + fabs(R13)) < EPS) ) {  TVT = PHID(H1)*BVTL( NU, H2, H3, R23 );
 
-        else  if ( (NU < 1) && ((fabs(R13) + fabs(R23))< EPS) ) TVT = PHID(H3)*BVTL( NU, H1, H2, R12 );
+        } else  if ( (NU < 1) && ((fabs(R13) + fabs(R23))< EPS) ) { TVT = PHID(H3)*BVTL( NU, H1, H2, R12 );
 
-        else if( (NU < 1) && ((fabs(R12) + fabs(R23))< EPS) ) TVT = PHID(H2)*BVTL( NU, H1, H3, R13 );
+        } else if( (NU < 1) && ((fabs(R12) + fabs(R23))< EPS) ) { TVT = PHID(H2)*BVTL( NU, H1, H3, R13 );
 
-        else if ( (1.0 - R23)< EPS ) TVT = BVTL( NU, H1, min( H2, H3 ), R12 );
+        } else if ( (1.0 - R23)< EPS ) { TVT = BVTL( NU, H1, min( H2, H3 ), R12 );
 
-        else  if ( (R23 + 1.0) <EPS ) {
+        } else  if ( (R23 + 1.0) <EPS ) {
             if  ( H2 > -H3 ) TVT = BVTL( NU, H1, H2, R12 ) - BVTL( NU, H1, -H3, R12 );}
         else
             {
@@ -917,7 +917,7 @@ namespace QuantLib {
             }
         result = max( ZRO, min( TVT, ONE ) );
 
-        return(result);
+        return result;
     }
 
     void SINCS(Real v1,Real& v2, Real& v3);
@@ -944,7 +944,7 @@ namespace QuantLib {
                 SINCS( AR + RUC*X, R, RR );
                 result -= RUC*PNTGND( NUC, H2, H3, H1, ZRO, ZRO, R, RR );
             }
-        return(result);
+        return result;
     }
     //
 
@@ -1008,7 +1008,7 @@ namespace QuantLib {
             }
         result=FIN;
         //   ADONET = FIN
-        return(result);
+        return result;
     }
     //
 
@@ -1081,7 +1081,7 @@ namespace QuantLib {
             }
         result = WID*RESK;
         ERR = fabs( WID*( RESK - RESG ) );
-        return(result);
+        return result;
     }
 
     //
@@ -1095,10 +1095,10 @@ namespace QuantLib {
         Real result;
 
 
-        if ( NU < 1 ) result= PHID( T );
-        else if ( NU == 1 ) result = ( 1 + 2.0*atan(T)/PI )/2.0;
-        else if ( NU == 2 ) result = ( 1 + T/std::sqrt(2.0 + T*T))/2.0;
-        else
+        if ( NU < 1 ) { result= PHID( T );
+        } else if ( NU == 1 ) { result = ( 1 + 2.0*atan(T)/PI )/2.0;
+        } else if ( NU == 2 ) { result = ( 1 + T/std::sqrt(2.0 + T*T))/2.0;
+        } else
             {
                 TT = T*T;
                 CSSTHE = 1/( 1 + TT/double(NU) );
@@ -1120,7 +1120,7 @@ namespace QuantLib {
                     }
                 result = max( ZRO, min( result, ONE ) );
             }
-        return(result);
+        return result;
     }
 
     //
@@ -1159,11 +1159,11 @@ namespace QuantLib {
         Real result;
         ONE = 1;
         EPS = 1e-15;
-        if ( NU <1 ) result = ND2( -DH, -DK, R );
+        if ( NU <1 ) { result = ND2( -DH, -DK, R );
 
-        else if ( (1 - R)<= EPS ) result = STUDNT( NU, min( DH, DK ) );
+        } else if ( (1 - R)<= EPS ) { result = STUDNT( NU, min( DH, DK ) );
 
-        else  if( (R + 1)<=EPS )
+        } else  if( (R + 1)<=EPS )
             {
                 if( DH > -DK ) result = STUDNT( NU, DH ) - STUDNT( NU, -DK );
                 else
@@ -1240,7 +1240,7 @@ namespace QuantLib {
                 result = BVT;
             }
 
-        return(result);
+        return result;
 
     }
 
@@ -1268,7 +1268,7 @@ namespace QuantLib {
                   }
               }
           }
-          return(result);
+          return result;
       }
 
 
@@ -1422,7 +1422,7 @@ namespace QuantLib {
 
         result=BVN;
 
-        return(result);
+        return result;
 
     }
 

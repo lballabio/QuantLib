@@ -29,7 +29,7 @@ namespace QuantLib {
                                                          Volatility minVol,
                                                          Volatility maxVol) const {
 
-        auto error = [&](Volatility x) { return targetValue - blackPrice(x); };
+        auto error = [&](Volatility x) -> Real { return targetValue - blackPrice(x); };
         Brent solver;
         solver.setMaxEvaluations(maxEvaluations);
         return solver.solve(error, accuracy, volatility_->value(), minVol, maxVol);

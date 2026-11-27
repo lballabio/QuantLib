@@ -295,7 +295,7 @@ namespace QuantLib {
         }
         //! Density function of M, the market/systemic factors.
         Probability density(const std::vector<Real>& m) const {
-            #if defined(QL_EXTRA_SAFETY_CHECKS)
+            #ifdef QL_EXTRA_SAFETY_CHECKS
                 QL_REQUIRE(m.size() == nFactors_, 
                     "Factor size must match that of model.");
             #endif
@@ -587,7 +587,7 @@ namespace QuantLib {
             // function composition: composes the integrand with the density 
             //   through a product.
             return integration()->integrate(
-                [&](const std::vector<Real>& x){ return copula_.density(x) * f(x); });
+                [&](const std::vector<Real>& x) -> Real { return copula_.density(x) * f(x); });
         }
         /*! Integrates an arbitrary vector function over the density domain(i.e.
          computes its expected value).

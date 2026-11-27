@@ -22,6 +22,7 @@
 #include <ql/experimental/exoticoptions/everestoption.hpp>
 #include <ql/experimental/exoticoptions/mceverestengine.hpp>
 #include <ql/math/randomnumbers/rngtraits.hpp>
+#include <ql/shared_ptr.hpp>
 #include <ql/time/daycounters/actual360.hpp>
 #include <ql/quotes/simplequote.hpp>
 
@@ -100,8 +101,8 @@ BOOST_AUTO_TEST_CASE(testCached) {
     Size fixedSamples = 1023;
     Real minimumTol = 1.0e-2;
 
-    ext::shared_ptr<StochasticProcessArray> process(
-                          new StochasticProcessArray(processes, correlation));
+    auto process = ext::make_shared<StochasticProcessArray>(
+                          processes, correlation);
 
     option.setPricingEngine(MakeMCEverestEngine<PseudoRandom>(process)
                             .withStepsPerYear(1)

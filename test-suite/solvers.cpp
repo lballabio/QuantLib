@@ -197,6 +197,78 @@ BOOST_AUTO_TEST_CASE(testNewton) {
     test_solver(Newton(), "Newton", 1.0e-12);
 }
 
+// f(x) = x^3 - 8 has the root 2 and a derivative that vanishes at 0
+class CubicMinusEight {
+  public:
+    Real operator()(Real x) const { return x*x*x - 8.0; }
+    Real derivative(Real x) const { return 3.0*x*x; }
+    Real secondDerivative(Real x) const { return 6.0*x; }
+};
+
+// f(x) = tanh(x - 2) has root 2; at 25, tanh(x - 2) rounds to 1,
+// so the computed derivative 1 - tanh(x - 2)^2 is zero.
+class ShiftedTanh {
+  public:
+    Real operator()(Real x) const { return std::tanh(x-2.0); }
+    Real derivative(Real x) const {
+        const Real t = std::tanh(x-2.0);
+        return 1.0-t*t;
+    }
+    Real secondDerivative(Real x) const {
+        const Real t = std::tanh(x-2.0);
+        return -2.0*t*(1.0-t*t);
+    }
+};
+
+// records the arguments of the function calls
+template <class F>
+class Recorder {
+  public:
+    Real operator()(Real x) const {
+        arguments_.push_back(x);
+        return f_(x);
+    }
+    Real derivative(Real x) const { return f_.derivative(x); }
+    Real secondDerivative(Real x) const { return f_.secondDerivative(x); }
+    mutable std::vector<Real> arguments_;
+  private:
+    F f_;
+};
+
+template <class S, class F>
+void test_fallback(const S& solver, const std::string& name, const F& f,
+                   Real expected, Real guess, Real xMin, Real xMax) {
+    Real accuracy = 1.0e-10;
+    BOOST_TEST_CONTEXT(name << " solver, guess " << guess) {
+        try {
+            Real root = solver.solve(f, accuracy, guess, xMin, xMax);
+            QL_CHECK_SMALL(root - expected, accuracy);
+        } catch (std::exception& e) {
+            BOOST_ERROR("solver failed: " << e.what());
+        }
+    }
+}
+
+BOOST_AUTO_TEST_CASE(testNewtonAndHalleyFallback) {
+    BOOST_TEST_MESSAGE("Testing fallback of Newton and Halley solvers to Newton-safe solver...");
+
+    // the derivative is zero at the guess: Newton's step is infinite and
+    // Halley's is not a number, so they have to give up on them
+    test_fallback(Newton(), "Newton", CubicMinusEight(), 2.0, 0.0, -1.0, 5.0);
+    test_fallback(Halley(), "Halley", CubicMinusEight(), 2.0, 0.0, -1.0, 5.0);
+    test_fallback(Newton(), "Newton", ShiftedTanh(), 2.0, 25.0, -20.0, 30.0);
+    test_fallback(Halley(), "Halley", ShiftedTanh(), 2.0, 25.0, -20.0, 30.0);
+
+    // The derivative is tiny, so the step is finite but takes the iterate far
+    // out of the bracket. The Newton-safe solver must start again from the
+    // guess, not from an iterate reconstructed by adding the step back.
+    Real guess = 1.0e-9;
+    Recorder<CubicMinusEight> f;
+    test_fallback(Newton(), "Newton", f, 2.0, guess, -1.0, 5.0);
+    // the first call is made by the Newton solver, the second by the other one
+    BOOST_CHECK_GE(std::count(f.arguments_.begin(), f.arguments_.end(), guess), 2);
+}
+
 BOOST_AUTO_TEST_CASE(testNewtonSafe) {
     BOOST_TEST_MESSAGE("Testing Newton-safe solver...");
     test_solver(NewtonSafe(), "NewtonSafe", 1.0e-9);

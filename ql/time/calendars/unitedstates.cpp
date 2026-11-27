@@ -323,6 +323,9 @@ namespace QuantLib {
             || (y == 2012 && m == October && d == 30)
             // President Reagan's funeral
             || (y == 2004 && m == June && d == 11)
+            // Closure following the September 11 attacks
+            // See https://home.treasury.gov/news/press-releases/po605
+            || (y == 2001 && m == September && d == 12)
             ) return false;
 
         return true;

@@ -188,7 +188,7 @@ if(s1 != zero)
     {
     temp = s1 + (s2/x1max)/x1max;
     ans = x1max*std::sqrt(temp);
-    return(ans);
+    return ans;
     }
 if(s2 != zero)
     {
@@ -202,7 +202,7 @@ else
     {
     ans = x3max*std::sqrt(s3);
     }
-return(ans);
+return ans;
 /*
 *     last card of function enorm.
 */
@@ -212,26 +212,26 @@ return(ans);
 Real dmax1(Real a,Real b)
 {
 if( a >= b )
-    return(a);
+    return a;
 else
-    return(b);
+    return b;
 }
 
 Real dmin1(Real a,Real b)
 {
 if( a <= b )
-    return(a);
+    return a;
 else
-    return(b);
+    return b;
 }
 
 int min0(int a,int b)
 
 {
 if( a <= b )
-    return(a);
+    return a;
 else
-    return(b);
+    return b;
 }
 
 int mod( int k, int m )

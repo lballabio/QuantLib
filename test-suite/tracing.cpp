@@ -44,7 +44,7 @@ class TestCaseCleaner { // NOLINT(cppcoreguidelines-special-member-functions)
 #endif
 
 void testTraceOutput(bool enable,
-#if defined(QL_ENABLE_TRACING)
+#ifdef QL_ENABLE_TRACING
                      const std::string& result) {
 #else
                      const std::string&) {
@@ -62,7 +62,7 @@ void testTraceOutput(bool enable,
     QL_TRACE_VARIABLE(i);
     i++;
 
-    #if defined(QL_ENABLE_TRACING)
+    #ifdef QL_ENABLE_TRACING
     std::string expected = result;
     #else
     std::string expected;

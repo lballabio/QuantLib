@@ -8,6 +8,7 @@
  Copyright (C) 2015 Maddalena Zanzi
  Copyright (C) 2015 Paolo Mazzocchi
  Copyright (C) 2018 Matthias Lungwitz
+ Copyright (C) 2026 Kyrylo Protsenko
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -36,6 +37,7 @@
 #include <ql/instruments/futures.hpp>
 #include <ql/time/calendar.hpp>
 #include <ql/time/daycounter.hpp>
+#include <ql/time/dategenerationrule.hpp>
 #include <ql/optional.hpp>
 
 namespace QuantLib {
@@ -74,6 +76,7 @@ namespace QuantLib {
         //! \name RateHelper interface
         //@{
         Real impliedQuote() const override;
+        ImpliedQuoteSensitivities impliedQuoteSensitivitiesByCurve() const override;
         //@}
         //! \name FuturesRateHelper inspectors
         //@{
@@ -107,6 +110,7 @@ namespace QuantLib {
         //! \name RateHelper interface
         //@{
         Real impliedQuote() const override;
+        ImpliedQuoteSensitivities impliedQuoteSensitivitiesByCurve() const override;
         void setTermStructure(YieldTermStructure*) override;
         //@}
         //! \name Visitability
@@ -175,6 +179,7 @@ namespace QuantLib {
         //! \name RateHelper interface
         //@{
         Real impliedQuote() const override;
+        ImpliedQuoteSensitivities impliedQuoteSensitivitiesByCurve() const override;
         void setTermStructure(YieldTermStructure*) override;
         //@}
         //! \name Visitability
@@ -208,7 +213,8 @@ namespace QuantLib {
                        Date customPillarDate = Date(),
                        bool endOfMonth = false,
                        const std::optional<bool>& useIndexedCoupons = std::nullopt,
-                       const ext::shared_ptr<FloatingRateCouponPricer>& couponPricer = {});
+                       const ext::shared_ptr<FloatingRateCouponPricer>& couponPricer = {},
+                       DateGeneration::Rule rule = DateGeneration::Backward);
         SwapRateHelper(const std::variant<Rate, Handle<Quote>>& rate,
                        const Period& tenor,
                        Calendar calendar,
@@ -228,7 +234,8 @@ namespace QuantLib {
                        bool endOfMonth = false,
                        const std::optional<bool>& useIndexedCoupons = std::nullopt,
                        const std::optional<BusinessDayConvention>& floatConvention = std::nullopt,
-                       const ext::shared_ptr<FloatingRateCouponPricer>& couponPricer = {});
+                       const ext::shared_ptr<FloatingRateCouponPricer>& couponPricer = {},
+                       DateGeneration::Rule rule = DateGeneration::Backward);
         SwapRateHelper(const std::variant<Rate, Handle<Quote>>& rate,
                        const Date& startDate,
                        const Date& endDate,
@@ -247,10 +254,12 @@ namespace QuantLib {
                        bool endOfMonth = false,
                        const std::optional<bool>& useIndexedCoupons = std::nullopt,
                        const std::optional<BusinessDayConvention>& floatConvention = std::nullopt,
-                       const ext::shared_ptr<FloatingRateCouponPricer>& couponPricer = {});
+                       const ext::shared_ptr<FloatingRateCouponPricer>& couponPricer = {},
+                       DateGeneration::Rule rule = DateGeneration::Backward);
         //! \name RateHelper interface
         //@{
         Real impliedQuote() const override;
+        ImpliedQuoteSensitivities impliedQuoteSensitivitiesByCurve() const override;
         void setTermStructure(YieldTermStructure*) override;
         //@}
         //! \name SwapRateHelper inspectors
@@ -287,6 +296,7 @@ namespace QuantLib {
         std::optional<bool> useIndexedCoupons_;
         std::optional<BusinessDayConvention> floatConvention_;
         ext::shared_ptr<FloatingRateCouponPricer> couponPricer_;
+        DateGeneration::Rule rule_ = DateGeneration::Backward;
     };
 
 
@@ -389,6 +399,7 @@ namespace QuantLib {
         //! \name RateHelper interface
         //@{
         Real impliedQuote() const override;
+        ImpliedQuoteSensitivities impliedQuoteSensitivitiesByCurve() const override;
         void setTermStructure(YieldTermStructure*) override;
         //@}
         //! \name FxSwapRateHelper inspectors

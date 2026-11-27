@@ -46,7 +46,7 @@ namespace QuantLib {
                                    Size tGrid = 50,
                                    Size xGrid = 100,
                                    Size yGrid = Null<Size>(),
-                                   ext::shared_ptr<Shape> shape = ext::shared_ptr<Shape>(),
+                                   ext::shared_ptr<Shape> shape = {},
                                    const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Douglas());
 
         void calculate() const override;

@@ -23,10 +23,13 @@
 #include <ql/termstructures/yield/nonlinearfittingmethods.hpp>
 #include <ql/indexes/ibor/cdor.hpp>
 #include <ql/instruments/bonds/zerocouponbond.hpp>
+#include <ql/instruments/bonds/fixedratebond.hpp>
 #include <ql/instruments/bonds/floatingratebond.hpp>
+#include <ql/math/interpolations/cubicinterpolation.hpp>
 #include <ql/termstructures/yield/flatforward.hpp>
 #include <ql/time/calendars/target.hpp>
 #include <ql/time/calendars/canada.hpp>
+#include <ql/time/calendars/nullcalendar.hpp>
 #include <ql/time/daycounters/actualactual.hpp>
 #include <ql/pricingengines/bond/discountingbondengine.hpp>
 
@@ -140,10 +143,10 @@ BOOST_AUTO_TEST_CASE(testFlatExtrapolation) {
 
     // build the fitted bond curves
 
-    ext::shared_ptr<FittedBondDiscountCurve> curve1 = ext::make_shared<FittedBondDiscountCurve>(
+    auto curve1 = ext::make_shared<FittedBondDiscountCurve>(
         asof, helpers, Actual365Fixed(), method1, 1E-10, 10000, guess);
 
-    ext::shared_ptr<FittedBondDiscountCurve> curve2 = ext::make_shared<FittedBondDiscountCurve>(
+    auto curve2 = ext::make_shared<FittedBondDiscountCurve>(
         asof, helpers, Actual365Fixed(), method2, 1E-10, 10000, guess);
 
     curve1->enableExtrapolation();
@@ -338,6 +341,201 @@ BOOST_AUTO_TEST_CASE(testConstraint) {
     FittedBondDiscountCurve positiveCurve(0, TARGET(), helpers, Actual365Fixed(), positiveMethod,
                                           accuracy, maxIterations, guess);
     BOOST_CHECK_GT(positiveCurve.fitResults().solution()[0], 0.0);
+}
+
+BOOST_AUTO_TEST_CASE(testNelsonSiegelSvenssonKappaZeroLimit) {
+
+    BOOST_TEST_MESSAGE(
+        "Testing Nelson-Siegel and Svensson fitting at the kappa=0 limit...");
+
+    // Regression test: the (1-exp(-kappa*t))/(kappa*t) term has a
+    // removable singularity at kappa=0, whose limit is 1. A naive
+    // evaluation of the term returns 0 there (numerator and denominator
+    // both vanish), which would make the Nelson-Siegel zero rate at
+    // kappa=0 come out as c0-c2 instead of the correct c0+c1; the same
+    // applies to Svensson's second such term, which must reduce to 0 at
+    // kappa1=0 (a naive evaluation gives -c3).
+
+    Real t = 5.0;
+    Real tolerance = 1e-10;
+
+    {
+        NelsonSiegelFitting method;
+        Array x = {0.03, 0.02, 0.01, 0.0};  // c0, c1, c2, kappa=0
+        DiscountFactor d = method.discount(x, t);
+        Real zeroRate = -std::log(d) / t;
+        Real expectedZeroRate = x[0] + x[1];  // c0+c1, not c0-c2
+        if (std::fabs(zeroRate - expectedZeroRate) > tolerance) {
+            BOOST_ERROR("NelsonSiegelFitting zero rate at kappa=0 should be "
+                        << expectedZeroRate << " (c0+c1), got " << zeroRate);
+        }
+
+        // continuity: the kappa=0 value should be the limit of the
+        // formula's own values at small positive kappa
+        Array xSmallKappa = {0.03, 0.02, 0.01, 1e-8};
+        DiscountFactor dSmallKappa = method.discount(xSmallKappa, t);
+        Real zeroRateSmallKappa = -std::log(dSmallKappa) / t;
+        if (std::fabs(zeroRateSmallKappa - expectedZeroRate) > 1e-6) {
+            BOOST_ERROR("NelsonSiegelFitting zero rate is not continuous as "
+                        "kappa->0: kappa=0 gives " << expectedZeroRate
+                        << ", kappa=1e-8 gives " << zeroRateSmallKappa);
+        }
+    }
+    {
+        SvenssonFitting method;
+        // c0, c1, c2, c3, kappa, kappa1; kappa=0 exercises the first
+        // (1-exp(-kappa*t))/(kappa*t) term, kappa1=0 the second
+        Array x = {0.03, 0.02, 0.01, 0.005, 0.0, 0.0};
+        DiscountFactor d = method.discount(x, t);
+        Real zeroRate = -std::log(d) / t;
+        Real expectedZeroRate = x[0] + x[1];  // c0+c1 (c3's term -> 0, not -c3)
+        if (std::fabs(zeroRate - expectedZeroRate) > tolerance) {
+            BOOST_ERROR("SvenssonFitting zero rate at kappa=kappa1=0 should "
+                        "be " << expectedZeroRate << " (c0+c1), got "
+                        << zeroRate);
+        }
+    }
+}
+
+BOOST_AUTO_TEST_CASE(testExponentialSplinesFixedKappa) {
+    BOOST_TEST_MESSAGE("Testing exponential splines fitting with fixed kappa...");
+
+    Date today = Settings::instance().evaluationDate();
+    Date maxDate = today + Period(30, Years);
+    Actual365Fixed dayCounter;
+    Real t = 1.0;
+    Real kappa = 0.1;
+
+    // Expected discount factor:
+    // d(1.0) = 0.2 * exp(-0.1 * 1.0) + 0.3 * exp(-0.2 * 1.0) + 0.5 * exp(-0.3 * 1.0)
+    Real expected = 0.2 * std::exp(-kappa * 1.0 * t) +
+                    0.3 * std::exp(-kappa * 2.0 * t) +
+                    0.5 * std::exp(-kappa * 3.0 * t);
+
+    // 1. Unconstrained: 3 coefficients, fixed kappa
+    ExponentialSplinesFitting unconstrainedFixed(false, 3, kappa);
+    Array unconstrainedCoeffs = {0.2, 0.3, 0.5};
+    FittedBondDiscountCurve curveUnconstrainedFixed(today, unconstrainedFixed, unconstrainedCoeffs, maxDate, dayCounter);
+    QL_CHECK_CLOSE(curveUnconstrainedFixed.discount(t), expected, 1e-10);
+
+    // Free kappa with same parameters
+    ExponentialSplinesFitting unconstrainedFree(false, 3, Null<Real>());
+    Array unconstrainedParamsFree = {0.2, 0.3, 0.5, kappa};
+    FittedBondDiscountCurve curveUnconstrainedFree(today, unconstrainedFree, unconstrainedParamsFree, maxDate, dayCounter);
+    QL_CHECK_CLOSE(curveUnconstrainedFree.discount(t), expected, 1e-10);
+
+    // Verify last coefficient affects the discount factor (not ignored)
+    Array unconstrainedBumped = {0.2, 0.3, 0.6};
+    FittedBondDiscountCurve curveUnconstrainedBumped(today, unconstrainedFixed, unconstrainedBumped, maxDate, dayCounter);
+    BOOST_CHECK(curveUnconstrainedBumped.discount(t) != curveUnconstrainedFixed.discount(t));
+
+    // 2. Constrained at zero: first coefficient is 1 - (0.3 + 0.5) = 0.2
+    ExponentialSplinesFitting constrainedFixed(true, 3, kappa);
+    Array constrainedCoeffs = {0.3, 0.5};
+    FittedBondDiscountCurve curveConstrainedFixed(today, constrainedFixed, constrainedCoeffs, maxDate, dayCounter);
+    QL_CHECK_CLOSE(curveConstrainedFixed.discount(t), expected, 1e-10);
+
+    // Free kappa with same parameters
+    ExponentialSplinesFitting constrainedFree(true, 3, Null<Real>());
+    Array constrainedParamsFree = {0.3, 0.5, kappa};
+    FittedBondDiscountCurve curveConstrainedFree(today, constrainedFree, constrainedParamsFree, maxDate, dayCounter);
+    QL_CHECK_CLOSE(curveConstrainedFree.discount(t), expected, 1e-10);
+
+    // Verify last coefficient affects the discount factor (not ignored)
+    Array constrainedBumped = {0.3, 0.6};
+    FittedBondDiscountCurve curveConstrainedBumped(today, constrainedFixed, constrainedBumped, maxDate, dayCounter);
+    BOOST_CHECK(curveConstrainedBumped.discount(t) != curveConstrainedFixed.discount(t));
+}
+
+BOOST_AUTO_TEST_CASE(testNaturalCubicFittingEvaluation) {
+
+    BOOST_TEST_MESSAGE("Testing natural cubic fitting method as evaluator...");
+
+    Date today = Settings::instance().evaluationDate();
+    Date maxDate = today + Period(12, Years);
+
+    // knots can be passed unsorted and with duplicates; t = 0 is added if missing
+    NaturalCubicFitting fittingMethod({10.0, 2.0, 5.0, 1.0, 2.0});
+
+    // the parameters are the discount factors at the knots after t = 0
+    std::vector<Time> knots = {0.0, 1.0, 2.0, 5.0, 10.0};
+    std::vector<Real> discounts = {1.0};
+    for (Size i = 1; i < knots.size(); ++i)
+        discounts.push_back(std::exp(-0.03 * knots[i]));
+    Array parameters(discounts.begin() + 1, discounts.end());
+
+    FittedBondDiscountCurve curve(today, fittingMethod, parameters, maxDate, Actual365Fixed());
+
+    BOOST_CHECK_EQUAL(curve.fitResults().size(), parameters.size());
+
+    // the curve passes through the knots...
+    for (Size i = 0; i < knots.size(); ++i)
+        QL_CHECK_CLOSE(curve.discount(knots[i]), discounts[i], 1e-10);
+
+    // ...interpolates between them with a natural cubic spline...
+    CubicNaturalSpline spline(knots.begin(), knots.end(), discounts.begin());
+    for (Time t : std::vector<Time>{0.25, 0.5, 1.5, 3.0, 7.5, 9.9})
+        QL_CHECK_CLOSE(curve.discount(t), spline(t), 1e-10);
+
+    // ...and is flat after the last one
+    QL_CHECK_CLOSE(curve.discount(11.0), discounts.back(), 1e-10);
+}
+
+BOOST_AUTO_TEST_CASE(testNaturalCubicFittingKnots) {
+
+    BOOST_TEST_MESSAGE("Testing knot validation in natural cubic fitting method...");
+
+    BOOST_CHECK_EXCEPTION(NaturalCubicFitting(std::vector<Time>{}), Error,
+                          ExpectedErrorMessage("at least two knot times required"));
+
+    // t = 0 is added anyway, so this still gives a single knot
+    BOOST_CHECK_EXCEPTION(NaturalCubicFitting(std::vector<Time>{0.0}), Error,
+                          ExpectedErrorMessage("at least two knot times required"));
+
+    // a knot before t = 0 would move the d = 1 constraint away from t = 0
+    BOOST_CHECK_EXCEPTION(NaturalCubicFitting(std::vector<Time>{-1.0, 1.0, 2.0}), Error,
+                          ExpectedErrorMessage("negative knot time"));
+}
+
+BOOST_AUTO_TEST_CASE(testNaturalCubicFittingCalibration) {
+
+    BOOST_TEST_MESSAGE("Testing natural cubic fitting method on bonds priced off a known curve...");
+
+    Date today = Settings::instance().evaluationDate();
+    DayCounter dayCounter = Actual365Fixed();
+
+    Handle<YieldTermStructure> flatCurve(
+        ext::make_shared<FlatForward>(today, 0.03, dayCounter, Continuous));
+    auto flatEngine = ext::make_shared<DiscountingBondEngine>(flatCurve);
+
+    std::vector<ext::shared_ptr<Bond>> bonds;
+    std::vector<ext::shared_ptr<BondHelper>> helpers;
+    for (Integer years = 1; years <= 10; ++years) {
+        Schedule schedule(today, today + Period(years, Years), Period(Annual), NullCalendar(),
+                          Unadjusted, Unadjusted, DateGeneration::Backward, false);
+        auto bond = ext::make_shared<FixedRateBond>(0, 100.0, schedule, std::vector<Rate>(1, 0.03),
+                                                    dayCounter);
+        bond->setPricingEngine(flatEngine);
+        helpers.push_back(ext::make_shared<BondHelper>(makeQuoteHandle(bond->cleanPrice()), bond));
+        bonds.push_back(bond);
+    }
+
+    NaturalCubicFitting fittingMethod({1.0, 2.0, 3.0, 5.0, 7.0, 10.0});
+    auto fittedCurve =
+        ext::make_shared<FittedBondDiscountCurve>(today, helpers, dayCounter, fittingMethod);
+
+    // the fitted curve is close to the one used to price the bonds...
+    for (Time t = 0.5; t <= 10.0; t += 0.5)
+        QL_CHECK_SMALL(fittedCurve->discount(t) - flatCurve->discount(t), 1.0e-3);
+
+    // ...and reprices them
+    auto fittedEngine =
+        ext::make_shared<DiscountingBondEngine>(Handle<YieldTermStructure>(fittedCurve));
+    for (auto& bond : bonds) {
+        Real quote = bond->cleanPrice();
+        bond->setPricingEngine(fittedEngine);
+        QL_CHECK_SMALL(bond->cleanPrice() - quote, 5.0e-2);
+    }
 }
 
 BOOST_AUTO_TEST_SUITE_END()

@@ -111,7 +111,7 @@ BOOST_AUTO_TEST_CASE(testFixings) {
         ext::make_shared<EuriborSwapIsdaFixA>(10 * Years, d.yts2, d.yts2);
     ext::shared_ptr<SwapIndex> cms2y =
         ext::make_shared<EuriborSwapIsdaFixA>(2 * Years, d.yts2, d.yts2);
-    ext::shared_ptr<SwapSpreadIndex> cms10y2y =
+    auto cms10y2y =
         ext::make_shared<SwapSpreadIndex>("cms10y2y", cms10y, cms2y);
 
     Settings::instance().enforcesTodaysHistoricFixings() = false;
@@ -205,19 +205,19 @@ BOOST_AUTO_TEST_CASE(testCouponPricing) {
         ext::make_shared<EuriborSwapIsdaFixA>(10 * Years, d.yts2, d.yts2);
     ext::shared_ptr<SwapIndex> cms2y =
         ext::make_shared<EuriborSwapIsdaFixA>(2 * Years, d.yts2, d.yts2);
-    ext::shared_ptr<SwapSpreadIndex> cms10y2y =
+    auto cms10y2y =
         ext::make_shared<SwapSpreadIndex>("cms10y2y", cms10y, cms2y);
 
     Date valueDate = cms10y2y->valueDate(d.refDate);
     Date payDate = valueDate + 1 * Years;
-    ext::shared_ptr<CmsCoupon> cpn1a =
+    auto cpn1a =
         ext::make_shared<CmsCoupon>(
             payDate, 10000.0, valueDate, payDate, cms10y->fixingDays(), cms10y,
             1.0, 0.0, Date(), Date(), Actual360(), false);
-    ext::shared_ptr<CmsCoupon> cpn1b = ext::make_shared<CmsCoupon>(
+    auto cpn1b = ext::make_shared<CmsCoupon>(
         payDate, 10000.0, valueDate, payDate, cms2y->fixingDays(),
                       cms2y, 1.0, 0.0, Date(), Date(), Actual360(), false);
-    ext::shared_ptr<CmsSpreadCoupon> cpn1 =
+    auto cpn1 =
         ext::make_shared<CmsSpreadCoupon>(
             payDate, 10000.0, valueDate, payDate, cms10y2y->fixingDays(),
             cms10y2y, 1.0, 0.0, Date(), Date(), Actual360(), false);
@@ -238,31 +238,31 @@ BOOST_AUTO_TEST_CASE(testCouponPricing) {
     QL_CHECK_CLOSE(cpn1->rate(), cpn1a->rate() - cpn1b->rate(), eqTol);
     IndexManager::instance().clearHistories();
 
-    ext::shared_ptr<CmsCoupon> cpn2a = ext::make_shared<CmsCoupon>(
+    auto cpn2a = ext::make_shared<CmsCoupon>(
         Date(23, February, 2029), 10000.0,
                       Date(23, February, 2028), Date(23, February, 2029), 2,
                       cms10y, 1.0, 0.0, Date(), Date(), Actual360(), false);
-    ext::shared_ptr<CmsCoupon> cpn2b = ext::make_shared<CmsCoupon>(
+    auto cpn2b = ext::make_shared<CmsCoupon>(
         Date(23, February, 2029), 10000.0,
                       Date(23, February, 2028), Date(23, February, 2029), 2,
                       cms2y, 1.0, 0.0, Date(), Date(), Actual360(), false);
 
-    ext::shared_ptr<CappedFlooredCmsSpreadCoupon> plainCpn =
+    auto plainCpn =
         ext::make_shared<CappedFlooredCmsSpreadCoupon>(
                 Date(23, February, 2029), 10000.0, Date(23, February, 2028),
                 Date(23, February, 2029), 2, cms10y2y, 1.0, 0.0, Null<Rate>(),
                 Null<Rate>(), Date(), Date(), Actual360(), false);
-    ext::shared_ptr<CappedFlooredCmsSpreadCoupon> cappedCpn =
+    auto cappedCpn =
         ext::make_shared<CappedFlooredCmsSpreadCoupon>(
                 Date(23, February, 2029), 10000.0, Date(23, February, 2028),
                 Date(23, February, 2029), 2, cms10y2y, 1.0, 0.0, 0.03,
                 Null<Rate>(), Date(), Date(), Actual360(), false);
-    ext::shared_ptr<CappedFlooredCmsSpreadCoupon> flooredCpn =
+    auto flooredCpn =
         ext::make_shared<CappedFlooredCmsSpreadCoupon>(
                 Date(23, February, 2029), 10000.0, Date(23, February, 2028),
                 Date(23, February, 2029), 2, cms10y2y, 1.0, 0.0, Null<Rate>(),
                 0.01, Date(), Date(), Actual360(), false);
-    ext::shared_ptr<CappedFlooredCmsSpreadCoupon> collaredCpn =
+    auto collaredCpn =
         ext::make_shared<CappedFlooredCmsSpreadCoupon>(
                 Date(23, February, 2029), 10000.0, Date(23, February, 2028),
                 Date(23, February, 2029), 2, cms10y2y, 1.0, 0.0, 0.03, 0.01,
@@ -364,7 +364,7 @@ BOOST_AUTO_TEST_CASE(testShiftedLognormalDifferentShifts) {
     const Calendar calendar = NullCalendar();
     const Handle<YieldTermStructure> curve(
         ext::make_shared<FlatForward>(refDate, 0.03, curveDayCounter));
-    const ext::shared_ptr<IborIndex> ibor = ext::make_shared<IborIndex>(
+    const auto ibor = ext::make_shared<IborIndex>(
         "I6M", Period(6, Months), 0, USDCurrency(), calendar, Unadjusted,
         false, Actual360(), curve);
     const auto swapIndex = [&](const Integer years) {
@@ -375,7 +375,7 @@ BOOST_AUTO_TEST_CASE(testShiftedLognormalDifferentShifts) {
     };
     const ext::shared_ptr<SwapIndex> swap10y = swapIndex(10);
     const ext::shared_ptr<SwapIndex> swap2y = swapIndex(2);
-    const ext::shared_ptr<SwapSpreadIndex> spreadIndex =
+    const auto spreadIndex =
         ext::make_shared<SwapSpreadIndex>("SP", swap10y, swap2y, 1.0, -1.0);
     const Date fixingDate = refDate + Period(5, Years);
     const Date paymentDate = fixingDate + Period(1, Years);
@@ -389,7 +389,7 @@ BOOST_AUTO_TEST_CASE(testShiftedLognormalDifferentShifts) {
         Matrix shifts(2, 2);
         shifts[0][0] = shifts[1][0] = shift2;
         shifts[0][1] = shifts[1][1] = shift1;
-        const ext::shared_ptr<SwaptionVolatilityMatrix> vol =
+        const auto vol =
             ext::make_shared<SwaptionVolatilityMatrix>(
                 calendar, Following,
                 std::vector<Period>{Period(1, Years), Period(10, Years)},
@@ -402,9 +402,9 @@ BOOST_AUTO_TEST_CASE(testShiftedLognormalDifferentShifts) {
                 volHandle, Handle<Quote>(ext::make_shared<SimpleQuote>(0.0)));
         const Handle<Quote> correlation(
             ext::make_shared<SimpleQuote>(0.5));
-        const ext::shared_ptr<LognormalCmsSpreadPricer> spreadPricer =
+        const auto spreadPricer =
             ext::make_shared<LognormalCmsSpreadPricer>(cmsPricer, correlation);
-        const ext::shared_ptr<CmsSpreadCoupon> coupon =
+        const auto coupon =
             ext::make_shared<CmsSpreadCoupon>(
                 paymentDate, 1e6, fixingDate, paymentDate, 0, spreadIndex,
                 1.0, 0.0, Date(), Date(), Actual360(), false);

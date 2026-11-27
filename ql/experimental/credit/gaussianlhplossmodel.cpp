@@ -112,7 +112,8 @@ namespace QuantLib {
                     - attachLimit * phi_(invFlightK1) + (1.-averageRR) * 
                     (biphi_(ip, -invFlightK2) - biphi_(ip, -invFlightK1)) );
             }
-            else return 0.0;
+            else { return 0.0;
+}
         }
 
         Real GaussianLHPLossModel::probOverLoss(const Date& d,

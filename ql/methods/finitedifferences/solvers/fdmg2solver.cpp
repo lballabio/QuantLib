@@ -25,6 +25,7 @@
 #include <ql/methods/finitedifferences/solvers/fdmg2solver.hpp>
 #include <ql/methods/finitedifferences/stepconditions/fdmsnapshotcondition.hpp>
 #include <ql/models/shortrate/twofactormodels/g2.hpp>
+#include <ql/shared_ptr.hpp>
 #include <utility>
 
 namespace QuantLib {
@@ -38,8 +39,8 @@ namespace QuantLib {
 
 
     void FdmG2Solver::performCalculations() const {
-        const ext::shared_ptr<FdmG2Op> op(
-            new FdmG2Op(solverDesc_.mesher, model_.currentLink(), 0, 1));
+        const auto op = ext::make_shared<FdmG2Op>(
+            solverDesc_.mesher, model_.currentLink(), 0, 1);
 
         solver_ = ext::make_shared<Fdm2DimSolver>(
             solverDesc_, schemeDesc_, op);

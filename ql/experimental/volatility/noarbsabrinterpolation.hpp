@@ -47,10 +47,10 @@ struct NoArbSabrSpecs {
         // be thrown from the model constructor anyway)
         Real sigmaI = params[0] * std::pow(forward, params[1] - 1.0);
         if (sigmaI < detail::NoArbSabrModel::sigmaI_min) {
-            if (!paramIsFixed[0])
+            if (!paramIsFixed[0]) {
                 params[0] = detail::NoArbSabrModel::sigmaI_min * (1.0 + eps()) /
                             std::pow(forward, params[1] - 1.0);
-            else {
+            } else {
                 if (!paramIsFixed[1])
                     params[1] = 1.0 +
                                 std::log(detail::NoArbSabrModel::sigmaI_min *
@@ -59,10 +59,10 @@ struct NoArbSabrSpecs {
             }
         }
         if (sigmaI > detail::NoArbSabrModel::sigmaI_max) {
-            if (!paramIsFixed[0])
+            if (!paramIsFixed[0]) {
                 params[0] = detail::NoArbSabrModel::sigmaI_max * (1.0 - eps()) /
                             std::pow(forward, params[1] - 1.0);
-            else {
+            } else {
                 if (!paramIsFixed[1])
                     params[1] = 1.0 +
                                 std::log(detail::NoArbSabrModel::sigmaI_max *
@@ -203,9 +203,9 @@ class NoArbSabrInterpolation : public Interpolation {
         bool alphaIsFixed, bool betaIsFixed, bool nuIsFixed, bool rhoIsFixed,
         bool vegaWeighted = true,
         const ext::shared_ptr<EndCriteria> &endCriteria =
-            ext::shared_ptr<EndCriteria>(),
+            {},
         const ext::shared_ptr<OptimizationMethod> &optMethod =
-            ext::shared_ptr<OptimizationMethod>(),
+            {},
         const Real errorAccept = 0.0020, const bool useMaxError = false,
         const Size maxGuesses = 50, const Real shift = 0.0) {
 
@@ -251,8 +251,8 @@ class NoArbSabr {
               bool nuIsFixed,
               bool rhoIsFixed,
               bool vegaWeighted = false,
-              ext::shared_ptr<EndCriteria> endCriteria = ext::shared_ptr<EndCriteria>(),
-              ext::shared_ptr<OptimizationMethod> optMethod = ext::shared_ptr<OptimizationMethod>(),
+              ext::shared_ptr<EndCriteria> endCriteria = {},
+              ext::shared_ptr<OptimizationMethod> optMethod = {},
               const Real errorAccept = 0.0020,
               const bool useMaxError = false,
               const Size maxGuesses = 50)

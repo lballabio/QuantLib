@@ -49,6 +49,7 @@
 #include <ql/methods/montecarlo/genericlsregression.hpp>
 #include <ql/legacy/libormarketmodels/lmlinexpcorrmodel.hpp>
 #include <ql/legacy/libormarketmodels/lmextlinexpvolmodel.hpp>
+#include <ql/shared_ptr.hpp>
 #include <ql/time/schedule.hpp>
 #include <ql/time/calendars/nullcalendar.hpp>
 #include <ql/time/daycounters/simpledaycounter.hpp>
@@ -450,10 +451,6 @@ enum EvolverType { Ipc, Pc , NormalPc};
 
 
 void testAlphaCalibration(bool maximizeHomogeneity) {
-
-    BOOST_TEST_MESSAGE("Testing alpha caplet calibration "
-                       "in a lognormal coterminal swap market model...");
-
     setup();
 
     Size numberOfRates = todaysForwards_.size();
@@ -466,7 +463,7 @@ void testAlphaCalibration(bool maximizeHomogeneity) {
                                       longTermCorrelation_,
                                       beta_));
 
-    ext::shared_ptr<LMMCurveState> cs(new LMMCurveState(rateTimes_));
+    auto cs = ext::make_shared<LMMCurveState>(rateTimes_);
     cs->setOnForwardRates(todaysForwards_);
 
     ext::shared_ptr<PiecewiseConstantCorrelation> corr(new
@@ -578,10 +575,14 @@ void testAlphaCalibration(bool maximizeHomogeneity) {
 }
 
 BOOST_AUTO_TEST_CASE(testFunction) {
+    BOOST_TEST_MESSAGE("Testing LIBOR market-model alpha calibration...");
+
     testAlphaCalibration(false);
 }
 
 BOOST_AUTO_TEST_CASE(testMaximumHomogeneityCalibration) {
+    BOOST_TEST_MESSAGE("Testing maximum-homogeneity LIBOR market-model alpha calibration...");
+
     testAlphaCalibration(true);
 }
 

@@ -38,7 +38,7 @@ namespace QuantLib {
 
         FdmExpExtOUInnerValueCalculator(ext::shared_ptr<Payoff> payoff,
                                         ext::shared_ptr<FdmMesher> mesher,
-                                        ext::shared_ptr<Shape> shape = ext::shared_ptr<Shape>(),
+                                        ext::shared_ptr<Shape> shape = {},
                                         Size direction = 0)
         : direction_(direction), payoff_(std::move(payoff)), mesher_(std::move(mesher)),
           shape_(std::move(shape)) {}

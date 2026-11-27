@@ -165,7 +165,7 @@ namespace QuantLib {
             meshers.emplace_back(ext::make_shared<Predefined1dMesher>(x));
         }
 
-        const ext::shared_ptr<FdmMesherComposite> mesher =
+        const auto mesher =
             ext::make_shared<FdmMesherComposite>(meshers);
 
         const ext::shared_ptr<BasketPayoff> payoff
@@ -200,10 +200,10 @@ namespace QuantLib {
 
         const bool isEuropean =
             ext::dynamic_pointer_cast<EuropeanExercise>(arguments_.exercise) != nullptr;
-        const ext::shared_ptr<FdmWienerOp> op =
+        const auto op =
             ext::make_shared<FdmWienerOp>(
                 mesher,
-                (isEuropean)? ext::shared_ptr<YieldTermStructure>() : rTS,
+                isEuropean? ext::shared_ptr<YieldTermStructure>() : rTS,
                 l);
 
         switch(processes_.size()) {

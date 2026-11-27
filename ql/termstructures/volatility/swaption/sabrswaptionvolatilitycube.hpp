@@ -195,9 +195,9 @@ namespace QuantLib {
             std::vector<std::vector<Handle<Quote> > > parametersGuess,
             std::vector<bool> isParameterFixed,
             bool isAtmCalibrated,
-            ext::shared_ptr<EndCriteria> endCriteria = ext::shared_ptr<EndCriteria>(),
+            ext::shared_ptr<EndCriteria> endCriteria = {},
             Real maxErrorTolerance = Null<Real>(),
-            ext::shared_ptr<OptimizationMethod> optMethod = ext::shared_ptr<OptimizationMethod>(),
+            ext::shared_ptr<OptimizationMethod> optMethod = {},
             Real errorAccept = Null<Real>(),
             bool useMaxError = false,
             Size maxGuesses = 50,
@@ -447,7 +447,7 @@ namespace QuantLib {
         std::vector<Real> parameters,
         Real shift) const {
 
-        const auto atmError = [&](Real alpha) {
+        const auto atmError = [&](Real alpha) -> Real {
             parameters[0] = alpha;
             return Traits::createSmileSection(optionTime, forward, parameters,
                                               shift, volatilityType_)

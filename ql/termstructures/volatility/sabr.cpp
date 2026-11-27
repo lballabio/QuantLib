@@ -46,9 +46,9 @@ namespace QuantLib {
         const Real A = std::pow(forward*strike, oneMinusBeta);
         const Real sqrtA= std::sqrt(A);
         Real logM;
-        if (!close(forward, strike))
+        if (!close(forward, strike)) {
             logM = std::log(forward/strike);
-        else {
+        } else {
             const Real epsilon = (forward-strike)/strike;
             logM = epsilon - .5 * epsilon * epsilon ;
         }
@@ -67,9 +67,9 @@ namespace QuantLib {
         // computations become precise enough if the square of z worth
         // slightly more than the precision machine (hence the m)
         static const Real m = 10;
-        if (std::fabs(z*z)>QL_EPSILON * m)
+        if (std::fabs(z*z)>QL_EPSILON * m) {
             multiplier = z/xx;
-        else {
+        } else {
             multiplier = 1.0 - 0.5*rho*z - (3.0*rho*rho-2.0)*z*z/12.0;
         }
         return (alpha/D)*multiplier*d;
@@ -98,9 +98,9 @@ namespace QuantLib {
         const Real A = std::pow(forward * strike, oneMinusBeta);
         const Real sqrtA = std::sqrt(A);
         Real logM;
-        if (!close(forward, strike))
+        if (!close(forward, strike)) {
             logM = std::log(forward / strike);
-        else {
+        } else {
             const Real epsilon = (forward - strike) / strike;
             logM = epsilon - .5 * epsilon * epsilon;
         }
@@ -121,9 +121,9 @@ namespace QuantLib {
         // computations become precise enough if the square of z worth
         // slightly more than the precision machine (hence the m)
         static const Real m = 10;
-        if (std::fabs(z * z) > QL_EPSILON * m)
+        if (std::fabs(z * z) > QL_EPSILON * m) {
             multiplier = z / xx;
-        else {
+        } else {
             multiplier = 1.0 - 0.5 * rho * z - (3.0 * rho * rho - 2.0) * z * z / 12.0;
         }
         const Real F = alpha * std::pow(forward * strike, beta / 2.0);
@@ -204,13 +204,19 @@ namespace QuantLib {
             Real F, alpha, beta, nu, rho, t;
 
             Real y(Real k) const {
-                return -1.0/(1.0-beta)*(std::pow(F,1-beta)-std::pow(k,1-beta));
+                const Real logMoneyness = std::log(k/F);
+                if (beta == 1.0)
+                    return logMoneyness;
+                return std::pow(F, 1-beta) * std::expm1((1-beta)*logMoneyness) / (1-beta);
             }
 
             Real Dint(Real k) const {
-                return 1/nu*std::log( ( std::sqrt(1+2*rho*nu/alpha*y(k)
-                    + squared(nu/alpha*y(k)) )
-                    - rho - nu/alpha*y(k) ) / (1-rho) );
+                const Real yk = y(k);
+                if (nu == 0.0)
+                    return -yk/alpha;
+                const Real z = nu/alpha*yk;
+                // Rationalize the logarithm's argument to retain precision as nu -> 0.
+                return std::log1p(-2*z / (std::sqrt(1+2*rho*z+z*z)+1+z)) / nu;
             }
 
             Real D(Real k) const {

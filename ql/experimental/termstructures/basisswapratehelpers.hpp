@@ -68,6 +68,7 @@ namespace QuantLib {
                                     StubIndexSelection otherStubIndexSelection = {});
 
         Real impliedQuote() const override;
+        ImpliedQuoteSensitivities impliedQuoteSensitivitiesByCurve() const override;
         void accept(AcyclicVisitor&) override;
         // NOLINTNEXTLINE(cppcoreguidelines-noexcept-swap,performance-noexcept-swap)
         ext::shared_ptr<Swap> swap() const { return swap_; }
@@ -139,7 +140,7 @@ namespace QuantLib {
                                          bool endOfMonth,
                                          const ext::shared_ptr<OvernightIndex>& baseIndex,
                                          const ext::shared_ptr<IborIndex>& otherIndex,
-                                         Handle<YieldTermStructure> discountHandle = Handle<YieldTermStructure>(),
+                                         Handle<YieldTermStructure> discountHandle = {},
                                          bool bootstrapBaseCurve = false,
                                          Integer paymentLag = 0,
                                          std::optional<Frequency> overnightPaymentFrequency = std::nullopt,
@@ -151,6 +152,7 @@ namespace QuantLib {
                                          StubIndexSelection iborStubIndexSelection = {});
 
         Real impliedQuote() const override;
+        ImpliedQuoteSensitivities impliedQuoteSensitivitiesByCurve() const override;
         void accept(AcyclicVisitor&) override;
         // NOLINTNEXTLINE(cppcoreguidelines-noexcept-swap,performance-noexcept-swap)
         ext::shared_ptr<Swap> swap() const { return swap_; }
@@ -212,7 +214,7 @@ namespace QuantLib {
             bool endOfMonth,
             const ext::shared_ptr<OvernightIndex>& baseIndex,
             const ext::shared_ptr<OvernightIndex>& otherIndex,
-            Handle<YieldTermStructure> discountHandle = Handle<YieldTermStructure>(),
+            Handle<YieldTermStructure> discountHandle = {},
             bool bootstrapBaseCurve = false,
             Integer paymentLag = 0,
             Frequency paymentFrequency = Annual,
@@ -222,6 +224,7 @@ namespace QuantLib {
             DateGeneration::Rule rule = DateGeneration::Backward);
 
         Real impliedQuote() const override;
+        ImpliedQuoteSensitivities impliedQuoteSensitivitiesByCurve() const override;
         void accept(AcyclicVisitor&) override;
         // NOLINTNEXTLINE(cppcoreguidelines-noexcept-swap,performance-noexcept-swap)
         ext::shared_ptr<Swap> swap() const { return swap_; }

@@ -3,6 +3,7 @@
 /*
  Copyright (C) 2018 Roy Zywina
  Copyright (C) 2018 StatPro Italia srl
+ Copyright (C) 2026 Kyrylo Protsenko
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -26,6 +27,7 @@
 #include <ql/termstructures/yield/flatforward.hpp>
 #include <ql/termstructures/yield/piecewiseyieldcurve.hpp>
 #include <ql/termstructures/yield/overnightindexfutureratehelper.hpp>
+#include <ql/termstructures/yield/zerospreadedtermstructure.hpp>
 #include <ql/time/daycounters/actual360.hpp>
 #include <iomanip>
 
@@ -92,7 +94,7 @@ BOOST_AUTO_TEST_CASE(testBootstrap) {
             sofrQuote.price, sofrQuote.month, sofrQuote.year, sofrQuote.freq));
     }
 
-    ext::shared_ptr<PiecewiseYieldCurve<Discount, Linear> > curve =
+    auto curve =
         ext::make_shared<PiecewiseYieldCurve<Discount, Linear> >(today, helpers,
                                                                  Actual365Fixed());
 
@@ -150,7 +152,7 @@ BOOST_AUTO_TEST_CASE(testBootstrapWithJuneteenth) {
             sofrQuote.price, sofrQuote.month, sofrQuote.year, sofrQuote.freq));
     }
 
-    ext::shared_ptr<PiecewiseYieldCurve<Discount, Linear> > curve =
+    auto curve =
         ext::make_shared<PiecewiseYieldCurve<Discount, Linear> >(today, helpers,
                                                                  Actual365Fixed());
 
@@ -204,6 +206,76 @@ BOOST_AUTO_TEST_CASE(testCompoundedRateWithHolidayMaturity) {
     QL_CHECK_SMALL(future.NPV() - expectedPrice, 1.0e-12);
 }
 
+BOOST_AUTO_TEST_CASE(testCompoundedRateOnValueDate) {
+    BOOST_TEST_MESSAGE("Testing compounded SOFR futures on their value date...");
+
+    const Date valueDates[] = {Date(18, June, 2024), Date(21, June, 2024),
+                              Date(20, March, 2024)};
+    const Rate fixings[] = {-0.01, 0.0, 0.09};
+    const DayCounter dc = Actual360();
+
+    for (const Date& today : valueDates) {
+        Settings::instance().evaluationDate() = today;
+        Handle<YieldTermStructure> curve(
+            ext::make_shared<FlatForward>(today, 0.04, dc));
+        auto sofr = ext::make_shared<Sofr>(curve);
+        const Date nextBusinessDay = sofr->fixingCalendar().advance(today, 1, Days);
+        const Date quarterlyMaturity = today == Date(20, March, 2024) ?
+            Date(19, June, 2024) : today + Period(3, Months);
+        const Date maturities[] = {today + 1, nextBusinessDay, quarterlyMaturity};
+        for (const Date& maturity : maturities) {
+            OvernightIndexFuture future(sofr, today, maturity);
+            const Time accrual = dc.yearFraction(today, maturity);
+            const Real forecastPrice = 100.0 * (1.0 - (1.0 / curve->discount(maturity) - 1.0)
+                                                        / accrual);
+            // Without today's fixing the whole period is forecast as before.
+            QL_CHECK_SMALL(future.NPV() - forecastPrice, 1.0e-10);
+            for (Rate fixing : fixings) {
+                // Reusing the future also checks invalidation after adding or replacing a fixing.
+                sofr->addFixing(today, fixing, true);
+                const Date fixingEnd = std::min(nextBusinessDay, maturity);
+                const Real compoundFactor =
+                    (1.0 + fixing * dc.yearFraction(today, fixingEnd)) *
+                    curve->discount(fixingEnd) / curve->discount(maturity);
+                const Real expectedPrice = 100.0 * (1.0 - (compoundFactor - 1.0) / accrual);
+                QL_CHECK_SMALL(future.NPV() - expectedPrice, 1.0e-10);
+            }
+            sofr->clearFixings();
+            QL_CHECK_SMALL(future.NPV() - forecastPrice, 1.0e-10);
+        }
+        // A stored fixing dated after the evaluation date must still be forecast.
+        sofr->addFixing(nextBusinessDay, 0.09);
+        OvernightIndexFuture forwardStarting(sofr, nextBusinessDay, quarterlyMaturity);
+        const Real forwardFactor =
+            curve->discount(nextBusinessDay) / curve->discount(quarterlyMaturity);
+        const Real forwardPrice = 100.0 *
+            (1.0 - (forwardFactor - 1.0) / dc.yearFraction(nextBusinessDay, quarterlyMaturity));
+        QL_CHECK_SMALL(forwardStarting.NPV() - forwardPrice, 1.0e-10);
+        sofr->clearFixings();
+    }
+}
+
+BOOST_AUTO_TEST_CASE(testValueDateFixingBeforeForwardCurve) {
+    BOOST_TEST_MESSAGE("Testing a SOFR value-date fixing before the forwarding curve starts...");
+
+    const Date today(18, June, 2024), curveStart(20, June, 2024), maturity(18, September, 2024);
+    Settings::instance().evaluationDate() = today;
+    const DayCounter dc = Actual360();
+    Handle<YieldTermStructure> curve(
+        ext::make_shared<FlatForward>(curveStart, 0.04, dc));
+    auto sofr = ext::make_shared<Sofr>(curve);
+    OvernightIndexFuture future(sofr, today, maturity);
+
+    BOOST_CHECK_EXCEPTION(future.NPV(), Error,
+                          ExpectedErrorMessage("the forwarding term structure starts on"));
+    sofr->addFixing(today, 0.09);
+    const Real compoundFactor =
+        (1.0 + 0.09 * dc.yearFraction(today, curveStart)) / curve->discount(maturity);
+    const Real expectedPrice =
+        100.0 * (1.0 - (compoundFactor - 1.0) / dc.yearFraction(today, maturity));
+    QL_CHECK_SMALL(future.NPV() - expectedPrice, 1.0e-10);
+}
+
 BOOST_AUTO_TEST_CASE(testPillarDates) {
     BOOST_TEST_MESSAGE("Testing pillar date support in SOFR futures helpers...");
 
@@ -248,6 +320,58 @@ BOOST_AUTO_TEST_CASE(testPillarDates) {
         price, June, 2024, Quarterly, {},
         Pillar::CustomDate, sofrCustom);
     BOOST_CHECK_EQUAL(sh.pillarDate(), sofrCustom);
+}
+
+BOOST_AUTO_TEST_CASE(testAnalyticQuoteSensitivities) {
+    BOOST_TEST_MESSAGE("Testing analytical SOFR-futures quote sensitivities...");
+
+    Date today(15, March, 2024);
+    Settings::instance().evaluationDate() = today;
+
+    auto curve = ext::make_shared<FlatForward>(today, 0.03, Actual360());
+    Handle<Quote> price(ext::make_shared<SimpleQuote>(99.0));
+    Date valueDate(20, March, 2024);
+    Date maturityDate(20, June, 2024);
+
+    for (RateAveraging::Type averagingMethod :
+         {RateAveraging::Compound, RateAveraging::Simple}) {
+        auto helper = ext::make_shared<OvernightIndexFutureRateHelper>(
+            price, valueDate, maturityDate, ext::make_shared<Sofr>(),
+            Handle<Quote>(), averagingMethod);
+        helper->setTermStructure(curve.get());
+
+        ImpliedQuoteSensitivities sensitivities =
+            helper->impliedQuoteSensitivitiesByCurve();
+        BOOST_REQUIRE(sensitivities.available);
+        BOOST_CHECK(sensitivities.incomplete.empty());
+
+        // check the reported sensitivities against a finite difference
+        // under a parallel tilt P(t) -> P(t) exp(-eps t) of the curve:
+        // the predicted derivative is sum_d dQ/dP(d) * (-t_d) * P(d)
+        Real predicted = 0.0;
+        auto bucket = sensitivities.sensitivities.find(curve.get());
+        BOOST_REQUIRE(bucket != sensitivities.sensitivities.end());
+        for (const auto& [date, dQdP] : bucket->second)
+            predicted += dQdP * (-curve->timeFromReference(date)) *
+                         curve->discount(date, true);
+
+        auto spread = ext::make_shared<SimpleQuote>(0.0);
+        auto tilted = ext::make_shared<ZeroSpreadedTermStructure>(
+            Handle<YieldTermStructure>(curve), Handle<Quote>(spread));
+        tilted->enableExtrapolation();
+        helper->setTermStructure(tilted.get());
+        Real h = 1.0e-7;
+        spread->setValue(+h);
+        Real up = helper->impliedQuote();
+        spread->setValue(-h);
+        Real down = helper->impliedQuote();
+        helper->setTermStructure(curve.get());
+        Real numerical = (up - down) / (2.0 * h);
+        Real tolerance = 1.0e-5 * std::max(1.0, std::fabs(numerical));
+        BOOST_CHECK_MESSAGE(std::fabs(predicted - numerical) < tolerance,
+                            "predicted sensitivity " << predicted <<
+                            " does not match the bumped " << numerical);
+    }
 }
 
 BOOST_AUTO_TEST_CASE(testOvernightIndexFutureRateHelperNotification) {

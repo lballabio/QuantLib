@@ -72,9 +72,8 @@ BOOST_AUTO_TEST_CASE(testBSCumlativeDistributionFunction) {
     const Handle<YieldTermStructure> rTS(flatRate(today, rRate, dc));
     const Handle<BlackVolTermStructure> volTS(flatVol(today, vol, dc));
 
-    const ext::shared_ptr<GeneralizedBlackScholesProcess> bsProcess(
-        ext::make_shared<GeneralizedBlackScholesProcess>(
-            spot, qTS, rTS, volTS));
+    const auto bsProcess = ext::make_shared<GeneralizedBlackScholesProcess>(
+            spot, qTS, rTS, volTS);
     const ext::shared_ptr<OrnsteinUhlenbeckProcess> ouProcess;
 
     const NormalCLVModel m(
@@ -117,9 +116,8 @@ BOOST_AUTO_TEST_CASE(testHestonCumlativeDistributionFunction) {
     const Handle<YieldTermStructure> qTS(flatRate(today, qRate, dc));
     const Handle<YieldTermStructure> rTS(flatRate(today, rRate, dc));
 
-    const ext::shared_ptr<HestonProcess> process(
-        ext::make_shared<HestonProcess>(
-            rTS, qTS, spot, v0, kappa, theta, sigma, rho));
+    const auto process = ext::make_shared<HestonProcess>(
+            rTS, qTS, spot, v0, kappa, theta, sigma, rho);
 
     const Handle<BlackVolTermStructure> hestonVolTS(
         ext::make_shared<HestonBlackVolSurface>(
@@ -184,13 +182,11 @@ BOOST_AUTO_TEST_CASE(testIllustrative1DExample) {
         ext::make_shared<SABRVolTermStructure>(
             alpha, beta, gamma, rho, s0, rRate, today, dc));
 
-    const ext::shared_ptr<GeneralizedBlackScholesProcess> bsProcess(
-        ext::make_shared<GeneralizedBlackScholesProcess>(
-            spot, qTS, rTS, sabrVol));
+    const auto bsProcess = ext::make_shared<GeneralizedBlackScholesProcess>(
+            spot, qTS, rTS, sabrVol);
 
-    const ext::shared_ptr<OrnsteinUhlenbeckProcess> ouProcess(
-        ext::make_shared<OrnsteinUhlenbeckProcess>(
-            speed, vol, x0, level));
+    const auto ouProcess = ext::make_shared<OrnsteinUhlenbeckProcess>(
+            speed, vol, x0, level);
 
     std::vector<Date> maturityDates = {
         today + Period(18, Days),
@@ -306,13 +302,11 @@ BOOST_AUTO_TEST_CASE(testMonteCarloBSOptionPricing) {
     const Handle<YieldTermStructure> rTS(flatRate(today, rRate, dc));
     const Handle<BlackVolTermStructure> vTS(flatVol(today, vol, dc));
 
-    const ext::shared_ptr<GeneralizedBlackScholesProcess> bsProcess(
-        ext::make_shared<GeneralizedBlackScholesProcess>(
-            spot, qTS, rTS, vTS));
+    const auto bsProcess = ext::make_shared<GeneralizedBlackScholesProcess>(
+            spot, qTS, rTS, vTS);
 
-    const ext::shared_ptr<OrnsteinUhlenbeckProcess> ouProcess(
-        ext::make_shared<OrnsteinUhlenbeckProcess>(
-            speed, sigma, x0, level));
+    const auto ouProcess = ext::make_shared<OrnsteinUhlenbeckProcess>(
+            speed, sigma, x0, level);
 
     std::vector<Date> maturities = { today + Period(6, Months), maturity };
 
@@ -400,16 +394,15 @@ BOOST_AUTO_TEST_CASE(testMoustacheGraph) {
     const Handle<YieldTermStructure> rTS(flatRate(r, dc));
     const Handle<YieldTermStructure> qTS(flatRate(q, dc));
 
-    const ext::shared_ptr<HestonModel> hestonModel(
-        ext::make_shared<HestonModel>(
+    const auto hestonModel = ext::make_shared<HestonModel>(
             ext::make_shared<HestonProcess>(
-                rTS, qTS, spot, v0, kappa, theta, sigma, rho)));
+                rTS, qTS, spot, v0, kappa, theta, sigma, rho));
 
     const Handle<BlackVolTermStructure> vTS(
         ext::make_shared<HestonBlackVolSurface>(
             Handle<HestonModel>(hestonModel)));
 
-    const ext::shared_ptr<GeneralizedBlackScholesProcess> bsProcess =
+    const auto bsProcess =
         ext::make_shared<GeneralizedBlackScholesProcess>(
             spot, qTS, rTS, vTS);
 
@@ -419,9 +412,8 @@ BOOST_AUTO_TEST_CASE(testMoustacheGraph) {
     const Real sigmaOU = 0.15;
     const Real x0      = 100;
 
-    const ext::shared_ptr<OrnsteinUhlenbeckProcess> ouProcess(
-        ext::make_shared<OrnsteinUhlenbeckProcess>(
-            speed, sigmaOU, x0, level));
+    const auto ouProcess = ext::make_shared<OrnsteinUhlenbeckProcess>(
+            speed, sigmaOU, x0, level);
 
     const ext::shared_ptr<Exercise> europeanExercise(
         ext::make_shared<EuropeanExercise>(maturityDate));
@@ -455,7 +447,7 @@ BOOST_AUTO_TEST_CASE(testMoustacheGraph) {
     const Size n = 18;
     Array barrier_lo(n), barrier_hi(n), bsNPV(n);
 
-    const ext::shared_ptr<CashOrNothingPayoff> payoff =
+    const auto payoff =
         ext::make_shared<CashOrNothingPayoff>(Option::Call, 0.0, 1.0);
 
     for (Size i=0; i < n; ++i) {
@@ -479,7 +471,7 @@ BOOST_AUTO_TEST_CASE(testMoustacheGraph) {
     const Size tSteps = 200;
     const TimeGrid grid(maturityTime, tSteps);
 
-    const ext::shared_ptr<PathGenerator<rsg_type> > pathGenerator =
+    const auto pathGenerator =
         ext::make_shared<PathGenerator<rsg_type> >(
             ouProcess, grid, rsg_type(factors, tSteps), false);
 

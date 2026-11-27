@@ -98,8 +98,9 @@ Array FdmZabrOp::solve_splitting(Size direction, const Array &r,
         return dxMap_.getMap().solve_splitting(r, a, 1.0);
     } else if (direction == 1) {
         return dyMap_.getMap().solve_splitting(r, a, 1.0);
-    } else
+    } else {
         QL_FAIL("direction too large");
+}
 }
 
 Array FdmZabrOp::preconditioner(const Array &r, Real dt) const {

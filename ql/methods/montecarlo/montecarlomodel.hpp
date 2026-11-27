@@ -64,10 +64,10 @@ namespace QuantLib {
             ext::shared_ptr<path_pricer_type> pathPricer,
             stats_type sampleAccumulator,
             bool antitheticVariate,
-            ext::shared_ptr<path_pricer_type> cvPathPricer = ext::shared_ptr<path_pricer_type>(),
+            ext::shared_ptr<path_pricer_type> cvPathPricer = {},
             result_type cvOptionValue = result_type(),
             ext::shared_ptr<path_generator_type> cvPathGenerator =
-                ext::shared_ptr<path_generator_type>())
+                {})
         : pathGenerator_(std::move(pathGenerator)), pathPricer_(std::move(pathPricer)),
           sampleAccumulator_(std::move(sampleAccumulator)), isAntitheticVariate_(antitheticVariate),
           cvPathPricer_(std::move(cvPathPricer)), cvOptionValue_(cvOptionValue),
@@ -109,9 +109,9 @@ namespace QuantLib {
                 const sample_type& atPath = pathGenerator_->antithetic();
                 result_type price2 = (*pathPricer_)(atPath.value);
                 if (isControlVariate_) {
-                    if (!cvPathGenerator_)
+                    if (!cvPathGenerator_) {
                         price2 += cvOptionValue_-(*cvPathPricer_)(atPath.value);
-                    else {
+                    } else {
                         const sample_type& cvPath = cvPathGenerator_->antithetic();
                         price2 += cvOptionValue_-(*cvPathPricer_)(cvPath.value);
                     }

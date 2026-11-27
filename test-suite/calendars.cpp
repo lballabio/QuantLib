@@ -242,6 +242,73 @@ BOOST_AUTO_TEST_CASE(testJointCalendars) {
     }
 }
 
+BOOST_AUTO_TEST_CASE(testJapanEquinoxes) {
+    BOOST_TEST_MESSAGE("Testing Japanese equinox holidays across a non-leap century...");
+
+    const Calendar calendar = Japan();
+    const Date holidays[] = {
+        {20, March, 2099}, {23, September, 2099},
+        {20, March, 2100}, {23, September, 2100},
+        {21, March, 2101}, {23, September, 2101},
+        {20, March, 2104}, {23, September, 2104},
+        {20, March, 2199}, {23, September, 2199}
+    };
+    for (const Date& date : holidays)
+        BOOST_CHECK_MESSAGE(calendar.isHoliday(date), date << " should be a holiday");
+
+    const Date businessDays[] = {
+        {18, March, 2100}, {19, March, 2100},
+        {21, September, 2100}, {22, September, 2100},
+        {22, March, 2101},
+        {18, March, 2104}, {19, March, 2104}, {22, September, 2104}
+    };
+    for (const Date& date : businessDays)
+        BOOST_CHECK_MESSAGE(calendar.isBusinessDay(date), date << " should be a business day");
+}
+
+BOOST_AUTO_TEST_CASE(testJapanGoldenWeek) {
+    BOOST_TEST_MESSAGE("Testing historical Japanese Golden Week holidays...");
+
+    // Holiday-law amendments effective April 12, 1973, December 27, 1985,
+    // and January 1, 2007:
+    // https://www.shugiin.go.jp/internet/itdb_housei.nsf/html/houritsu/07119730412010.htm
+    // https://www.shugiin.go.jp/Internet/itdb_housei.nsf/html/houritsu/10319851227103.htm
+    // https://www.shugiin.go.jp/internet/itdb_housei.nsf/html/housei/16220050520043.htm
+    const Calendar calendar = Japan();
+    const Date holidays[] = {
+        {4, May, 1981},  // Monday substitute for Constitution Memorial Day
+        {4, May, 1986},  // Sunday before the first weekday holiday under the 1985 amendment
+        {4, May, 1987},  // Monday substitute, before the first additional weekday holiday
+        {4, May, 1988},  // First additional weekday holiday under the 1985 amendment
+        {4, May, 2006},  // Holiday between Constitution Memorial Day and Children's Day
+        {4, May, 2007},  // Greenery Day
+        {6, May, 1974},  // Monday substitute for Children's Day under the 1973 amendment
+        {6, May, 1985},  // Monday substitute before the 2007 amendment
+        {6, May, 2002},  // Monday substitute before the 2007 amendment
+        {6, May, 2008},  // Tuesday substitute for Greenery Day
+        {6, May, 2009},  // Wednesday substitute for Constitution Memorial Day
+        {6, May, 2013}   // Monday substitute after the 2007 amendment
+    };
+    for (const Date& date : holidays)
+        BOOST_CHECK_MESSAGE(calendar.isHoliday(date), date << " should be a holiday");
+
+    const Date businessDays[] = {
+        {4, May, 1970},  // Monday before substitute holidays were introduced
+        {4, May, 1982},  // Tuesday before the 1985 amendment
+        {4, May, 1983},  // Wednesday before the 1985 amendment
+        {4, May, 1984},  // Friday before the 1985 amendment
+        {6, May, 1968},  // Monday before substitute holidays were introduced
+        {6, May, 1986},  // Tuesday before the 2007 amendment
+        {6, May, 1987},  // Wednesday before the 2007 amendment
+        {6, May, 1997},  // Tuesday before the 2007 amendment
+        {6, May, 1998},  // Wednesday before the 2007 amendment
+        {6, May, 2003},  // Tuesday before the 2007 amendment
+        {6, May, 2010}   // Thursday after the 2007 amendment
+    };
+    for (const Date& date : businessDays)
+        BOOST_CHECK_MESSAGE(calendar.isBusinessDay(date), date << " should be a business day");
+}
+
 BOOST_AUTO_TEST_CASE(testUSSettlement) {
     BOOST_TEST_MESSAGE("Testing US settlement holiday list...");
 
@@ -309,6 +376,13 @@ BOOST_AUTO_TEST_CASE(testUSGovernmentBondMarket) {
     Calendar c = UnitedStates(UnitedStates::GovernmentBond);
     BOOST_CHECK_EQUAL(c.name(), "US government bond market");
     checkHolidays(c.holidayList(Date(1, January, 2004), Date(31, December, 2004)), expectedHol);
+
+    expectedHol = {
+        {3, September, 2001},  // Labor Day
+        {12, September, 2001}, // Closure following the September 11 attacks
+    };
+    checkHolidays(c.holidayList(Date(1, September, 2001), Date(30, September, 2001)),
+                  expectedHol);
 }
 
 BOOST_AUTO_TEST_CASE(testUSNewYorkStockExchange) {
@@ -1451,6 +1525,226 @@ BOOST_AUTO_TEST_CASE(testBrazil) {
     BOOST_CHECK(exchange.isHoliday(christmasEve));
 }
 
+BOOST_AUTO_TEST_CASE(testBrazilSettlementRecentYears) {
+    BOOST_TEST_MESSAGE("Testing Brazil settlement holiday list for 2022-2026...");
+
+    std::vector<Date> expectedHol = {
+        // 2022
+        // {1, January, 2022}, // New Year's Day, Saturday
+        {28, February, 2022}, // Carnival Monday
+        {1, March, 2022},     // Carnival Tuesday
+        {15, April, 2022},    // Good Friday
+        {21, April, 2022},    // Tiradentes
+        // {1, May, 2022}, // Labour Day, Sunday
+        {16, June, 2022},     // Corpus Christi
+        {7, September, 2022}, // Independence Day
+        {12, October, 2022},  // Nossa Sra. Aparecida
+        {2, November, 2022},  // All Souls' Day
+        {15, November, 2022}, // Republic Day
+        // {25, December, 2022}, // Christmas, Sunday
+
+        // 2023
+        // {1, January, 2023}, // New Year's Day, Sunday
+        {20, February, 2023}, // Carnival Monday
+        {21, February, 2023}, // Carnival Tuesday
+        {7, April, 2023},     // Good Friday
+        {21, April, 2023},    // Tiradentes
+        {1, May, 2023},       // Labour Day
+        {8, June, 2023},      // Corpus Christi
+        {7, September, 2023}, // Independence Day
+        {12, October, 2023},  // Nossa Sra. Aparecida
+        {2, November, 2023},  // All Souls' Day
+        {15, November, 2023}, // Republic Day
+        // November 20th, 2023 is not a national holiday yet
+        {25, December, 2023}, // Christmas
+
+        // 2024
+        {1, January, 2024},   // New Year's Day
+        {12, February, 2024}, // Carnival Monday
+        {13, February, 2024}, // Carnival Tuesday
+        {29, March, 2024},    // Good Friday
+        // {21, April, 2024}, // Tiradentes, Sunday
+        {1, May, 2024},  // Labour Day
+        {30, May, 2024}, // Corpus Christi
+        // {7, September, 2024}, // Independence Day, Saturday
+        // {12, October, 2024}, // Nossa Sra. Aparecida, Saturday
+        // {2, November, 2024}, // All Souls' Day, Saturday
+        {15, November, 2024}, // Republic Day
+        {20, November, 2024}, // Black Awareness Day
+        {25, December, 2024}, // Christmas
+
+        // 2025
+        {1, January, 2025}, // New Year's Day
+        {3, March, 2025},   // Carnival Monday
+        {4, March, 2025},   // Carnival Tuesday
+        {18, April, 2025},  // Good Friday
+        {21, April, 2025},  // Tiradentes
+        {1, May, 2025},     // Labour Day
+        {19, June, 2025},   // Corpus Christi
+        // {7, September, 2025}, // Independence Day, Sunday
+        // {12, October, 2025}, // Nossa Sra. Aparecida, Sunday
+        // {2, November, 2025}, // All Souls' Day, Sunday
+        // {15, November, 2025}, // Republic Day, Saturday
+        {20, November, 2025}, // Black Awareness Day
+        {25, December, 2025}, // Christmas
+
+        // 2026
+        {1, January, 2026},   // New Year's Day
+        {16, February, 2026}, // Carnival Monday
+        {17, February, 2026}, // Carnival Tuesday
+        {3, April, 2026},     // Good Friday
+        {21, April, 2026},    // Tiradentes
+        {1, May, 2026},       // Labour Day
+        {4, June, 2026},      // Corpus Christi
+        {7, September, 2026}, // Independence Day
+        {12, October, 2026},  // Nossa Sra. Aparecida
+        {2, November, 2026},  // All Souls' Day
+        // {15, November, 2026}, // Republic Day, Sunday
+        {20, November, 2026}, // Black Awareness Day
+        {25, December, 2026}, // Christmas
+    };
+
+    Calendar c = Brazil(Brazil::Settlement);
+    checkHolidays(c.holidayList(Date(1, January, 2022), Date(31, December, 2026)), expectedHol);
+}
+
+BOOST_AUTO_TEST_CASE(testBrazilExchangeRecentYears) {
+    BOOST_TEST_MESSAGE("Testing Brazil exchange (B3) holiday list for 2022-2026...");
+
+    std::vector<Date> expectedHol = {
+        // 2022
+        // {1, January, 2022}, // New Year's Day, Saturday
+        {28, February, 2022}, // Carnival Monday
+        {1, March, 2022},     // Carnival Tuesday
+        {15, April, 2022},    // Good Friday
+        {21, April, 2022},    // Tiradentes
+        // {1, May, 2022}, // Labour Day, Sunday
+        {16, June, 2022},     // Corpus Christi
+        {7, September, 2022}, // Independence Day
+        {12, October, 2022},  // Nossa Sra. Aparecida
+        {2, November, 2022},  // All Souls' Day
+        {15, November, 2022}, // Republic Day
+        // {24, December, 2022}, // Christmas Eve, Saturday
+        // {25, December, 2022}, // Christmas, Sunday
+        {30, December, 2022}, // last business day of the year
+
+        // 2023
+        // {1, January, 2023}, // New Year's Day, Sunday
+        {20, February, 2023}, // Carnival Monday
+        {21, February, 2023}, // Carnival Tuesday
+        {7, April, 2023},     // Good Friday
+        {21, April, 2023},    // Tiradentes
+        {1, May, 2023},       // Labour Day
+        {8, June, 2023},      // Corpus Christi
+        {7, September, 2023}, // Independence Day
+        {12, October, 2023},  // Nossa Sra. Aparecida
+        {2, November, 2023},  // All Souls' Day
+        {15, November, 2023}, // Republic Day
+        // November 20th, 2023 is a trading day
+        // {24, December, 2023}, // Christmas Eve, Sunday
+        {25, December, 2023}, // Christmas
+        {29, December, 2023}, // last business day of the year
+
+        // 2024
+        {1, January, 2024},   // New Year's Day
+        {12, February, 2024}, // Carnival Monday
+        {13, February, 2024}, // Carnival Tuesday
+        {29, March, 2024},    // Good Friday
+        // {21, April, 2024}, // Tiradentes, Sunday
+        {1, May, 2024},  // Labour Day
+        {30, May, 2024}, // Corpus Christi
+        // {7, September, 2024}, // Independence Day, Saturday
+        // {12, October, 2024}, // Nossa Sra. Aparecida, Saturday
+        // {2, November, 2024}, // All Souls' Day, Saturday
+        {15, November, 2024}, // Republic Day
+        {20, November, 2024}, // Black Consciousness Day
+        {24, December, 2024}, // Christmas Eve
+        {25, December, 2024}, // Christmas
+        {31, December, 2024}, // last business day of the year
+
+        // 2025
+        {1, January, 2025}, // New Year's Day
+        {3, March, 2025},   // Carnival Monday
+        {4, March, 2025},   // Carnival Tuesday
+        {18, April, 2025},  // Good Friday
+        {21, April, 2025},  // Tiradentes
+        {1, May, 2025},     // Labour Day
+        {19, June, 2025},   // Corpus Christi
+        // {7, September, 2025}, // Independence Day, Sunday
+        // {12, October, 2025}, // Nossa Sra. Aparecida, Sunday
+        // {2, November, 2025}, // All Souls' Day, Sunday
+        // {15, November, 2025}, // Republic Day, Saturday
+        {20, November, 2025}, // Black Consciousness Day
+        {24, December, 2025}, // Christmas Eve
+        {25, December, 2025}, // Christmas
+        {31, December, 2025}, // last business day of the year
+
+        // 2026
+        {1, January, 2026},   // New Year's Day
+        {16, February, 2026}, // Carnival Monday
+        {17, February, 2026}, // Carnival Tuesday
+        {3, April, 2026},     // Good Friday
+        {21, April, 2026},    // Tiradentes
+        {1, May, 2026},       // Labour Day
+        {4, June, 2026},      // Corpus Christi
+        {7, September, 2026}, // Independence Day
+        {12, October, 2026},  // Nossa Sra. Aparecida
+        {2, November, 2026},  // All Souls' Day
+        // {15, November, 2026}, // Republic Day, Sunday
+        {20, November, 2026}, // Black Consciousness Day
+        {24, December, 2026}, // Christmas Eve
+        {25, December, 2026}, // Christmas
+        {31, December, 2026}, // last business day of the year
+    };
+
+    Calendar c = Brazil(Brazil::Exchange);
+    checkHolidays(c.holidayList(Date(1, January, 2022), Date(31, December, 2026)), expectedHol);
+}
+
+BOOST_AUTO_TEST_CASE(testBrazilHolidayRuleChanges) {
+    BOOST_TEST_MESSAGE("Testing changes in Brazil holiday rules...");
+
+    Calendar settlement = Brazil(Brazil::Settlement);
+    Calendar exchange = Brazil(Brazil::Exchange);
+
+    // Sao Paulo City Day and Revolution Day are exchange holidays up to 2021 only
+    BOOST_CHECK(exchange.isHoliday(Date(25, January, 2021)));     // Monday
+    BOOST_CHECK(exchange.isHoliday(Date(9, July, 2021)));         // Friday
+    BOOST_CHECK(exchange.isBusinessDay(Date(25, January, 2022))); // Tuesday
+    BOOST_CHECK(exchange.isBusinessDay(Date(25, January, 2023))); // Wednesday
+    BOOST_CHECK(exchange.isBusinessDay(Date(9, July, 2024)));     // Tuesday
+    BOOST_CHECK(exchange.isBusinessDay(Date(9, July, 2025)));     // Wednesday
+    // ...and never settlement holidays
+    BOOST_CHECK(settlement.isBusinessDay(Date(25, January, 2021)));
+    BOOST_CHECK(settlement.isBusinessDay(Date(9, July, 2021)));
+
+    // Black Awareness Day is a national holiday since 2024
+    BOOST_CHECK(settlement.isBusinessDay(Date(20, November, 2023))); // Monday
+    BOOST_CHECK(settlement.isHoliday(Date(20, November, 2024)));     // Wednesday
+    BOOST_CHECK(settlement.isHoliday(Date(20, November, 2025)));     // Thursday
+
+    // Black Consciousness Day was not an exchange holiday in 2022 and 2023
+    BOOST_CHECK(exchange.isBusinessDay(Date(20, November, 2023))); // Monday
+    BOOST_CHECK(exchange.isHoliday(Date(20, November, 2024)));     // Wednesday
+
+    // Christmas Eve and the last business day of the year are exchange holidays only
+    BOOST_CHECK(exchange.isHoliday(Date(24, December, 2025))); // Wednesday
+    BOOST_CHECK(exchange.isHoliday(Date(31, December, 2025))); // Wednesday
+    BOOST_CHECK(settlement.isBusinessDay(Date(24, December, 2025)));
+    BOOST_CHECK(settlement.isBusinessDay(Date(31, December, 2025)));
+    BOOST_CHECK(exchange.isBusinessDay(Date(30, December, 2025))); // Tuesday
+
+    // December 31st, 2022 is a Saturday: the exchange closes on Friday 30th
+    BOOST_CHECK(exchange.isBusinessDay(Date(29, December, 2022))); // Thursday
+    BOOST_CHECK(exchange.isHoliday(Date(30, December, 2022)));     // Friday
+    BOOST_CHECK(settlement.isBusinessDay(Date(30, December, 2022)));
+
+    // December 31st, 2023 is a Sunday: the exchange closes on Friday 29th
+    BOOST_CHECK(exchange.isBusinessDay(Date(28, December, 2023))); // Thursday
+    BOOST_CHECK(exchange.isHoliday(Date(29, December, 2023)));     // Friday
+    BOOST_CHECK(settlement.isBusinessDay(Date(29, December, 2023)));
+}
+
 BOOST_AUTO_TEST_CASE(testDenmark) {
     BOOST_TEST_MESSAGE("Testing Denmark holiday list...");
 
@@ -1799,6 +2093,8 @@ BOOST_AUTO_TEST_CASE(testSouthKoreanSettlement) {
         {1, May, 2026},
         {5, May, 2026},
         {25, May, 2026},
+        {3, June, 2026}, // local election
+        {17, July, 2026}, // Constitution Day
         {17, August, 2026},
         {24, September, 2026},
         {25, September, 2026},
@@ -1809,8 +2105,10 @@ BOOST_AUTO_TEST_CASE(testSouthKoreanSettlement) {
         {8, February, 2027},
         {9, February, 2027},
         {1, March, 2027},
+        {3, May, 2027}, // Labour Day substitute
         {5, May, 2027},
         {13, May, 2027},
+        {19, July, 2027}, // Constitution Day substitute
         {16, August, 2027},
         {14, September, 2027},
         {15, September, 2027},
@@ -1826,6 +2124,7 @@ BOOST_AUTO_TEST_CASE(testSouthKoreanSettlement) {
         {2, May, 2028},
         {5, May, 2028},
         {6, June, 2028},
+        {17, July, 2028},
         {15, August, 2028},
         {2, October, 2028},
         {3, October, 2028},
@@ -1842,6 +2141,7 @@ BOOST_AUTO_TEST_CASE(testSouthKoreanSettlement) {
         {7, May, 2029},
         {21, May, 2029},
         {6, June, 2029},
+        {17, July, 2029},
         {15, August, 2029},
         {21, September, 2029},
         {24, September, 2029},
@@ -1856,6 +2156,7 @@ BOOST_AUTO_TEST_CASE(testSouthKoreanSettlement) {
         {6, May, 2030},
         {9, May, 2030},
         {6, June, 2030},
+        {17, July, 2030},
         {15, August, 2030},
         {11, September, 2030},
         {12, September, 2030},
@@ -1872,6 +2173,7 @@ BOOST_AUTO_TEST_CASE(testSouthKoreanSettlement) {
         {5, May, 2031},
         {28, May, 2031},
         {6, June, 2031},
+        {17, July, 2031},
         {15, August, 2031},
         {30, September, 2031},
         {1, October, 2031},
@@ -1884,8 +2186,10 @@ BOOST_AUTO_TEST_CASE(testSouthKoreanSettlement) {
         {11, February, 2032},
         {12, February, 2032},
         {1, March, 2032},
+        {3, May, 2032},
         {5, May, 2032},
         {17, May, 2032},
+        {19, July, 2032},
         {16, August, 2032},
         {20, September, 2032},
         {21, September, 2032},
@@ -1896,9 +2200,11 @@ BOOST_AUTO_TEST_CASE(testSouthKoreanSettlement) {
         {1, February, 2033},
         {2, February, 2033},
         {1, March, 2033},
+        {2, May, 2033},
         {5, May, 2033},
         {6, May, 2033},
         {6, June, 2033},
+        {18, July, 2033},
         {15, August, 2033},
         {7, September, 2033},
         {8, September, 2033},
@@ -1913,6 +2219,7 @@ BOOST_AUTO_TEST_CASE(testSouthKoreanSettlement) {
         {5, May, 2034},
         {25, May, 2034},
         {6, June, 2034},
+        {17, July, 2034},
         {15, August, 2034},
         {26, September, 2034},
         {27, September, 2034},
@@ -1929,6 +2236,7 @@ BOOST_AUTO_TEST_CASE(testSouthKoreanSettlement) {
         {7, May, 2035},
         {15, May, 2035},
         {6, June, 2035},
+        {17, July, 2035},
         {15, August, 2035},
         {17, September, 2035},
         {18, September, 2035},
@@ -1944,6 +2252,7 @@ BOOST_AUTO_TEST_CASE(testSouthKoreanSettlement) {
         {5, May, 2036},
         {6, May, 2036},
         {6, June, 2036},
+        {17, July, 2036},
         {15, August, 2036},
         {3, October, 2036},
         {6, October, 2036},
@@ -1957,6 +2266,7 @@ BOOST_AUTO_TEST_CASE(testSouthKoreanSettlement) {
         {1, May, 2037},
         {5, May, 2037},
         {22, May, 2037},
+        {17, July, 2037},
         {17, August, 2037},
         {23, September, 2037},
         {24, September, 2037},
@@ -1969,8 +2279,10 @@ BOOST_AUTO_TEST_CASE(testSouthKoreanSettlement) {
         {4, February, 2038},
         {5, February, 2038},
         {1, March, 2038},
+        {3, May, 2038},
         {5, May, 2038},
         {11, May, 2038},
+        {19, July, 2038},
         {16, August, 2038},
         {13, September, 2038},
         {14, September, 2038},
@@ -1983,8 +2295,10 @@ BOOST_AUTO_TEST_CASE(testSouthKoreanSettlement) {
         {26, January, 2039},
         {1, March, 2039},
         {2, May, 2039},
+        {3, May, 2039},
         {5, May, 2039},
         {6, June, 2039},
+        {18, July, 2039},
         {15, August, 2039},
         {3, October, 2039},
         {4, October, 2039},
@@ -1998,6 +2312,7 @@ BOOST_AUTO_TEST_CASE(testSouthKoreanSettlement) {
         {7, May, 2040},
         {18, May, 2040},
         {6, June, 2040},
+        {17, July, 2040},
         {15, August, 2040},
         {20, September, 2040},
         {21, September, 2040},
@@ -2012,6 +2327,7 @@ BOOST_AUTO_TEST_CASE(testSouthKoreanSettlement) {
         {6, May, 2041},
         {7, May, 2041},
         {6, June, 2041},
+        {17, July, 2041},
         {15, August, 2041},
         {9, September, 2041},
         {10, September, 2041},
@@ -2028,6 +2344,7 @@ BOOST_AUTO_TEST_CASE(testSouthKoreanSettlement) {
         {5, May, 2042},
         {26, May, 2042},
         {6, June, 2042},
+        {17, July, 2042},
         {15, August, 2042},
         {29, September, 2042},
         {30, September, 2042},
@@ -2042,6 +2359,7 @@ BOOST_AUTO_TEST_CASE(testSouthKoreanSettlement) {
         {1, May, 2043},
         {5, May, 2043},
         {18, May, 2043},
+        {17, July, 2043},
         {17, August, 2043},
         {16, September, 2043},
         {17, September, 2043},
@@ -2053,9 +2371,11 @@ BOOST_AUTO_TEST_CASE(testSouthKoreanSettlement) {
         {29, January, 2044},
         {1, February, 2044},
         {1, March, 2044},
+        {2, May, 2044},
         {5, May, 2044},
         {6, May, 2044},
         {6, June, 2044},
+        {18, July, 2044},
         {15, August, 2044},
         {3, October, 2044},
         {4, October, 2044},
@@ -2070,6 +2390,7 @@ BOOST_AUTO_TEST_CASE(testSouthKoreanSettlement) {
         {5, May, 2045},
         {24, May, 2045},
         {6, June, 2045},
+        {17, July, 2045},
         {15, August, 2045},
         {25, September, 2045},
         {26, September, 2045},
@@ -2086,6 +2407,7 @@ BOOST_AUTO_TEST_CASE(testSouthKoreanSettlement) {
         {7, May, 2046},
         {14, May, 2046},
         {6, June, 2046},
+        {17, July, 2046},
         {15, August, 2046},
         {14, September, 2046},
         {17, September, 2046},
@@ -2100,6 +2422,7 @@ BOOST_AUTO_TEST_CASE(testSouthKoreanSettlement) {
         {2, May, 2047},
         {6, May, 2047},
         {6, June, 2047},
+        {17, July, 2047},
         {15, August, 2047},
         {3, October, 2047},
         {4, October, 2047},
@@ -2113,6 +2436,7 @@ BOOST_AUTO_TEST_CASE(testSouthKoreanSettlement) {
         {1, May, 2048},
         {5, May, 2048},
         {20, May, 2048},
+        {17, July, 2048},
         {17, August, 2048},
         {21, September, 2048},
         {22, September, 2048},
@@ -2125,8 +2449,10 @@ BOOST_AUTO_TEST_CASE(testSouthKoreanSettlement) {
         {2, February, 2049},
         {3, February, 2049},
         {1, March, 2049},
+        {3, May, 2049},
         {5, May, 2049},
         {10, May, 2049},
+        {19, July, 2049},
         {16, August, 2049},
         {10, September, 2049},
         {13, September, 2049},
@@ -2136,9 +2462,11 @@ BOOST_AUTO_TEST_CASE(testSouthKoreanSettlement) {
         {24, January, 2050},
         {25, January, 2050},
         {1, March, 2050},
+        {2, May, 2050},
         {5, May, 2050},
         {30, May, 2050},
         {6, June, 2050},
+        {18, July, 2050},
         {15, August, 2050},
         {29, September, 2050},
         {30, September, 2050},
@@ -2472,6 +2800,8 @@ BOOST_AUTO_TEST_CASE(testKoreaStockExchange) {
         {1, May, 2026},
         {5, May, 2026},
         {25, May, 2026},
+        {3, June, 2026}, // local election
+        {17, July, 2026}, // Constitution Day
         {17, August, 2026},
         {24, September, 2026},
         {25, September, 2026},
@@ -2483,8 +2813,10 @@ BOOST_AUTO_TEST_CASE(testKoreaStockExchange) {
         {8, February, 2027},
         {9, February, 2027},
         {1, March, 2027},
+        {3, May, 2027}, // Labour Day substitute
         {5, May, 2027},
         {13, May, 2027},
+        {19, July, 2027}, // Constitution Day substitute
         {16, August, 2027},
         {14, September, 2027},
         {15, September, 2027},
@@ -2501,6 +2833,7 @@ BOOST_AUTO_TEST_CASE(testKoreaStockExchange) {
         {2, May, 2028},
         {5, May, 2028},
         {6, June, 2028},
+        {17, July, 2028},
         {15, August, 2028},
         {2, October, 2028},
         {3, October, 2028},
@@ -2518,6 +2851,7 @@ BOOST_AUTO_TEST_CASE(testKoreaStockExchange) {
         {7, May, 2029},
         {21, May, 2029},
         {6, June, 2029},
+        {17, July, 2029},
         {15, August, 2029},
         {21, September, 2029},
         {24, September, 2029},
@@ -2533,6 +2867,7 @@ BOOST_AUTO_TEST_CASE(testKoreaStockExchange) {
         {6, May, 2030},
         {9, May, 2030},
         {6, June, 2030},
+        {17, July, 2030},
         {15, August, 2030},
         {11, September, 2030},
         {12, September, 2030},
@@ -2550,6 +2885,7 @@ BOOST_AUTO_TEST_CASE(testKoreaStockExchange) {
         {5, May, 2031},
         {28, May, 2031},
         {6, June, 2031},
+        {17, July, 2031},
         {15, August, 2031},
         {30, September, 2031},
         {1, October, 2031},
@@ -2563,8 +2899,10 @@ BOOST_AUTO_TEST_CASE(testKoreaStockExchange) {
         {11, February, 2032},
         {12, February, 2032},
         {1, March, 2032},
+        {3, May, 2032},
         {5, May, 2032},
         {17, May, 2032},
+        {19, July, 2032},
         {16, August, 2032},
         {20, September, 2032},
         {21, September, 2032},
@@ -2576,9 +2914,11 @@ BOOST_AUTO_TEST_CASE(testKoreaStockExchange) {
         {1, February, 2033},
         {2, February, 2033},
         {1, March, 2033},
+        {2, May, 2033},
         {5, May, 2033},
         {6, May, 2033},
         {6, June, 2033},
+        {18, July, 2033},
         {15, August, 2033},
         {7, September, 2033},
         {8, September, 2033},
@@ -2594,6 +2934,7 @@ BOOST_AUTO_TEST_CASE(testKoreaStockExchange) {
         {5, May, 2034},
         {25, May, 2034},
         {6, June, 2034},
+        {17, July, 2034},
         {15, August, 2034},
         {26, September, 2034},
         {27, September, 2034},
@@ -2611,6 +2952,7 @@ BOOST_AUTO_TEST_CASE(testKoreaStockExchange) {
         {7, May, 2035},
         {15, May, 2035},
         {6, June, 2035},
+        {17, July, 2035},
         {15, August, 2035},
         {17, September, 2035},
         {18, September, 2035},
@@ -2627,6 +2969,7 @@ BOOST_AUTO_TEST_CASE(testKoreaStockExchange) {
         {5, May, 2036},
         {6, May, 2036},
         {6, June, 2036},
+        {17, July, 2036},
         {15, August, 2036},
         {3, October, 2036},
         {6, October, 2036},
@@ -2641,6 +2984,7 @@ BOOST_AUTO_TEST_CASE(testKoreaStockExchange) {
         {1, May, 2037},
         {5, May, 2037},
         {22, May, 2037},
+        {17, July, 2037},
         {17, August, 2037},
         {23, September, 2037},
         {24, September, 2037},
@@ -2654,8 +2998,10 @@ BOOST_AUTO_TEST_CASE(testKoreaStockExchange) {
         {4, February, 2038},
         {5, February, 2038},
         {1, March, 2038},
+        {3, May, 2038},
         {5, May, 2038},
         {11, May, 2038},
+        {19, July, 2038},
         {16, August, 2038},
         {13, September, 2038},
         {14, September, 2038},
@@ -2669,8 +3015,10 @@ BOOST_AUTO_TEST_CASE(testKoreaStockExchange) {
         {26, January, 2039},
         {1, March, 2039},
         {2, May, 2039},
+        {3, May, 2039},
         {5, May, 2039},
         {6, June, 2039},
+        {18, July, 2039},
         {15, August, 2039},
         {3, October, 2039},
         {4, October, 2039},
@@ -2685,6 +3033,7 @@ BOOST_AUTO_TEST_CASE(testKoreaStockExchange) {
         {7, May, 2040},
         {18, May, 2040},
         {6, June, 2040},
+        {17, July, 2040},
         {15, August, 2040},
         {20, September, 2040},
         {21, September, 2040},
@@ -2700,6 +3049,7 @@ BOOST_AUTO_TEST_CASE(testKoreaStockExchange) {
         {6, May, 2041},
         {7, May, 2041},
         {6, June, 2041},
+        {17, July, 2041},
         {15, August, 2041},
         {9, September, 2041},
         {10, September, 2041},
@@ -2717,6 +3067,7 @@ BOOST_AUTO_TEST_CASE(testKoreaStockExchange) {
         {5, May, 2042},
         {26, May, 2042},
         {6, June, 2042},
+        {17, July, 2042},
         {15, August, 2042},
         {29, September, 2042},
         {30, September, 2042},
@@ -2732,6 +3083,7 @@ BOOST_AUTO_TEST_CASE(testKoreaStockExchange) {
         {1, May, 2043},
         {5, May, 2043},
         {18, May, 2043},
+        {17, July, 2043},
         {17, August, 2043},
         {16, September, 2043},
         {17, September, 2043},
@@ -2744,9 +3096,11 @@ BOOST_AUTO_TEST_CASE(testKoreaStockExchange) {
         {29, January, 2044},
         {1, February, 2044},
         {1, March, 2044},
+        {2, May, 2044},
         {5, May, 2044},
         {6, May, 2044},
         {6, June, 2044},
+        {18, July, 2044},
         {15, August, 2044},
         {3, October, 2044},
         {4, October, 2044},
@@ -2762,6 +3116,7 @@ BOOST_AUTO_TEST_CASE(testKoreaStockExchange) {
         {5, May, 2045},
         {24, May, 2045},
         {6, June, 2045},
+        {17, July, 2045},
         {15, August, 2045},
         {25, September, 2045},
         {26, September, 2045},
@@ -2779,6 +3134,7 @@ BOOST_AUTO_TEST_CASE(testKoreaStockExchange) {
         {7, May, 2046},
         {14, May, 2046},
         {6, June, 2046},
+        {17, July, 2046},
         {15, August, 2046},
         {14, September, 2046},
         {17, September, 2046},
@@ -2794,6 +3150,7 @@ BOOST_AUTO_TEST_CASE(testKoreaStockExchange) {
         {2, May, 2047},
         {6, May, 2047},
         {6, June, 2047},
+        {17, July, 2047},
         {15, August, 2047},
         {3, October, 2047},
         {4, October, 2047},
@@ -2808,6 +3165,7 @@ BOOST_AUTO_TEST_CASE(testKoreaStockExchange) {
         {1, May, 2048},
         {5, May, 2048},
         {20, May, 2048},
+        {17, July, 2048},
         {17, August, 2048},
         {21, September, 2048},
         {22, September, 2048},
@@ -2821,8 +3179,10 @@ BOOST_AUTO_TEST_CASE(testKoreaStockExchange) {
         {2, February, 2049},
         {3, February, 2049},
         {1, March, 2049},
+        {3, May, 2049},
         {5, May, 2049},
         {10, May, 2049},
+        {19, July, 2049},
         {16, August, 2049},
         {10, September, 2049},
         {13, September, 2049},
@@ -2833,9 +3193,11 @@ BOOST_AUTO_TEST_CASE(testKoreaStockExchange) {
         {24, January, 2050},
         {25, January, 2050},
         {1, March, 2050},
+        {2, May, 2050},
         {5, May, 2050},
         {30, May, 2050},
         {6, June, 2050},
+        {18, July, 2050},
         {15, August, 2050},
         {29, September, 2050},
         {30, September, 2050},
@@ -2884,7 +3246,7 @@ BOOST_AUTO_TEST_CASE(testHongKong) {
         {23, January, 2004}, {26, May, 2004}, {9, February, 2005},
         {5, May, 2006}, {17, February, 2007}, {12, May, 2008},
         {4, April, 2009}, {21, May, 2010}, {3, February, 2011},
-        {10, May, 2012}, {17, May, 2013}, {31, January, 2014},
+        {23, January, 2012}, {17, May, 2013}, {31, January, 2014},
         {19, February, 2015}, {8, February, 2016}, {3, May, 2017},
         {16, February, 2018}, {5, February, 2019}, {30, April, 2020},
         {12, February, 2021}, {1, February, 2022}, {5, April, 2023},
@@ -2892,6 +3254,36 @@ BOOST_AUTO_TEST_CASE(testHongKong) {
     };
     for (const Date& date : historical)
         BOOST_CHECK_MESSAGE(calendar.isHoliday(date), date);
+
+    // Buddha's birthday was on Saturday, April 28th, 2012
+    BOOST_CHECK(calendar.isBusinessDay(Date(10, May, 2012)));
+
+    // holidays moved to the next day not already a holiday
+    const Date substitutes[] = {
+        {2, October, 2012}, {13, May, 2019}, {6, April, 2021}
+    };
+    for (const Date& date : substitutes)
+        BOOST_CHECK_MESSAGE(calendar.isHoliday(date), date);
+
+    // December 27th is a holiday when Christmas falls on a weekend
+    const Date afterChristmas[] = {
+        {27, December, 2004}, {27, December, 2005}, {27, December, 2010},
+        {27, December, 2011}, {27, December, 2016}, {27, December, 2021},
+        {27, December, 2022}, {27, December, 2027}
+    };
+    for (const Date& date : afterChristmas)
+        BOOST_CHECK_MESSAGE(calendar.isHoliday(date), date);
+    BOOST_CHECK(calendar.isBusinessDay(Date(28, December, 2026))); // Christmas on Friday
+
+    const std::vector<Date> expected2027 = {
+        {1, January, 2027},  {8, February, 2027}, {9, February, 2027},
+        {26, March, 2027},   {29, March, 2027},   {5, April, 2027},
+        {13, May, 2027},     {9, June, 2027},     {1, July, 2027},
+        {16, September, 2027}, {1, October, 2027}, {8, October, 2027},
+        {27, December, 2027}
+    };
+    checkHolidays(calendar.holidayList(Date(1, January, 2027),
+                                       Date(31, December, 2027)), expected2027);
 }
 
 BOOST_AUTO_TEST_CASE(testArgentinaCalendar) {
@@ -2992,6 +3384,8 @@ BOOST_AUTO_TEST_CASE(testThailandCalendar) {
     BOOST_CHECK(calendar.isHoliday(Date(3, June, 2024)));
     BOOST_CHECK(calendar.isHoliday(Date(29, July, 2024))); // substitution
     BOOST_CHECK(calendar.isHoliday(Date(14, October, 2024))); // substitution
+    BOOST_CHECK(calendar.isHoliday(Date(2, June, 2025))); // additional special holiday
+    BOOST_CHECK(calendar.isHoliday(Date(11, August, 2025))); // additional special holiday
     BOOST_CHECK(calendar.isBusinessDay(Date(2, January, 2024)));
     const Date historical[] = {
         {5, May, 2001},
@@ -3009,6 +3403,55 @@ BOOST_AUTO_TEST_CASE(testThailandCalendar) {
     };
     for (const Date& date : historical)
         BOOST_CHECK_MESSAGE(calendar.isHoliday(date), date);
+}
+
+BOOST_AUTO_TEST_CASE(testThailandHolidays2026And2027) {
+    BOOST_TEST_MESSAGE("Testing Thailand holiday lists for 2026 and 2027...");
+
+    // Bank of Thailand notifications No. 31/2568 and 26/2569 (2026) and No. 37/2569 (2027)
+    std::vector<Date> expectedHol = {
+        {1, January, 2026},
+        {2, January, 2026},
+        {3, March, 2026},
+        {6, April, 2026},
+        {13, April, 2026},
+        {14, April, 2026},
+        {15, April, 2026},
+        {1, May, 2026},
+        {4, May, 2026},
+        {1, June, 2026},
+        {3, June, 2026},
+        {28, July, 2026},
+        {29, July, 2026},
+        {12, August, 2026},
+        {13, October, 2026},
+        {16, October, 2026}, // Bangkok only
+        {23, October, 2026},
+        {7, December, 2026},
+        {10, December, 2026},
+        {31, December, 2026},
+        {1, January, 2027},
+        {22, February, 2027},
+        {6, April, 2027},
+        {13, April, 2027},
+        {14, April, 2027},
+        {15, April, 2027},
+        {3, May, 2027},
+        {4, May, 2027},
+        {20, May, 2027},
+        {3, June, 2027},
+        {19, July, 2027},
+        {28, July, 2027},
+        {12, August, 2027},
+        {13, October, 2027},
+        {25, October, 2027},
+        {6, December, 2027},
+        {10, December, 2027},
+        {31, December, 2027}
+    };
+
+    Calendar c = Thailand();
+    checkHolidays(c.holidayList(Date(1, January, 2026), Date(31, December, 2027)), expectedHol);
 }
 
 BOOST_AUTO_TEST_CASE(testTurkeyCalendar) {
@@ -3102,6 +3545,16 @@ BOOST_AUTO_TEST_CASE(testPolandCalendars) {
     BOOST_CHECK(exchange.isHoliday(holiday));
     BOOST_CHECK(settlement.isBusinessDay(Date(7, January, 2025)));
     BOOST_CHECK(exchange.isBusinessDay(Date(7, January, 2025)));
+
+    // Christmas Eve became a settlement holiday in 2025.
+    BOOST_CHECK(settlement.isBusinessDay(Date(24, December, 2024)));
+    BOOST_CHECK(exchange.isHoliday(Date(24, December, 2024)));
+    for (Year year : {2025, 2026}) {
+        BOOST_CHECK(settlement.isHoliday(Date(24, December, year)));
+        BOOST_CHECK(exchange.isHoliday(Date(24, December, year)));
+        BOOST_CHECK(settlement.isBusinessDay(Date(23, December, year)));
+        BOOST_CHECK(exchange.isBusinessDay(Date(23, December, year)));
+    }
 }
 
 BOOST_AUTO_TEST_CASE(testSlovakiaCalendar) {
@@ -3501,10 +3954,30 @@ BOOST_AUTO_TEST_CASE(testChinaSSE) {
         {5, Oct, 2026},
         {6, Oct, 2026},
         {7, Oct, 2026},
+
+        // China Shanghai Securities Exchange holiday list in the year 2027
+        {1, Jan, 2027},
+        {5, Feb, 2027},
+        {8, Feb, 2027},
+        {9, Feb, 2027},
+        {10, Feb, 2027},
+        {11, Feb, 2027},
+        {12, Feb, 2027},
+        {5, April, 2027},
+        {3, May, 2027},
+        {4, May, 2027},
+        {5, May, 2027},
+        {9, Jun, 2027},
+        {15, Sep, 2027},
+        {1, Oct, 2027},
+        {4, Oct, 2027},
+        {5, Oct, 2027},
+        {6, Oct, 2027},
+        {7, Oct, 2027},
     };
 
     Calendar c = China(China::SSE);
-    checkHolidays(c.holidayList(Date(1, January, 2014), Date(31, December, 2026)), expectedHol);
+    checkHolidays(c.holidayList(Date(1, January, 2014), Date(31, December, 2027)), expectedHol);
 }
 
 BOOST_AUTO_TEST_CASE(testChinaIB) {
@@ -3617,11 +4090,18 @@ BOOST_AUTO_TEST_CASE(testChinaIB) {
         {9, May, 2026},
         {20, Sep, 2026},
         {10, Oct, 2026},
+
+        // China Inter Bank working weekends list in the year 2027
+        {31, Jan, 2027},
+        {14, Feb, 2027},
+        {8, May, 2027},
+        {26, Sep, 2027},
+        {9, Oct, 2027},
     };
 
     Calendar c = China(China::IB);
     Date start(1, Jan, 2014);
-    Date end(31, Dec, 2026);
+    Date end(31, Dec, 2027);
 
     Size k = 0;
 
@@ -3690,8 +4170,9 @@ BOOST_AUTO_TEST_CASE(testNewZealand) {
 
     auto auckland = NewZealand(NewZealand::Auckland);
     auto wellington = NewZealand(NewZealand::Wellington);
+    auto nzfma = NewZealand(NewZealand::NZFMA);
 
-    for (const auto& calendar : {auckland, wellington}) {
+    for (const auto& calendar : {auckland, wellington, nzfma}) {
         // mid-week New Year's day
         BOOST_TEST(calendar.isHoliday({1, January, 2025}));
         BOOST_TEST(calendar.isHoliday({2, January, 2025}));
@@ -3762,6 +4243,16 @@ BOOST_AUTO_TEST_CASE(testNewZealand) {
     BOOST_TEST(wellington.isHoliday({25, January, 2027}));
     BOOST_TEST(auckland.isHoliday({1, February, 2027}));
     BOOST_TEST(wellington.isBusinessDay({1, February, 2027}));
+    // NZFMA observes both anniversary days through the end of 2025
+    BOOST_TEST(nzfma.isHoliday({22, January, 2024}));
+    BOOST_TEST(nzfma.isHoliday({29, January, 2024}));
+    BOOST_TEST(nzfma.isHoliday({20, January, 2025}));
+    BOOST_TEST(nzfma.isHoliday({27, January, 2025}));
+    // and neither from 2026 onward
+    BOOST_TEST(nzfma.isBusinessDay({19, January, 2026}));
+    BOOST_TEST(nzfma.isBusinessDay({26, January, 2026}));
+    BOOST_TEST(nzfma.isBusinessDay({25, January, 2027}));
+    BOOST_TEST(nzfma.isBusinessDay({1, February, 2027}));
 }
 
 
@@ -4224,34 +4715,77 @@ BOOST_AUTO_TEST_CASE(testMalta) {
 
     BOOST_TEST_MESSAGE("Testing Malta holiday list...");
 
+    Calendar c = Malta();
+
+    BOOST_CHECK(c.isWeekend(Saturday));
+    BOOST_CHECK(c.isWeekend(Sunday));
+    BOOST_CHECK(!c.isWeekend(Friday));
+
+    // 2024 to 2026 as in the MSE trading calendars; 2027 from the rules
     std::vector<Date> expectedHol = {
+        {1, January, 2024},
+        {2, January, 2024},
+        {19, March, 2024},
+        {29, March, 2024},
+        {1, April, 2024},
+        {1, May, 2024},
+        {7, June, 2024},
+        {15, August, 2024},
+        {13, December, 2024},
+        {24, December, 2024},
+        {25, December, 2024},
+        {26, December, 2024},
+        {31, December, 2024},
+
+        {1, January, 2025},
+        {2, January, 2025},
+        {10, February, 2025},
+        {19, March, 2025},
+        {31, March, 2025},
+        {18, April, 2025},
+        {21, April, 2025},
+        {1, May, 2025},
+        {15, August, 2025},
+        {8, September, 2025},
+        {8, December, 2025},
+        {24, December, 2025},
+        {25, December, 2025},
+        {26, December, 2025},
+        {31, December, 2025},
+
         {1, January, 2026},
+        {2, January, 2026},
         {10, February, 2026},
         {19, March, 2026},
         {31, March, 2026},
+        {3, April, 2026},
         {6, April, 2026},
+        {1, May, 2026},
         {29, June, 2026},
         {8, September, 2026},
         {21, September, 2026},
         {8, December, 2026},
-        {13, December, 2026},
         {24, December, 2026},
+        {25, December, 2026},
         {31, December, 2026},
 
+        {1, January, 2027},
         {10, February, 2027},
+        {19, March, 2027},
+        {26, March, 2027},
         {29, March, 2027},
         {31, March, 2027},
+        {7, June, 2027},
         {29, June, 2027},
-        {15, August, 2027},
         {8, September, 2027},
         {21, September, 2027},
         {8, December, 2027},
         {13, December, 2027},
-        {26, December, 2027},
+        {24, December, 2027},
+        {31, December, 2027},
     };
 
-    Calendar c = Malta();
-    checkHolidays(c.holidayList(Date(1, January, 2026), Date(31, December, 2027)), expectedHol);
+    checkHolidays(c.holidayList(Date(1, January, 2024), Date(31, December, 2027)), expectedHol);
 }
 
 BOOST_AUTO_TEST_CASE(testMontenegro) {
@@ -4357,13 +4891,38 @@ BOOST_AUTO_TEST_CASE(testSerbia) {
 
     BOOST_TEST_MESSAGE("Testing Serbia holiday list...");
 
+    // 2024 to 2026 as in the BELEX trading calendars (without BELEX's one-off
+    // closures); 2027 from the rules
     std::vector<Date> expectedHol = {
+        {1, January, 2024},
+        {2, January, 2024},
+        {15, February, 2024},
+        {16, February, 2024},
+        {1, May, 2024},
+        {2, May, 2024},
+        {3, May, 2024},
+        {6, May, 2024},
+        {11, November, 2024},
+        {31, December, 2024},
+
+        {1, January, 2025},
+        {2, January, 2025},
+        {7, January, 2025},
+        {17, February, 2025},
+        {18, April, 2025},
+        {21, April, 2025},
+        {1, May, 2025},
+        {2, May, 2025},
+        {11, November, 2025},
+        {31, December, 2025},
+
         {1, January, 2026},
         {2, January, 2026},
         {7, January, 2026},
         {16, February, 2026},
-        {3, April, 2026},
-        {6, April, 2026},
+        {17, February, 2026},
+        {10, April, 2026},
+        {13, April, 2026},
         {1, May, 2026},
         {11, November, 2026},
         {31, December, 2026},
@@ -4372,14 +4931,23 @@ BOOST_AUTO_TEST_CASE(testSerbia) {
         {7, January, 2027},
         {15, February, 2027},
         {16, February, 2027},
-        {26, March, 2027},
-        {29, March, 2027},
+        {30, April, 2027},
+        {3, May, 2027},
+        {4, May, 2027},
         {11, November, 2027},
         {31, December, 2027},
     };
 
     Calendar c = Serbia();
-    checkHolidays(c.holidayList(Date(1, January, 2026), Date(31, December, 2027)), expectedHol);
+    checkHolidays(c.holidayList(Date(1, January, 2024), Date(31, December, 2027)), expectedHol);
+
+    // holidays on a Sunday moved to the first following working day
+    BOOST_CHECK(c.isHoliday(Date(3, May, 2016)));
+    BOOST_CHECK(c.isHoliday(Date(3, January, 2017)));
+    BOOST_CHECK(c.isHoliday(Date(12, November, 2018)));
+    BOOST_CHECK(c.isHoliday(Date(3, January, 2022)));
+    BOOST_CHECK(c.isHoliday(Date(3, May, 2022)));
+    BOOST_CHECK(c.isHoliday(Date(3, January, 2023)));
 }
 
 BOOST_AUTO_TEST_CASE(testSaudiArabiaFoundingDayAndEidHolidays) {
@@ -4426,10 +4994,55 @@ BOOST_AUTO_TEST_CASE(testSlovenia) {
     BOOST_TEST_MESSAGE("Testing Slovenia holiday list...");
 
     std::vector<Date> expectedHol = {
+        {2, January, 2023},
+        {8, February, 2023},
+        {7, April, 2023},
+        {10, April, 2023},
+        {27, April, 2023},
+        {1, May, 2023},
+        {2, May, 2023},
+        {14, August, 2023},
+        {15, August, 2023},
+        {31, October, 2023},
+        {1, November, 2023},
+        {25, December, 2023},
+        {26, December, 2023},
+
+        {1, January, 2024},
+        {2, January, 2024},
+        {8, February, 2024},
+        {29, March, 2024},
+        {1, April, 2024},
+        {1, May, 2024},
+        {2, May, 2024},
+        {25, June, 2024},
+        {15, August, 2024},
+        {31, October, 2024},
+        {1, November, 2024},
+        {24, December, 2024},
+        {25, December, 2024},
+        {26, December, 2024},
+        {31, December, 2024},
+
+        {1, January, 2025},
+        {2, January, 2025},
+        {18, April, 2025},
+        {21, April, 2025},
+        {1, May, 2025},
+        {2, May, 2025},
+        {25, June, 2025},
+        {15, August, 2025},
+        {31, October, 2025},
+        {24, December, 2025},
+        {25, December, 2025},
+        {26, December, 2025},
+        {31, December, 2025},
+
         {1, January, 2026},
         {2, January, 2026},
         {3, April, 2026},
         {6, April, 2026},
+        {27, April, 2026},
         {1, May, 2026},
         {25, June, 2026},
         {24, December, 2026},
@@ -4437,15 +5050,18 @@ BOOST_AUTO_TEST_CASE(testSlovenia) {
         {31, December, 2026},
 
         {1, January, 2027},
+        {8, February, 2027},
         {26, March, 2027},
         {29, March, 2027},
+        {27, April, 2027},
         {25, June, 2027},
+        {1, November, 2027},
         {24, December, 2027},
         {31, December, 2027},
     };
 
     Calendar c = Slovenia();
-    checkHolidays(c.holidayList(Date(1, January, 2026), Date(31, December, 2027)), expectedHol);
+    checkHolidays(c.holidayList(Date(1, January, 2023), Date(31, December, 2027)), expectedHol);
 }
 
 BOOST_AUTO_TEST_CASE(testCroatia) {
@@ -4453,6 +5069,36 @@ BOOST_AUTO_TEST_CASE(testCroatia) {
     BOOST_TEST_MESSAGE("Testing Croatia holiday list...");
 
     std::vector<Date> expectedHol = {
+        {1, January, 2024},
+        {29, March, 2024},
+        {1, April, 2024},
+        {17, April, 2024},
+        {1, May, 2024},
+        {30, May, 2024},
+        {5, August, 2024},
+        {15, August, 2024},
+        {1, November, 2024},
+        {18, November, 2024},
+        {24, December, 2024},
+        {25, December, 2024},
+        {26, December, 2024},
+        {31, December, 2024},
+
+        {1, January, 2025},
+        {6, January, 2025},
+        {18, April, 2025},
+        {21, April, 2025},
+        {1, May, 2025},
+        {30, May, 2025},
+        {19, June, 2025},
+        {5, August, 2025},
+        {15, August, 2025},
+        {18, November, 2025},
+        {24, December, 2025},
+        {25, December, 2025},
+        {26, December, 2025},
+        {31, December, 2025},
+
         {1, January, 2026},
         {6, January, 2026},
         {3, April, 2026},
@@ -4473,13 +5119,14 @@ BOOST_AUTO_TEST_CASE(testCroatia) {
         {27, May, 2027},
         {22, June, 2027},
         {5, August, 2027},
+        {1, November, 2027},
         {18, November, 2027},
         {24, December, 2027},
         {31, December, 2027},
     };
 
     Calendar c = Croatia();
-    checkHolidays(c.holidayList(Date(1, January, 2026), Date(31, December, 2027)), expectedHol);
+    checkHolidays(c.holidayList(Date(1, January, 2024), Date(31, December, 2027)), expectedHol);
 }
 
 BOOST_AUTO_TEST_CASE(testMalaysia) {

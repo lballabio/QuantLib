@@ -1,0 +1,13 @@
+name: Check test messages
+on:
+  push:
+    branches:
+      - '**'
+  pull_request:
+jobs:
+  check-test-messages:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v7
+    - name: Check test messages
+      run: python3 tools/check_test_messages.py

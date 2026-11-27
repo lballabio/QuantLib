@@ -105,7 +105,7 @@ namespace QuantLib {
                           bool settlesAccrual = true,
                           bool paysAtDefaultTime = true,
                           const Date& protectionStart = Date(),
-                          ext::shared_ptr<Claim> = ext::shared_ptr<Claim>(),
+                          ext::shared_ptr<Claim> = {},
                           const DayCounter& lastPeriodDayCounter = DayCounter(),
                           bool rebatesAccrual = true,
                           const Date& tradeDate = Date(),
@@ -159,7 +159,7 @@ namespace QuantLib {
                           bool paysAtDefaultTime = true,
                           const Date& protectionStart = Date(),
                           const Date& upfrontDate = Date(),
-                          ext::shared_ptr<Claim> = ext::shared_ptr<Claim>(),
+                          ext::shared_ptr<Claim> = {},
                           const DayCounter& lastPeriodDayCounter = DayCounter(),
                           bool rebatesAccrual = true,
                           const Date& tradeDate = Date(),
@@ -312,7 +312,7 @@ namespace QuantLib {
         : public virtual PricingEngine::arguments {
       public:
         arguments();
-        Protection::Side side;
+        Protection::Side side = Protection::Side(-1);
         Real notional;
         std::optional<Rate> upfront;
         Rate spread;

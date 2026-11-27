@@ -42,7 +42,7 @@ class Gaussian1dSwaptionVolatility : public SwaptionVolatilityStructure {
                                  const ext::shared_ptr<Gaussian1dModel>& model,
                                  const DayCounter& dc,
                                  ext::shared_ptr<Gaussian1dSwaptionEngine> swaptionEngine =
-                                     ext::shared_ptr<Gaussian1dSwaptionEngine>());
+                                     {});
     //@{
     Date maxDate() const override { return Date::maxDate(); }
     //@}
