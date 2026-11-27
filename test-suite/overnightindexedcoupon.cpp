@@ -2815,6 +2815,25 @@ BOOST_AUTO_TEST_CASE(testInterestCalculatedAccrualDateFixingHolidayAccruals) {
                 {Date(31, Mar, 2027), 0.0},
             }
         },
+        // coupon ends on a fixing holiday with obs-shift and unset lookback days
+        {Date(18, October, 2024), Date(18, April, 2025), Null<Natural>(), true, 0, DayCounter(), Date(), Date(),
+            {
+                {Date(18, October, 2024), 0.0},
+                {Date(19, October, 2024), 1344.444444444},
+                {Date(20, October, 2024), 2688.88888888},
+                {Date(21, October, 2024), 4033.33333333},
+                {Date(22, October, 2024), 5372.76224074},
+                {Date(2, March, 2025), 169984.93805796764},
+                {Date(3, March, 2025), 171224.80883054345},
+                {Date(17, April, 2025), 226499.35892772756},
+                {Date(18, April, 2025), 227726.5388507987},
+                {Date(19, April, 2025), 227726.5388507987},
+                {Date(20, April, 2025), 227726.5388507987},
+                {Date(21, April, 2025), 227726.5388507987},
+                {Date(22, April, 2025), 227726.5388507987},
+                {Date(23, April, 2025), 0.0},               
+            }
+        },
     };
     const auto makeCoupon = [&](const TestCase& tc, bool telescopicValueDates) {
         const auto& dc = tc.dayCounter.empty() ? vars.sofr->dayCounter() : tc.dayCounter;
@@ -3067,6 +3086,24 @@ BOOST_AUTO_TEST_CASE(testRequiredTodaysFixing) {
     BOOST_CHECK_NO_THROW(future.rate());
 }
 
+BOOST_AUTO_TEST_CASE(testObservationShiftWithNullLookbackDays) {
+    BOOST_TEST_MESSAGE(
+        "Testing that null lookback days with observation shift is the same as zero lookback days...");
+
+    CommonVars vars(Date(26, March, 2026));
+    vars.forecastCurve.linkTo(flatRate(0.04, Actual360()));
+
+    // ends on a Saturday, so interest dates and value dates differ
+    const Date start(31, March, 2026), end(31, October, 2026);
+    auto nullCpn = vars.makeCoupon(start, end, Null<Natural>(), 0, true);
+    auto zeroCpn = vars.makeCoupon(start, end, 0, 0, true);
+
+    CHECK_OIS_COUPON_RESULT("rate", nullCpn->rate(), zeroCpn->rate(), 1e-12);
+    CHECK_OIS_COUPON_RESULT("amount", nullCpn->amount(), zeroCpn->amount(), 1e-8);
+    for (Date d : {Date(15, June, 2026), end})
+        CHECK_OIS_COUPON_RESULT("accrued amount", nullCpn->accruedAmount(d),
+                                zeroCpn->accruedAmount(d), 1e-8);
+}
 
 BOOST_AUTO_TEST_SUITE_END()
 
