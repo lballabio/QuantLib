@@ -3,6 +3,7 @@
 /*
  Copyright (C) 2009, 2012 Roland Lichters
  Copyright (C) 2009, 2012 Ferdinando Ametrano
+ Copyright (C) 2026 Thiago Rodrigues
  Copyright (C) 2026 Kyrylo Protsenko
 
  This file is part of QuantLib, a free-software/open-source library
@@ -65,7 +66,9 @@ namespace QuantLib {
           DateGeneration::Rule rule = DateGeneration::Backward,
           Calendar overnightCalendar = Calendar(),
           BusinessDayConvention convention = ModifiedFollowing,
-          DayCounter fixedDayCount = DayCounter());
+          DayCounter fixedDayCount = DayCounter(),
+          Compounding fixedCompounding = Simple,
+          Frequency fixedCompoundingFrequency = Annual);
 
         OISRateHelper(
           const Date& startDate,
@@ -93,7 +96,9 @@ namespace QuantLib {
           DateGeneration::Rule rule = DateGeneration::Backward,
           Calendar overnightCalendar = Calendar(),
           BusinessDayConvention convention = ModifiedFollowing,
-          DayCounter fixedDayCount = DayCounter());
+          DayCounter fixedDayCount = DayCounter(),
+          Compounding fixedCompounding = Simple,
+          Frequency fixedCompoundingFrequency = Annual);
 
         //! \name RateHelper interface
         //@{
@@ -141,6 +146,8 @@ namespace QuantLib {
         Calendar overnightCalendar_;
         BusinessDayConvention convention_;
         DayCounter fixedDayCount_;
+        Compounding fixedCompounding_;
+        Frequency fixedCompoundingFrequency_;
         Natural lookbackDays_;
         Natural lockoutDays_;
         bool applyObservationShift_;

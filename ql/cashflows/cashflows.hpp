@@ -209,6 +209,24 @@ namespace QuantLib {
                             Date settlementDate = Date(),
                             Date npvDate = Date(),
                             Real npv = Null<Real>());
+
+        //! Fixed rate giving the required NPV to a leg of fixed-rate coupons.
+        /*! Unlike atmRate(), this takes the compounding of the coupons
+            into account; the two return the same result when all coupons
+            accrue simple interest.  If the NPV is not given, the leg's
+            own NPV is used.
+
+            \pre All coupons not yet occurred must be FixedRateCoupon instances.
+        */
+        static Rate
+        impliedFixedRate(const Leg& leg,
+                         const YieldTermStructure& discountCurve,
+                         const std::optional<bool>& includeSettlementDateFlows = std::nullopt,
+                         Date settlementDate = Date(),
+                         Date npvDate = Date(),
+                         Real npv = Null<Real>(),
+                         Real accuracy = 1.0e-10,
+                         Size maxIterations = 100);
         //@}
 
         //! \name Yield (a.k.a. Internal Rate of Return, i.e. IRR) functions

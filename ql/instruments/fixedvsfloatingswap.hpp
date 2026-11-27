@@ -109,6 +109,11 @@ namespace QuantLib {
         void setupArguments(PricingEngine::arguments* args) const override;
         void fetchResults(const PricingEngine::results*) const override;
 
+      protected:
+        // results
+        mutable Rate fairRate_;
+        mutable Spread fairSpread_;
+
       private:
         void setupExpired() const override;
         virtual void setupFloatingArguments(arguments* args) const = 0;
@@ -125,9 +130,6 @@ namespace QuantLib {
         BusinessDayConvention paymentConvention_;
         Integer paymentLag_;
         Calendar paymentCalendar_;
-        // results
-        mutable Rate fairRate_;
-        mutable Spread fairSpread_;
 
         bool constantNominals_, sameNominals_;
     };

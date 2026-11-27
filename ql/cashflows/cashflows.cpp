@@ -23,6 +23,7 @@
 #include <ql/cashflows/cashflows.hpp>
 #include <ql/cashflows/coupon.hpp>
 #include <ql/cashflows/couponpricer.hpp>
+#include <ql/cashflows/fixedratecoupon.hpp>
 #include <ql/math/solvers1d/brent.hpp>
 #include <ql/math/solvers1d/newtonsafe.hpp>
 #include <ql/patterns/visitor.hpp>
@@ -541,6 +542,98 @@ namespace QuantLib {
         QL_REQUIRE(bps!=0.0, "null bps: impossible atm rate");
 
         return targetNpv/bps;
+    }
+
+    Rate CashFlows::impliedFixedRate(const Leg& leg,
+                                     const YieldTermStructure& discountCurve,
+                                     const std::optional<bool>& includeSettlementDateFlows,
+                                     Date settlementDate,
+                                     Date npvDate,
+                                     Real targetNpv,
+                                     Real accuracy,
+                                     Size maxIterations) {
+        if (leg.empty())
+            return 0.0;
+
+        if (settlementDate == Date())
+            settlementDate = Settings::instance().evaluationDate();
+
+        if (npvDate == Date())
+            npvDate = settlementDate;
+
+        Real npv = 0.0;
+        BPSCalculator calc(discountCurve);
+        std::vector<ext::shared_ptr<FixedRateCoupon>> coupons;
+        std::vector<DiscountFactor> discounts;
+        bool allSimple = true;
+        // the rate must keep (1 + r/f) positive for every compounded coupon
+        Real lowerBound = Null<Real>();
+        for (const auto& i : leg) {
+            if (!i->hasOccurred(settlementDate, includeSettlementDateFlows) &&
+                !i->tradingExCoupon(settlementDate)) {
+                auto coupon = ext::dynamic_pointer_cast<FixedRateCoupon>(i);
+                QL_REQUIRE(coupon != nullptr || coupon_cast(i) == nullptr,
+                           "fixed-rate coupons required to calculate the implied fixed rate");
+                DiscountFactor discount = discountCurve.discount(i->date());
+                npv += i->amount() * discount;
+                calc(i);
+                if (coupon != nullptr) {
+                    coupons.push_back(coupon);
+                    discounts.push_back(discount);
+                    Compounding compounding = coupon->interestRate().compounding();
+                    if (compounding != Simple)
+                        allSimple = false;
+                    if (compounding != Simple && compounding != Continuous) {
+                        Real bound = -Real(int(coupon->interestRate().frequency()));
+                        lowerBound =
+                            lowerBound == Null<Real>() ? bound : std::max<Real>(lowerBound, bound);
+                    }
+                }
+            }
+        }
+
+        if (targetNpv == Null<Real>())
+            targetNpv = npv - calc.nonSensNPV();
+        else {
+            targetNpv *= discountCurve.discount(npvDate);
+            targetNpv -= calc.nonSensNPV();
+        }
+
+        // a null rate gives null coupons whatever the compounding
+        if (targetNpv == 0.0)
+            return 0.0;
+
+        Real bps = calc.bps();
+        QL_REQUIRE(bps != 0.0, "null bps: impossible implied fixed rate");
+
+        // exact for simple interest, a starting guess otherwise
+        Rate linearRate = targetNpv / bps;
+        if (allSimple)
+            return linearRate;
+
+        auto error = [&](Rate r) -> Real {
+            Real result = 0.0;
+            for (Size i = 0; i < coupons.size(); ++i) {
+                // same calculation as in FixedRateCoupon::amount()
+                const InterestRate& couponRate = coupons[i]->interestRate();
+                InterestRate rate(r, couponRate.dayCounter(), couponRate.compounding(),
+                                  couponRate.frequency());
+                Real compound = rate.compoundFactor(
+                    coupons[i]->accrualStartDate(), coupons[i]->accrualEndDate(),
+                    coupons[i]->referencePeriodStart(), coupons[i]->referencePeriodEnd());
+                result += coupons[i]->nominal() * (compound - 1.0) * discounts[i];
+            }
+            return result - targetNpv;
+        };
+
+        Brent solver;
+        solver.setMaxEvaluations(maxIterations);
+        Rate guess = linearRate;
+        if (lowerBound != Null<Real>()) {
+            solver.setLowerBound(lowerBound);
+            guess = std::max<Real>(guess, 0.5 * lowerBound);
+        }
+        return solver.solve(error, accuracy, guess, 0.001);
     }
 
     // IRR utility functions

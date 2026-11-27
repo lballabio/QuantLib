@@ -6,6 +6,7 @@
  Copyright (C) 2017 Joseph Jeisman
  Copyright (C) 2017 Fabrice Lecuyer
  Copyright (C) 2026 Sergio Araujo
+ Copyright (C) 2026 Thiago Rodrigues
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -21,9 +22,13 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
+#include <ql/cashflows/cashflows.hpp>
 #include <ql/cashflows/fixedratecoupon.hpp>
 #include <ql/cashflows/overnightindexedcoupon.hpp>
 #include <ql/instruments/overnightindexedswap.hpp>
+#include <ql/pricingengines/swap/discountingswapengine.hpp>
+#include <ql/settings.hpp>
+#include <ql/termstructures/yieldtermstructure.hpp>
 #include <utility>
 
 namespace QuantLib {
@@ -43,7 +48,9 @@ namespace QuantLib {
                                                Natural lookbackDays,
                                                Natural lockoutDays,
                                                bool applyObservationShift,
-                                               const std::optional<Integer>& roundingPrecision)
+                                               const std::optional<Integer>& roundingPrecision,
+                                               Compounding fixedCompounding,
+                                               Frequency fixedCompoundingFrequency)
     : OvernightIndexedSwap(type,
                            std::vector<Real>(1, nominal),
                            schedule,
@@ -59,7 +66,9 @@ namespace QuantLib {
                            lookbackDays,
                            lockoutDays,
                            applyObservationShift,
-                           roundingPrecision) {}
+                           roundingPrecision,
+                           fixedCompounding,
+                           fixedCompoundingFrequency) {}
 
     OvernightIndexedSwap::OvernightIndexedSwap(Type type,
                                                const std::vector<Real>& nominals,
@@ -76,7 +85,9 @@ namespace QuantLib {
                                                Natural lookbackDays,
                                                Natural lockoutDays,
                                                bool applyObservationShift,
-                                               const std::optional<Integer>& roundingPrecision)
+                                               const std::optional<Integer>& roundingPrecision,
+                                               Compounding fixedCompounding,
+                                               Frequency fixedCompoundingFrequency)
     : OvernightIndexedSwap(type,
                            nominals,
                            schedule,
@@ -94,7 +105,9 @@ namespace QuantLib {
                            lookbackDays,
                            lockoutDays,
                            applyObservationShift,
-                           roundingPrecision) {}
+                           roundingPrecision,
+                           fixedCompounding,
+                           fixedCompoundingFrequency) {}
 
     OvernightIndexedSwap::OvernightIndexedSwap(Type type,
                                                Real nominal,
@@ -112,7 +125,9 @@ namespace QuantLib {
                                                Natural lookbackDays,
                                                Natural lockoutDays,
                                                bool applyObservationShift,
-                                               const std::optional<Integer>& roundingPrecision)
+                                               const std::optional<Integer>& roundingPrecision,
+                                               Compounding fixedCompounding,
+                                               Frequency fixedCompoundingFrequency)
     : OvernightIndexedSwap(type,
                            std::vector<Real>(1, nominal),
                            std::move(fixedSchedule),
@@ -130,7 +145,9 @@ namespace QuantLib {
                            lookbackDays,
                            lockoutDays,
                            applyObservationShift,
-                           roundingPrecision) {}
+                           roundingPrecision,
+                           fixedCompounding,
+                           fixedCompoundingFrequency) {}
 
     OvernightIndexedSwap::OvernightIndexedSwap(Type type,
                                                std::vector<Real> fixedNominals,
@@ -149,7 +166,9 @@ namespace QuantLib {
                                                Natural lookbackDays,
                                                Natural lockoutDays,
                                                bool applyObservationShift,
-                                               const std::optional<Integer>& roundingPrecision)
+                                               const std::optional<Integer>& roundingPrecision,
+                                               Compounding fixedCompounding,
+                                               Frequency fixedCompoundingFrequency)
     : FixedVsFloatingSwap(type, std::move(fixedNominals), std::move(fixedSchedule), fixedRate, std::move(fixedDC),
                           overnightNominals, std::move(overnightSchedule), overnightIndex,
                           spread, DayCounter(), paymentAdjustment, paymentLag, paymentCalendar),
@@ -159,7 +178,23 @@ namespace QuantLib {
                           averagingMethod_(averagingMethod),
                           lookbackDays_(lookbackDays), lockoutDays_(lockoutDays),
                           applyObservationShift_(applyObservationShift),
-                          roundingPrecision_(roundingPrecision) {
+                          roundingPrecision_(roundingPrecision),
+                          fixedCompounding_(fixedCompounding),
+                          fixedCompoundingFrequency_(fixedCompoundingFrequency) {
+        if (fixedCompounding_ != Simple) {
+            // the base class builds a fixed leg accruing simple interest;
+            // this-> selects the accessors, not the moved-from arguments
+            legs_[0] = FixedRateLeg(this->fixedSchedule())
+                           .withNotionals(this->fixedNominals())
+                           .withCouponRates(this->fixedRate(), fixedDayCount(), fixedCompounding_,
+                                            fixedCompoundingFrequency_)
+                           .withPaymentAdjustment(paymentConvention())
+                           .withPaymentLag(paymentLag)
+                           .withPaymentCalendar(paymentCalendar.empty() ?
+                                                    this->fixedSchedule().calendar() :
+                                                    paymentCalendar);
+        }
+
         OvernightLeg leg(floatingSchedule(), overnightIndex_);
         leg
                 .withNotionals(overnightNominals)
@@ -210,6 +245,80 @@ namespace QuantLib {
                 args->floatingCoupons[i] = Null<Real>();
             }
         }
+    }
+
+    void OvernightIndexedSwap::fetchResults(const PricingEngine::results* r) const {
+        FixedVsFloatingSwap::fetchResults(r);
+
+        if (fixedCompounding_ != Simple) {
+            // the fixed-leg NPV is not linear in the rate; solve for it instead
+            fairRate_ = Null<Rate>();
+            if (NPV_ != Null<Real>() && legNPV_[0] != Null<Real>()) {
+                try {
+                    fairRate_ = fixedRateForNPV(legNPV_[0] - NPV_);
+                } catch (Error&) {
+                    fairRate_ = Null<Rate>();
+                }
+            }
+        }
+    }
+
+    Rate OvernightIndexedSwap::impliedFixedRate(Real fixedLegNPV) const {
+        calculate();
+        return fixedRateForNPV(fixedLegNPV);
+    }
+
+    Rate OvernightIndexedSwap::fixedRateForNPV(Real fixedLegNPV) const {
+        static const Spread basisPoint = 1.0e-4;
+
+        QL_REQUIRE(legNPV_[0] != Null<Real>() && legBPS_[0] != Null<Real>(),
+                   "fixed-leg NPV and BPS not available");
+        QL_REQUIRE(legBPS_[0] != 0.0, "null fixed-leg BPS");
+
+        // exact for simple interest, a starting guess otherwise
+        Rate linearRate = fixedRate() + (fixedLegNPV - legNPV_[0]) / (legBPS_[0] / basisPoint);
+        if (fixedCompounding_ == Simple)
+            return linearRate;
+
+        const Leg& leg = fixedLeg();
+
+        if (leg.size() == 1) {
+            // single coupon: c(K) follows from NPV and BPS, no curve needed
+            auto coupon = ext::dynamic_pointer_cast<FixedRateCoupon>(leg[0]);
+            Real compound = 1.0 + fixedLegNPV * coupon->accrualPeriod() * basisPoint / legBPS_[0];
+            QL_REQUIRE(compound > 0.0, "non-positive compound factor ("
+                                           << compound << ") implied by fixed-leg NPV ("
+                                           << fixedLegNPV << ")");
+            const InterestRate& r = coupon->interestRate();
+            return InterestRate::impliedRate(
+                       compound, r.dayCounter(), r.compounding(), r.frequency(),
+                       coupon->accrualStartDate(), coupon->accrualEndDate(),
+                       coupon->referencePeriodStart(), coupon->referencePeriodEnd())
+                .rate();
+        }
+
+        // several coupons: we need the discount curve
+        auto engine = ext::dynamic_pointer_cast<DiscountingSwapEngine>(engine_);
+        QL_REQUIRE(engine != nullptr,
+                   "a DiscountingSwapEngine is required to calculate the fixed rate "
+                   "of a fixed leg with several compounded coupons");
+        const Handle<YieldTermStructure>& discountCurve = engine->discountCurve();
+        QL_REQUIRE(!discountCurve.empty(), "discounting term structure handle is empty");
+        QL_REQUIRE(valuationDate_ != Date(), "valuation date not available");
+
+        // use the same cash flows and NPV date as the engine
+        bool includeSettlementDateFlows =
+            engine->includeSettlementDateFlows() ? // NOLINT(readability-implicit-bool-conversion)
+                *engine->includeSettlementDateFlows() :
+                Settings::instance().includeReferenceDateEvents();
+        Date settlementDate = engine->settlementDate() == Date() ?
+                                  discountCurve->referenceDate() :
+                                  engine->settlementDate();
+
+        // the CashFlows function works with the NPV of the leg, without the payer sign
+        return CashFlows::impliedFixedRate(leg, **discountCurve, includeSettlementDateFlows,
+                                           settlementDate, valuationDate_,
+                                           payer_[0] * fixedLegNPV, 1.0e-12, 100);
     }
 
 }

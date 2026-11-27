@@ -47,6 +47,13 @@ namespace QuantLib {
         const Handle<YieldTermStructure>& discountCurve() const {
             return discountCurve_;
         }
+        const std::optional<bool>& includeSettlementDateFlows() const {
+            return includeSettlementDateFlows_;
+        }
+        //! the settlement date passed to the constructor, possibly null
+        Date settlementDate() const { return settlementDate_; }
+        //! the NPV date passed to the constructor, possibly null
+        Date npvDate() const { return npvDate_; }
       private:
         Handle<YieldTermStructure> discountCurve_;
         std::optional<bool> includeSettlementDateFlows_;
