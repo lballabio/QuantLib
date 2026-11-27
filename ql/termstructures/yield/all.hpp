@@ -5,6 +5,7 @@
 #include <ql/termstructures/yield/bootstraptraits.hpp>
 #include <ql/termstructures/yield/compositezeroyieldstructure.hpp>
 #include <ql/termstructures/yield/derivedtermstructure.hpp>
+#include <ql/termstructures/yield/di1futureratehelper.hpp>
 #include <ql/termstructures/yield/discountcurve.hpp>
 #include <ql/termstructures/yield/fittedbonddiscountcurve.hpp>
 #include <ql/termstructures/yield/flatforward.hpp>

@@ -131,6 +131,9 @@
     <ClCompile Include="defaultprobabilitycurves.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="di1futures.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="digitalcoupon.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
