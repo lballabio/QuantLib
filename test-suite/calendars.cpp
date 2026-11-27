@@ -5524,6 +5524,137 @@ BOOST_AUTO_TEST_CASE(testIndia) {
     checkHolidays(c.holidayList(Date(1, January, 2025), Date(31, December, 2025)),
                   expectedHol2025);
 
+    // 2015-2018, from the NSCCL circulars NSE/CMPT/28438, NSE/CMPT/31421,
+    // NSCCL/CMPT/33820 and NSCCL/CMPT/36634
+    std::vector<Date> expectedHol2015To2018 = {
+        Date(26, January, 2015),   // Republic Day
+        Date(17, February, 2015),  // Mahashivratri
+        Date(19, February, 2015),  // Chhatrapati Shivaji Maharaj Jayanti
+        Date(6, March, 2015),      // Holi
+        Date(1, April, 2015),      // Annual Bank Closing
+        Date(2, April, 2015),      // Mahavir Jayanti
+        Date(3, April, 2015),      // Good Friday
+        Date(14, April, 2015),     // Ambedkar Jayanti
+        Date(1, May, 2015),        // Maharashtra Day
+        Date(4, May, 2015),        // Buddha Pournima
+        Date(1, July, 2015),       // Annual Closing of RBI
+        Date(18, August, 2015),    // Parsi New Year
+        Date(17, September, 2015), // Ganesh Chaturthi
+        Date(25, September, 2015), // Bakri Id
+        Date(2, October, 2015),    // Gandhi Jayanti
+        Date(22, October, 2015),   // Dasera
+        Date(11, November, 2015),  // Diwali - Laxmi Pujan
+        Date(12, November, 2015),  // Diwali - Balipratipada
+        Date(25, November, 2015),  // Gurunank Jayanti
+        Date(24, December, 2015),  // Id-E-Milad
+        Date(25, December, 2015),  // Christmas
+
+        Date(26, January, 2016),   // Republic Day
+        Date(19, February, 2016),  // Chhatrapati Shivaji Maharaj Jayanti
+        Date(7, March, 2016),      // Mahashivratri
+        Date(24, March, 2016),     // Holi
+        Date(25, March, 2016),     // Good Friday
+        Date(1, April, 2016),      // Annual Bank Closing
+        Date(8, April, 2016),      // Gudi Padwa
+        Date(14, April, 2016),     // Ambedkar Jayanti
+        Date(15, April, 2016),     // Ram Navami
+        Date(19, April, 2016),     // Mahavir Jayanti
+        Date(6, July, 2016),       // Ramzan Id
+        Date(15, August, 2016),    // Independence Day
+        Date(17, August, 2016),    // Parsi New Year
+        Date(5, September, 2016),  // Ganesh Chaturthi
+        Date(13, September, 2016), // Bakri Id
+        Date(11, October, 2016),   // Dasera
+        Date(12, October, 2016),   // Moharram
+        Date(31, October, 2016),   // Diwali - Balipratipada
+        Date(14, November, 2016),  // Gurunank Jayanti
+        Date(12, December, 2016),  // Id-E-Milad
+
+        Date(26, January, 2017),   // Republic Day
+        Date(24, February, 2017),  // Mahashivratri
+        Date(13, March, 2017),     // Holi
+        Date(28, March, 2017),     // Gudi Padwa
+        Date(4, April, 2017),      // Ram Navami
+        Date(14, April, 2017),     // Good Friday, Ambedkar Jayanti
+        Date(1, May, 2017),        // Maharashtra Day
+        Date(10, May, 2017),       // Buddha Pournima
+        Date(26, June, 2017),      // Ramzan Id
+        Date(15, August, 2017),    // Independence Day
+        Date(17, August, 2017),    // Parsi New Year
+        Date(25, August, 2017),    // Ganesh Chaturthi
+        Date(2, October, 2017),    // Gandhi Jayanti
+        Date(19, October, 2017),   // Diwali - Laxmi Pujan
+        Date(20, October, 2017),   // Diwali - Balipratipada
+        Date(1, December, 2017),   // Id-E-Milad
+        Date(25, December, 2017),  // Christmas
+
+        Date(26, January, 2018),   // Republic Day
+        Date(13, February, 2018),  // Mahashivratri
+        Date(19, February, 2018),  // Chhatrapati Shivaji Maharaj Jayanti
+        Date(2, March, 2018),      // Holi
+        Date(29, March, 2018),     // Mahavir Jayanti
+        Date(30, March, 2018),     // Good Friday
+        Date(30, April, 2018),     // Buddha Pournima
+        Date(1, May, 2018),        // Maharashtra Day
+        Date(15, August, 2018),    // Independence Day
+        Date(17, August, 2018),    // Parsi New Year
+        Date(22, August, 2018),    // Bakri Id
+        Date(13, September, 2018), // Ganesh Chaturthi
+        Date(20, September, 2018), // Moharram
+        Date(2, October, 2018),    // Gandhi Jayanti
+        Date(18, October, 2018),   // Dasera
+        Date(7, November, 2018),   // Diwali - Laxmi Pujan
+        Date(8, November, 2018),   // Diwali - Balipratipada
+        Date(21, November, 2018),  // Id-E-Milad
+        Date(23, November, 2018),  // Gurunank Jayanti
+        Date(25, December, 2018),  // Christmas
+    };
+    checkHolidays(c.holidayList(Date(1, January, 2015), Date(31, December, 2018)),
+                  expectedHol2015To2018);
+
+    // 2021-2022, from the NSE Clearing circulars NCL/CMPT/46687 and NCL/CMPT/50630
+    std::vector<Date> expectedHol2021To2022 = {
+        Date(26, January, 2021),   // Republic Day
+        Date(19, February, 2021),  // Chhatrapati Shivaji Maharaj Jayanti
+        Date(11, March, 2021),     // Mahashivratri
+        Date(29, March, 2021),     // Holi
+        Date(1, April, 2021),      // Annual Bank Closing
+        Date(2, April, 2021),      // Good Friday
+        Date(13, April, 2021),     // Gudi Padwa
+        Date(14, April, 2021),     // Ambedkar Jayanti
+        Date(21, April, 2021),     // Ram Navami
+        Date(13, May, 2021),       // Ramzan Id
+        Date(26, May, 2021),       // Buddha Pournima
+        Date(21, July, 2021),      // Bakri Id
+        Date(16, August, 2021),    // Parsi New Year
+        Date(19, August, 2021),    // Moharram
+        Date(10, September, 2021), // Ganesh Chaturthi
+        Date(15, October, 2021),   // Dasera
+        Date(19, October, 2021),   // Id-E-Milad
+        Date(4, November, 2021),   // Diwali - Laxmi Pujan
+        Date(5, November, 2021),   // Diwali - Balipratipada
+        Date(19, November, 2021),  // Gurunank Jayanti
+
+        Date(26, January, 2022),   // Republic Day
+        Date(1, March, 2022),      // Mahashivratri
+        Date(18, March, 2022),     // Holi
+        Date(1, April, 2022),      // Annual Bank Closing
+        Date(14, April, 2022),     // Ambedkar Jayanti, Mahavir Jayanti
+        Date(15, April, 2022),     // Good Friday
+        Date(3, May, 2022),        // Ramzan Id
+        Date(16, May, 2022),       // Buddha Pournima
+        Date(9, August, 2022),     // Moharram
+        Date(15, August, 2022),    // Independence Day
+        Date(16, August, 2022),    // Parsi New Year
+        Date(31, August, 2022),    // Ganesh Chaturthi
+        Date(5, October, 2022),    // Dasera
+        Date(24, October, 2022),   // Diwali - Laxmi Pujan
+        Date(26, October, 2022),   // Diwali - Balipratipada
+        Date(8, November, 2022),   // Gurunank Jayanti
+    };
+    checkHolidays(c.holidayList(Date(1, January, 2021), Date(31, December, 2022)),
+                  expectedHol2021To2022);
+
     const Date historical[] = {
         {21, January, 2005}, {11, January, 2006}, {1, January, 2007},
         {6, March, 2008}, {8, January, 2009}, {1, January, 2010},
