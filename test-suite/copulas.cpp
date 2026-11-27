@@ -26,7 +26,9 @@
 #include <ql/math/copulas/farliegumbelmorgensterncopula.hpp>
 #include <ql/math/copulas/frankcopula.hpp>
 #include <ql/math/randomnumbers/mt19937uniformrng.hpp>
+#include <algorithm>
 #include <cmath>
+#include <limits>
 #include <string>
 #include <vector>
 
@@ -128,6 +130,106 @@ BOOST_AUTO_TEST_CASE(testClaytonCopulaRng) {
         ClaytonCopulaRng<MersenneTwisterUniformRng> rng(MersenneTwisterUniformRng(seed), theta);
         checkSamples("Clayton copula", theta, rng, ClaytonCopula(theta));
     }
+}
+
+BOOST_AUTO_TEST_CASE(testFrankCopulaStrongDependence) {
+    BOOST_TEST_MESSAGE("Testing Frank copula at strong finite dependence...");
+
+    const FrankCopula moderate(40.0);
+    QL_CHECK_SMALL(moderate(0.95, 0.95) - 0.9344229684900084, 1e-14);
+
+    const FrankCopula positive(1000.0), negative(-1000.0);
+    QL_CHECK_SMALL(positive(0.5, 0.5) - 0.49930685281944005, 1e-14);
+    QL_CHECK_SMALL(negative(0.5, 0.5) - 0.0006931471805599453, 1e-14);
+    QL_CHECK_SMALL(negative(0.75, 0.75) - 0.5, 1e-14);
+    QL_CHECK_SMALL(negative(0.25, 0.5) / 2.6691902155412764e-112 - 1.0, 1e-12);
+    QL_CHECK_SMALL(positive(1e-300, 0.25) / 1e-300 - 1.0, 1e-12);
+
+    for (const Real theta : {-1000.0, -50.0, 50.0, 1000.0}) {
+        const FrankCopula copula(theta);
+        for (const Real x : {0.0, 0.25, 0.5, 0.75, 1.0}) {
+            BOOST_CHECK_EQUAL(copula(x, 1.0), x);
+            BOOST_CHECK_EQUAL(copula(1.0, x), x);
+            BOOST_CHECK_EQUAL(copula(x, 0.0), 0.0);
+            BOOST_CHECK_EQUAL(copula(0.0, x), 0.0);
+            if (x > 0.0)
+                for (const Real y : {0.25, 0.5, 0.75, 1.0}) {
+                    const Real cell = copula(x, y) - copula(x - 0.25, y)
+                                    - copula(x, y - 0.25) + copula(x - 0.25, y - 0.25);
+                    BOOST_CHECK_GE(cell, -1e-14);
+                }
+        }
+    }
+}
+
+BOOST_AUTO_TEST_CASE(testFrankCopulaNumericalStability) {
+    BOOST_TEST_MESSAGE("Testing Frank copula near independence and across parameter regimes...");
+
+    const double tiny = std::numeric_limits<double>::denorm_min();
+    for (const Real theta : {-tiny, -1e-308, -1e-16, -1e-8, 1e-8, 1e-16, 1e-308, tiny}) {
+        const FrankCopula copula(theta);
+        QL_CHECK_SMALL(copula(0.5, 0.5) - 0.25, 1e-9);
+        QL_CHECK_SMALL(copula(0.37, 0.63) - 0.2331, 1e-9);
+    }
+
+    // Values rounded from a 175-digit evaluation of the defining equation.
+    struct Reference { Real theta, x, y, expected; };
+    for (const Reference& r : {
+             Reference{1e-8, 0.37, 0.63, 0.23310000027167804},
+             Reference{-1e-8, 0.37, 0.63, 0.23309999972832196},
+             Reference{1e-4, 0.37, 0.63, 0.23310271677743877},
+             Reference{-1e-4, 0.37, 0.63, 0.2330972832164394},
+             Reference{1.0, 0.37, 0.63, 0.25965190538614924},
+             Reference{-1.0, 0.37, 0.63, 0.2059403968146406},
+             Reference{2.0, 0.37, 0.63, 0.2838688620723094},
+             Reference{-2.0, 0.37, 0.63, 0.1799526687770234},
+             Reference{-40.0, 0.37, 0.63, 0.017328674843481842},
+             Reference{40.0, 0.95, 0.95, 0.9344229684900084},
+             Reference{1000.0, 0.5, 0.5, 0.49930685281944004},
+             Reference{-1000.0, 0.5, 0.5, 0.0006931471805599453}}) {
+        QL_CHECK_SMALL(FrankCopula(r.theta)(r.x, r.y) - r.expected, 2e-14);
+    }
+
+    // Test continuity at the implementation's two regime boundaries.
+    for (const double t : {-1.0, 1.0}) {
+        const Real expected = FrankCopula(t)(0.37, 0.63);
+        QL_CHECK_SMALL(FrankCopula(std::nextafter(t, -2.0))(0.37, 0.63)
+                       - expected, 3e-14);
+        QL_CHECK_SMALL(FrankCopula(std::nextafter(t, 2.0))(0.37, 0.63)
+                       - expected, 3e-14);
+    }
+
+    const Real points[] = {0.0, 0.1, 0.25, 0.5, 0.75, 0.9, 1.0};
+    for (const Real theta : {-1000.0, -40.0, -1.0, -1e-16,
+                             1e-16, 1.0, 40.0, 1000.0}) {
+        const FrankCopula c(theta);
+        for (Size i = 0; i < 7; ++i) {
+            const Real x = points[i];
+            BOOST_CHECK_EQUAL(c(x, 0.0), 0.0);
+            BOOST_CHECK_EQUAL(c(0.0, x), 0.0);
+            BOOST_CHECK_EQUAL(c(x, 1.0), x);
+            BOOST_CHECK_EQUAL(c(1.0, x), x);
+            for (Size j = 0; j < 7; ++j) {
+                const Real y = points[j];
+                const Real cdf = c(x, y);
+                const Real lower = std::max<Real>(0.0, x + y - 1.0);
+                BOOST_CHECK(std::isfinite(value(cdf)));
+                BOOST_CHECK_GE(cdf, lower - 2e-14);
+                BOOST_CHECK_LE(cdf, std::min(x, y) + 2e-14);
+                QL_CHECK_SMALL(cdf - c(y, x), 2e-14);
+                if (i > 0 && j > 0) {
+                    const Real cell = cdf - c(points[i-1], y)
+                        - c(x, points[j-1]) + c(points[i-1], points[j-1]);
+                    BOOST_CHECK_GE(cell, -2e-14);
+                }
+            }
+        }
+    }
+
+    // Subnormal coordinates must not be lost in intermediate products.
+    BOOST_CHECK_EQUAL(FrankCopula(1.0)(tiny, 0.5), tiny);
+    BOOST_CHECK_EQUAL(FrankCopula(2.0)(tiny, 0.75), tiny);
+    BOOST_CHECK_EQUAL(FrankCopula(-2.0)(tiny, 0.9), tiny);
 }
 
 BOOST_AUTO_TEST_CASE(testFrankCopulaRng) {
