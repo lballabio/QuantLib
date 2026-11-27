@@ -688,6 +688,7 @@ set(QL_SOURCES
     pricingengines/barrier/fdhestondoublebarrierengine.cpp
     pricingengines/barrier/fdhestonrebateengine.cpp
     pricingengines/barrier/mcbarrierengine.cpp
+    pricingengines/basket/bachelierspreadengine.cpp
     pricingengines/basket/bjerksundstenslandspreadengine.cpp
     pricingengines/basket/choibasketengine.cpp
     pricingengines/basket/vectorbsmprocessextractor.cpp
@@ -1949,6 +1950,7 @@ set(QL_HEADERS
     pricingengines/barrier/fdhestondoublebarrierengine.hpp
     pricingengines/barrier/fdhestonrebateengine.hpp
     pricingengines/barrier/mcbarrierengine.hpp
+    pricingengines/basket/bachelierspreadengine.hpp
     pricingengines/basket/bjerksundstenslandspreadengine.hpp
     pricingengines/basket/choibasketengine.hpp
     pricingengines/basket/vectorbsmprocessextractor.hpp
