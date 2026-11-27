@@ -582,6 +582,57 @@ struct CommonVars {
 //******************************************************************************************//
 //******************************************************************************************//
 
+BOOST_AUTO_TEST_CASE(testEmptyObservationSchedule) {
+
+    BOOST_TEST_MESSAGE("Testing range accrual with no observation dates...");
+
+    CommonVars vars;
+    Schedule observationSchedule(
+        vars.startDate, vars.endDate, 1 * Years, vars.calendar, vars.observationsConvention,
+        vars.observationsConvention, DateGeneration::Forward, false);
+
+    BOOST_REQUIRE_EQUAL(observationSchedule.size(), 2);
+    BOOST_CHECK_EXCEPTION(
+        RangeAccrualFloatersCoupon(
+            vars.paymentDate, 1.0, vars.iborIndex, vars.startDate, vars.endDate, vars.fixingDays,
+            vars.rangeCouponDayCount, vars.gearing, vars.spread, vars.startDate, vars.endDate,
+            observationSchedule, vars.infiniteLowerStrike, vars.infiniteUpperStrike),
+        Error, ExpectedErrorMessage("at least one observation date required"));
+
+    Schedule couponSchedule(
+        vars.startDate, vars.endDate, 6 * Months, vars.calendar, vars.observationsConvention,
+        vars.observationsConvention, DateGeneration::Forward, false);
+    BOOST_CHECK_EXCEPTION(
+        static_cast<void>(
+            Leg(RangeAccrualLeg(couponSchedule, vars.iborIndex)
+                    .withNotionals(1.0)
+                    .withPaymentDayCounter(vars.rangeCouponDayCount)
+                    .withLowerTriggers(vars.infiniteLowerStrike)
+                    .withUpperTriggers(vars.infiniteUpperStrike)
+                    .withObservationTenor(1 * Years))),
+        Error, ExpectedErrorMessage("at least one observation date required"));
+}
+
+BOOST_AUTO_TEST_CASE(testSingleObservation) {
+
+    BOOST_TEST_MESSAGE("Testing range accrual with one observation date...");
+
+    CommonVars vars;
+    const Date observationDate(6, June, 2017);
+    Schedule observationSchedule(std::vector<Date>{vars.startDate, observationDate, vars.endDate});
+    RangeAccrualFloatersCoupon coupon(
+        vars.paymentDate, 1.0, vars.iborIndex, vars.startDate, vars.endDate, vars.fixingDays,
+        vars.rangeCouponDayCount, vars.gearing, vars.spread, vars.startDate, vars.endDate,
+        observationSchedule, vars.infiniteLowerStrike, vars.infiniteUpperStrike);
+
+    BOOST_REQUIRE_EQUAL(coupon.observationsNo(), 1);
+    BOOST_CHECK_EQUAL(coupon.observationDates().front(), observationDate);
+    auto pricer = ext::make_shared<RangeAccrualPricerByBgm>(
+        vars.correlation, vars.smilesOnExpiry.front(), vars.smilesOnPayment.front(), true, false);
+    coupon.setPricer(pricer);
+    QL_CHECK_SMALL(coupon.rate() - vars.iborIndex->fixing(coupon.fixingDate()), vars.rateTolerance);
+}
+
 BOOST_AUTO_TEST_CASE(testInfiniteRange)  {
 
     BOOST_TEST_MESSAGE("Testing infinite range accrual floaters...");

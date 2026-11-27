@@ -36,6 +36,10 @@ namespace QuantLib {
 
     class IborIndex;
 
+    //! Range-accrual coupon with observations between the schedule endpoints.
+    /*! The observation schedule must start and end at the accrual-period
+        endpoints and contain at least one additional date.
+    */
     class RangeAccrualFloatersCoupon : public FloatingRateCoupon {
 
       public:
