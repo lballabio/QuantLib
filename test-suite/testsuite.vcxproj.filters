@@ -101,6 +101,9 @@
     <ClCompile Include="commodityunitofmeasure.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="energybasisswap.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="compiledboostversion.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
