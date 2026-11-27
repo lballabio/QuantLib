@@ -21,6 +21,7 @@
 #include <ql/math/functional.hpp>
 #include <ql/pricingengines/exotic/analyticcomplexchooserengine.hpp>
 #include <ql/math/distributions/bivariatenormaldistribution.hpp>
+#include <algorithm>
 #include <utility>
 
 using std::pow;
@@ -119,10 +120,13 @@ namespace QuantLib {
 
         Real yi = ci - Pi;
         Real di = dc - dp;
-        Real epsilon = 0.001;
+        const Real Xc = strike(Option::Call);
+        const Real Xp = strike(Option::Put);
 
-        //Newton-Raphson process
-        while (std::fabs(yi) > epsilon){
+        // Newton-Raphson process; the residual tolerance is relative to the strikes so that the
+        // value is homogeneous of degree one in the prices. The critical value lies near the
+        // strikes, so the tolerance needs no term in the iterate.
+        while (std::fabs(yi) > 1.0e-10 * std::max<Real>(Xc, Xp)) {
             Sv = Sv - yi / di;
 
             bs=bsCalculator(Sv,Option::Call);
