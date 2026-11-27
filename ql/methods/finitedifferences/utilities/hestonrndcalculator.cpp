@@ -22,6 +22,7 @@
 #include <ql/math/integrals/gausslobattointegral.hpp>
 #include <ql/methods/finitedifferences/utilities/bsmrndcalculator.hpp>
 #include <ql/methods/finitedifferences/utilities/hestonrndcalculator.hpp>
+#include <ql/models/equity/hestonriccati.hpp>
 #include <ql/processes/blackscholesprocess.hpp>
 #include <ql/processes/hestonprocess.hpp>
 #include <ql/termstructures/volatility/equityfx/blackconstantvol.hpp>
@@ -42,16 +43,6 @@ namespace {
                                      process->theta(), process->sigma(),
                                      process->rho() };
             return p;
-        }
-
-        std::complex<Real> gamma(const HestonParams& p, Real p_x) {
-            return std::complex<Real>(p.kappa, p.rho*p.sigma*p_x);
-        }
-
-        std::complex<Real> omega(const HestonParams& p, Real p_x) {
-           const std::complex<Real> g = gamma(p, p_x);
-           return std::sqrt(g*g
-                  + p.sigma*p.sigma*std::complex<Real>(p_x*p_x, -p_x));
         }
 
         class CpxPv_Helper {
@@ -87,17 +78,10 @@ namespace {
             }
 
             std::complex<Real> phi(Real p_x) const {
-                const Real sigma2 = p_.sigma*p_.sigma;
-                const std::complex<Real> g = gamma(p_, p_x);
-                const std::complex<Real> o = omega(p_, p_x);
-                const std::complex<Real> gamma = (g-o)/(g+o);
-
-                return 2.0*std::exp(std::complex<Real>(0.0, p_x*x_)
-                        - p_.v0*std::complex<Real>(p_x*p_x, -p_x)
-                          /(g+o*(1.0+std::exp(-o*t_))/(1.0-std::exp(-o*t_)))
-                         +p_.kappa*p_.theta/sigma2*(
-                           (g-o)*t_ - 2.0*std::log((1.0-gamma*std::exp(-o*t_))
-                                                               /(1.0-gamma))));
+                const std::complex<Real> z(-p_x, 0.0);
+                const auto [D, C] =
+                    detail::hestonRiccatiStep(z, t_, p_.kappa, p_.theta, p_.sigma, p_.rho);
+                return 2.0*std::exp(std::complex<Real>(0.0, p_x*x_) + p_.v0*D + C);
             }
 
             const HestonParams p_;

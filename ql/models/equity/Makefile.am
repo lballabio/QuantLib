@@ -8,6 +8,7 @@ this_include_HEADERS = \
     gjrgarchmodel.hpp \
     hestonmodel.hpp \
     hestonmodelhelper.hpp \
+    hestonriccati.hpp \
     hestonslvfdmmodel.hpp \
     hestonslvmcmodel.hpp \
     piecewisetimedependenthestonmodel.hpp \

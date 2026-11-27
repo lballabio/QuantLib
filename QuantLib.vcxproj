@@ -1330,6 +1330,7 @@
     <ClInclude Include="ql\models\equity\gjrgarchmodel.hpp" />
     <ClInclude Include="ql\models\equity\hestonmodel.hpp" />
     <ClInclude Include="ql\models\equity\hestonmodelhelper.hpp" />
+    <ClInclude Include="ql\models\equity\hestonriccati.hpp" />
     <ClInclude Include="ql\models\equity\hestonslvfdmmodel.hpp" />
     <ClInclude Include="ql\models\equity\hestonslvmcmodel.hpp" />
     <ClInclude Include="ql\models\equity\piecewisetimedependenthestonmodel.hpp" />

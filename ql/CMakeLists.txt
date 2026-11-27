@@ -1772,6 +1772,7 @@ set(QL_HEADERS
     models/equity/gjrgarchmodel.hpp
     models/equity/hestonmodel.hpp
     models/equity/hestonmodelhelper.hpp
+    models/equity/hestonriccati.hpp
     models/equity/hestonslvfdmmodel.hpp
     models/equity/hestonslvmcmodel.hpp
     models/equity/piecewisetimedependenthestonmodel.hpp
