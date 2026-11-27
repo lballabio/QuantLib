@@ -1616,9 +1616,10 @@ BOOST_AUTO_TEST_CASE(testSimpleQuoteVariablesThrowsOnBadGuess) {
     // Lower bound = 0.0, no initial guess (defaults to 0.0)
     SimpleQuoteVariables vars({quote}, {}, {0.0});
 
-    // This should throw because log(0 - 0) is invalid.
-    // Before the fix, this will fail (it returns -inf instead of throwing).
-    BOOST_CHECK_THROW(vars.initialize(false), QuantLib::Error);
+    // log(0 - 0) is invalid, so this must throw our validation error
+    BOOST_CHECK_EXCEPTION(
+        vars.initialize(false), QuantLib::Error,
+        ExpectedErrorMessage("is not strictly greater than lower bound"));
 }
 
 BOOST_AUTO_TEST_CASE(testGlobalBootstrapInitialGuessFn, *precondition(usingAtParCoupons())) {
