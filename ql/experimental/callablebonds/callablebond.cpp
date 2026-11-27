@@ -365,9 +365,9 @@ namespace QuantLib {
         Real accrued = accruedAmount();
         Real dirtyP = P + accrued;
 
-        if ( dirtyP == 0.0 )
+        if ( dirtyP == 0.0 ) {
             return 0;
-        else
+        } else
             {
                 return (Pmm-Ppp)/(2*dirtyP*bump);
             }
@@ -400,9 +400,9 @@ namespace QuantLib {
         Real accrued = accruedAmount();
         Real dirtyP = P + accrued;
 
-        if ( dirtyP == 0.0 )
+        if ( dirtyP == 0.0 ) {
             return 0;
-        else
+        } else
             {
                 return (Ppp + Pmm - 2*P) / ( squared(bump) * dirtyP);
             }

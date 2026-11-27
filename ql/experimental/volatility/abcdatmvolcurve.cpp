@@ -65,11 +65,12 @@ namespace QuantLib {
             inclusionInInterpolation_.resize(nOptionTenors_);
             for(Size j=1; j<nOptionTenors_;++j)
                 inclusionInInterpolation_[j] = inclusionInInterpolation_[0];
-        } else
+        } else {
             QL_REQUIRE(nOptionTenors_==inclusionInInterpolation_.size(),
                        "mismatch between number of option tenors (" <<
                        nOptionTenors_ << ") and number of inclusion's flags (" <<
                        inclusionInInterpolation_.size() << ")");
+}
     }
 
     void AbcdAtmVolCurve::registerWithMarketData()

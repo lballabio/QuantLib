@@ -161,10 +161,10 @@ namespace QuantLib {
         Real stdDev;
         forward = forward + displacement;
         strike = strike + displacement;
-        if (strike==forward)
+        if (strike==forward) {
             // Brenner-Subrahmanyan (1988) and Feinstein (1988) ATM approx.
             stdDev = blackPrice/discount*std::sqrt(2.0 * M_PI)/forward;
-        else {
+        } else {
             // Corrado and Miller extended moneyness approximation
             Real moneynessDelta = Integer(optionType) * (forward-strike);
             Real moneynessDelta_2 = moneynessDelta/2.0;
@@ -362,7 +362,7 @@ namespace QuantLib {
         }
 
         Real operator()(Real stdDev) const {
-            #if defined(QL_EXTRA_SAFETY_CHECKS)
+            #ifdef QL_EXTRA_SAFETY_CHECKS
             QL_REQUIRE(stdDev>=0.0,
                        "stdDev (" << stdDev << ") must be non-negative");
             #endif
@@ -379,7 +379,7 @@ namespace QuantLib {
             return std::max(Real(0.0), result) - undiscountedBlackPrice_;
         }
         Real derivative(Real stdDev) const {
-            #if defined(QL_EXTRA_SAFETY_CHECKS)
+            #ifdef QL_EXTRA_SAFETY_CHECKS
             QL_REQUIRE(stdDev>=0.0,
                        "stdDev (" << stdDev << ") must be non-negative");
             #endif

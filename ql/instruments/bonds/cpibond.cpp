@@ -55,7 +55,7 @@ namespace QuantLib {
            paymentCalendar == Calendar() ? schedule.calendar() : paymentCalendar,
            issueDate),
       frequency_(schedule.tenor().frequency()), dayCounter_(accrualDayCounter),
-      growthOnly_(false), baseCPI_(baseCPI), observationLag_(observationLag),
+       baseCPI_(baseCPI), observationLag_(observationLag),
       cpiIndex_(std::move(cpiIndex)), observationInterpolation_(observationInterpolation) {
 
         maturityDate_ = schedule.endDate();

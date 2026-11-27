@@ -97,17 +97,15 @@ BOOST_AUTO_TEST_CASE(testSquareRootCLVVanillaPricing) {
     const Handle<BlackVolTermStructure> volTS(flatVol(todaysDate, vol, dc));
     const Real fwd = s0*qTS->discount(maturity)/rTS->discount(maturity);
 
-    const ext::shared_ptr<GeneralizedBlackScholesProcess> bsProcess(
-        ext::make_shared<GeneralizedBlackScholesProcess>(
-            spot, qTS, rTS, volTS));
+    const auto bsProcess = ext::make_shared<GeneralizedBlackScholesProcess>(
+            spot, qTS, rTS, volTS);
 
     const Real kappa       = 1.0;
     const Real theta       = 0.06;
     const Volatility sigma = 0.2;
     const Real x0          = 0.09;
 
-    const ext::shared_ptr<SquareRootProcess> sqrtProcess(
-        ext::make_shared<SquareRootProcess>(theta, kappa, sigma, x0));
+    const auto sqrtProcess = ext::make_shared<SquareRootProcess>(theta, kappa, sigma, x0);
 
     const std::vector<Date> maturityDates(1, maturityDate);
 
@@ -183,9 +181,8 @@ BOOST_AUTO_TEST_CASE(testSquareRootCLVMappingFunction) {
         ext::make_shared<SABRVolTermStructure>(
             alpha, beta, gamma, rho, s0, r, todaysDate, dc));
 
-    const ext::shared_ptr<GeneralizedBlackScholesProcess> bsProcess(
-        ext::make_shared<GeneralizedBlackScholesProcess>(
-            spot, qTS, rTS, sabrVol));
+    const auto bsProcess = ext::make_shared<GeneralizedBlackScholesProcess>(
+            spot, qTS, rTS, sabrVol);
 
     std::vector<Date> calibrationDates(1, todaysDate + Period(3, Months));
     calibrationDates.reserve(Size(daysBetween(todaysDate, maturityDate)/7 + 1));
@@ -198,8 +195,7 @@ BOOST_AUTO_TEST_CASE(testSquareRootCLVMappingFunction) {
     const Volatility sigma = 0.2;
     const Real x0          = 0.09;
 
-    const ext::shared_ptr<SquareRootProcess> sqrtProcess(
-        ext::make_shared<SquareRootProcess>(theta, kappa, sigma, x0));
+    const auto sqrtProcess = ext::make_shared<SquareRootProcess>(theta, kappa, sigma, x0);
 
     const SquareRootCLVModel model(
         bsProcess, sqrtProcess, calibrationDates, 14, 1-1e-10, 1e-10);
@@ -284,7 +280,7 @@ class SquareRootCLVCalibrationFunction : public CostFunction {
         const Real sigma = params[2];
         const Real x0    = params[3];
 
-        const ext::shared_ptr<SimpleQuote> vol =
+        const auto vol =
                 ext::make_shared<SimpleQuote>(0.1);
 
         const Handle<YieldTermStructure> rTS(bsProcess_->riskFreeRate());
@@ -299,7 +295,7 @@ class SquareRootCLVCalibrationFunction : public CostFunction {
                             flatVol(rTS->referenceDate(), vol,
                                     rTS->dayCounter())))));
 
-        const ext::shared_ptr<SquareRootProcess> sqrtProcess =
+        const auto sqrtProcess =
             ext::make_shared<SquareRootProcess>(theta, kappa, sigma, x0);
 
         const SquareRootCLVModel clvSqrtModel(
@@ -374,7 +370,7 @@ class SquareRootCLVCalibrationFunction : public CostFunction {
                     ext::make_shared<PlainVanillaPayoff>(
                             (strike < 1.0) ? Option::Put : Option::Call, strike);
 
-                const ext::shared_ptr<ForwardVanillaOption> fwdOption =
+                const auto fwdOption =
                     ext::make_shared<ForwardVanillaOption>(
                             strike, resetDate, payoff, exercise);
 

@@ -82,8 +82,8 @@ BOOST_AUTO_TEST_CASE(testFlatInterpolationLeft) {
 
     CommonVars vars;
 
-    ext::shared_ptr<SimpleQuote> spread1 = ext::make_shared<SimpleQuote>(0.02);
-    ext::shared_ptr<SimpleQuote> spread2 = ext::make_shared<SimpleQuote>(0.03);
+    auto spread1 = ext::make_shared<SimpleQuote>(0.02);
+    auto spread2 = ext::make_shared<SimpleQuote>(0.03);
     std::vector<Handle<Quote> > spreads = { Handle<Quote>(spread1), Handle<Quote>(spread2) };
 
     std::vector<Date> spreadDates = {vars.calendar.advance(vars.today, 8, Months),
@@ -118,8 +118,8 @@ BOOST_AUTO_TEST_CASE(testFlatInterpolationRight) {
 
     CommonVars vars;
 
-    ext::shared_ptr<SimpleQuote> spread1 = ext::make_shared<SimpleQuote>(0.02);
-    ext::shared_ptr<SimpleQuote> spread2 = ext::make_shared<SimpleQuote>(0.03);
+    auto spread1 = ext::make_shared<SimpleQuote>(0.02);
+    auto spread2 = ext::make_shared<SimpleQuote>(0.03);
     std::vector<Handle<Quote> > spreads = { Handle<Quote>(spread1), Handle<Quote>(spread2) };
 
     std::vector<Date> spreadDates = {vars.calendar.advance(vars.today, 8, Months),
@@ -155,10 +155,10 @@ BOOST_AUTO_TEST_CASE(testLinearInterpolationMultipleSpreads) {
 
     CommonVars vars;
 
-    ext::shared_ptr<SimpleQuote> spread1 = ext::make_shared<SimpleQuote>(0.02);
-    ext::shared_ptr<SimpleQuote> spread2 = ext::make_shared<SimpleQuote>(0.02);
-    ext::shared_ptr<SimpleQuote> spread3 = ext::make_shared<SimpleQuote>(0.035);
-    ext::shared_ptr<SimpleQuote> spread4 = ext::make_shared<SimpleQuote>(0.04);
+    auto spread1 = ext::make_shared<SimpleQuote>(0.02);
+    auto spread2 = ext::make_shared<SimpleQuote>(0.02);
+    auto spread3 = ext::make_shared<SimpleQuote>(0.035);
+    auto spread4 = ext::make_shared<SimpleQuote>(0.04);
     std::vector<Handle<Quote> > spreads = {
         Handle<Quote>(spread1), Handle<Quote>(spread2),
         Handle<Quote>(spread3), Handle<Quote>(spread4),
@@ -198,8 +198,8 @@ BOOST_AUTO_TEST_CASE(testLinearInterpolation) {
 
     CommonVars vars;
 
-    ext::shared_ptr<SimpleQuote> spread1 = ext::make_shared<SimpleQuote>(0.02);
-    ext::shared_ptr<SimpleQuote> spread2 = ext::make_shared<SimpleQuote>(0.03);
+    auto spread1 = ext::make_shared<SimpleQuote>(0.02);
+    auto spread2 = ext::make_shared<SimpleQuote>(0.03);
     std::vector<Handle<Quote> > spreads = { Handle<Quote>(spread1), Handle<Quote>(spread2) };
 
     std::vector<Date> spreadDates = {vars.calendar.advance(vars.today, 100, Days),
@@ -239,8 +239,8 @@ BOOST_AUTO_TEST_CASE(testForwardFlatInterpolation) {
 
     CommonVars vars;
 
-    ext::shared_ptr<SimpleQuote> spread1 = ext::make_shared<SimpleQuote>(0.02);
-    ext::shared_ptr<SimpleQuote> spread2 = ext::make_shared<SimpleQuote>(0.03);
+    auto spread1 = ext::make_shared<SimpleQuote>(0.02);
+    auto spread2 = ext::make_shared<SimpleQuote>(0.03);
     std::vector<Handle<Quote> > spreads = { Handle<Quote>(spread1), Handle<Quote>(spread2) };
 
     std::vector<Date> spreadDates = {vars.calendar.advance(vars.today, 75, Days),
@@ -275,9 +275,9 @@ BOOST_AUTO_TEST_CASE(testBackwardFlatInterpolation) {
 
     CommonVars vars;
 
-    ext::shared_ptr<SimpleQuote> spread1 = ext::make_shared<SimpleQuote>(0.02);
-    ext::shared_ptr<SimpleQuote> spread2 = ext::make_shared<SimpleQuote>(0.03);
-    ext::shared_ptr<SimpleQuote> spread3 = ext::make_shared<SimpleQuote>(0.04);
+    auto spread1 = ext::make_shared<SimpleQuote>(0.02);
+    auto spread2 = ext::make_shared<SimpleQuote>(0.03);
+    auto spread3 = ext::make_shared<SimpleQuote>(0.04);
     std::vector<Handle<Quote> > spreads = {
         Handle<Quote>(spread1), Handle<Quote>(spread2), Handle<Quote>(spread3)
     };
@@ -315,8 +315,8 @@ BOOST_AUTO_TEST_CASE(testDefaultInterpolation) {
 
     CommonVars vars;
 
-    ext::shared_ptr<SimpleQuote> spread1 = ext::make_shared<SimpleQuote>(0.02);
-    ext::shared_ptr<SimpleQuote> spread2 = ext::make_shared<SimpleQuote>(0.02);
+    auto spread1 = ext::make_shared<SimpleQuote>(0.02);
+    auto spread2 = ext::make_shared<SimpleQuote>(0.02);
     std::vector<Handle<Quote> > spreads = { Handle<Quote>(spread1), Handle<Quote>(spread2) };
 
     std::vector<Date> spreadDates = {vars.calendar.advance(vars.today, 75,  Days),
@@ -351,9 +351,9 @@ BOOST_AUTO_TEST_CASE(testSetInterpolationFactory) {
 
     CommonVars vars;
 
-    ext::shared_ptr<SimpleQuote> spread1 = ext::make_shared<SimpleQuote>(0.02);
-    ext::shared_ptr<SimpleQuote> spread2 = ext::make_shared<SimpleQuote>(0.03);
-    ext::shared_ptr<SimpleQuote> spread3 = ext::make_shared<SimpleQuote>(0.01);
+    auto spread1 = ext::make_shared<SimpleQuote>(0.02);
+    auto spread2 = ext::make_shared<SimpleQuote>(0.03);
+    auto spread3 = ext::make_shared<SimpleQuote>(0.01);
     std::vector<Handle<Quote> > spreads = {
         Handle<Quote>(spread1), Handle<Quote>(spread2), Handle<Quote>(spread3)
     };
@@ -396,8 +396,8 @@ BOOST_AUTO_TEST_CASE(testMaxDate) {
 
     CommonVars vars;
 
-    ext::shared_ptr<SimpleQuote> spread1 = ext::make_shared<SimpleQuote>(0.02);
-    ext::shared_ptr<SimpleQuote> spread2 = ext::make_shared<SimpleQuote>(0.03);
+    auto spread1 = ext::make_shared<SimpleQuote>(0.02);
+    auto spread2 = ext::make_shared<SimpleQuote>(0.03);
     std::vector<Handle<Quote> > spreads = { Handle<Quote>(spread1), Handle<Quote>(spread2) };
 
     std::vector<Date> spreadDates = {vars.calendar.advance(vars.today, 8,  Months),
@@ -427,8 +427,8 @@ BOOST_AUTO_TEST_CASE(testQuoteChanging) {
 
     CommonVars vars;
 
-    ext::shared_ptr<SimpleQuote> spread1 = ext::make_shared<SimpleQuote>(0.02);
-    ext::shared_ptr<SimpleQuote> spread2 = ext::make_shared<SimpleQuote>(0.03);
+    auto spread1 = ext::make_shared<SimpleQuote>(0.02);
+    auto spread2 = ext::make_shared<SimpleQuote>(0.03);
     std::vector<Handle<Quote> > spreads = { Handle<Quote>(spread1), Handle<Quote>(spread2) };
 
     std::vector<Date> spreadDates = {vars.calendar.advance(vars.today, 100,  Days),

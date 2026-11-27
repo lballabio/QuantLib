@@ -137,7 +137,7 @@ namespace QuantLib {
                mesher, rTS_.currentLink(),
                f0_, alpha_, beta_, nu_, rho_);
 
-        const ext::shared_ptr<Fdm2DimSolver> solver =
+        const auto solver =
             ext::make_shared<Fdm2DimSolver>(solverDesc, schemeDesc_, op);
 
         results_.value = solver->interpolateAt(f0_, std::log(alpha_));

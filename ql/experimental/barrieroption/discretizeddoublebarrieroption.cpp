@@ -89,8 +89,9 @@ namespace QuantLib {
                          optvalues[j] = std::max(vanilla()[j],
                                       (*arguments_.payoff)(grid[j]));
                      }
-                     else
+                     else {
                          optvalues[j] = vanilla()[j]; 
+}
                   }
                   else if (grid[j] >= arguments_.barrier_hi) {
                      // knocked in up
@@ -98,11 +99,13 @@ namespace QuantLib {
                          optvalues[j] = std::max(vanilla()[j],
                                       (*arguments_.payoff)(grid[j]));
                      }
-                     else
+                     else {
                          optvalues[j] = vanilla()[j]; 
+}
                   }
-                  else if (endTime)
+                  else if (endTime) {
                       optvalues[j] = arguments_.rebate;
+}
                   break;
               case DoubleBarrier::KnockOut:
                   if (grid[j] <= arguments_.barrier_lo)
@@ -121,29 +124,33 @@ namespace QuantLib {
                          optvalues[j] = std::max(vanilla()[j],
                                       (*arguments_.payoff)(grid[j]));
                      }
-                     else
+                     else {
                          optvalues[j] = vanilla()[j];
+}
                   }
-                  else if (grid[j] >= arguments_.barrier_hi)
+                  else if (grid[j] >= arguments_.barrier_hi) {
                      optvalues[j] = arguments_.rebate; // knocked out hi
-                  else if (endTime)
+                  } else if (endTime) {
                       optvalues[j] = arguments_.rebate;
+}
                   break;
               case DoubleBarrier::KOKI:
                   // low barrier is KO, high is KI
-                  if (grid[j] <= arguments_.barrier_lo)
+                  if (grid[j] <= arguments_.barrier_lo) {
                       optvalues[j] = arguments_.rebate; // knocked out lo
-                  else if (grid[j] >= arguments_.barrier_hi) {
+                  } else if (grid[j] >= arguments_.barrier_hi) {
                      // knocked in up
                      if (stoppingTime) {
                          optvalues[j] = std::max(vanilla()[j],
                                       (*arguments_.payoff)(grid[j]));
                      }
-                     else
+                     else {
                          optvalues[j] = vanilla()[j];
+}
                   }
-                  else if (endTime)
+                  else if (endTime) {
                       optvalues[j] = arguments_.rebate;
+}
                   break;
               default:
                   QL_FAIL("invalid barrier type");

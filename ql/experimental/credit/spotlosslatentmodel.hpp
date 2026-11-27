@@ -165,7 +165,7 @@ namespace QuantLib {
         // we can be called from the outside (from an integrable loss model)
         //   but we are called often at integration points. This or
         //   consider a list of friends.
-    #if defined(QL_EXTRA_SAFETY_CHECKS)
+    #ifdef QL_EXTRA_SAFETY_CHECKS
         QL_REQUIRE(basket_, "No portfolio basket set.");
     #endif
         /*Avoid redundant call to minimum value inversion (might be \infty),
@@ -188,7 +188,7 @@ namespace QuantLib {
                                this->factorWeights_[iName].end(), m.begin(), Real(0.));
         Real res = this->cumulativeZ((invCumYProb - sumMs) / 
                 this->idiosyncFctrs_[iName] );
-        #if defined(QL_EXTRA_SAFETY_CHECKS)
+        #ifdef QL_EXTRA_SAFETY_CHECKS
         QL_REQUIRE (res >= 0. && res <= 1.,
                     "conditional probability " << res << "out of range");
         #endif
@@ -202,7 +202,7 @@ namespace QuantLib {
         Size iName,
         const std::vector<Real>& mktFactors) const 
     {
-    #if defined(QL_EXTRA_SAFETY_CHECKS)
+    #ifdef QL_EXTRA_SAFETY_CHECKS
         QL_REQUIRE(mktFactors.size() == this->numFactors(), 
         "Realization of market factors and latent model size do not match");
     #endif

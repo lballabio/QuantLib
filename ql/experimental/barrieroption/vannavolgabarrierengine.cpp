@@ -85,7 +85,7 @@ namespace QuantLib {
             ext::make_shared<BlackConstantVol>(
                 Settings::instance().evaluationDate(),
                 NullCalendar(), atmVolQuote, Actual365Fixed());
-        ext::shared_ptr<BlackScholesMertonProcess> stochProcess =
+        auto stochProcess =
             ext::make_shared<BlackScholesMertonProcess>(
                                  x0Quote,
                                  foreignTS_,

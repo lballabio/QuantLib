@@ -78,8 +78,8 @@ namespace QuantLib {
     void Distribution::add (Real value) {
     //-------------------------------------------------------------------------
         isNormalized_ = false;
-        if (value < x_.front()) underFlow_++;
-        else {
+        if (value < x_.front()) { underFlow_++;
+        } else {
             for (Size i = 0; i < count_.size(); i++) {
                 if (x_[i] + dx_[i] > value) {
                     count_[i]++;

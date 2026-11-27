@@ -43,7 +43,7 @@ namespace QuantLib {
     }
 
     PerpetualFutures::arguments::arguments()
-    : payoffType(PerpetualFutures::PayoffType(-1)), fundingType(PerpetualFutures::FundingType(-1)),
+    : 
       fundingFrequency(Period(8, Hours)), cal(NullCalendar()),
       dc(ActualActual(ActualActual::ISDA)) {}
 

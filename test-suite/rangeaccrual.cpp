@@ -21,6 +21,7 @@
 #include "utilities.hpp"
 #include <ql/indexes/swap/euriborswap.hpp>
 #include <ql/indexes/ibor/euribor.hpp>
+#include <ql/shared_ptr.hpp>
 #include <ql/termstructures/yield/zerocurve.hpp>
 #include <ql/cashflows/rangeaccrual.hpp>
 #include <ql/time/calendars/target.hpp>
@@ -290,15 +291,15 @@ struct CommonVars {
                                              flatSwaptionVolatilityCube1ptr));
         flatSwaptionVolatilityCube1->enableExtrapolation();
 
-        ext::shared_ptr<InterpolatedSwaptionVolatilityCube>
-            flatSwaptionVolatilityCube2ptr(new InterpolatedSwaptionVolatilityCube(atmVol,
+        auto
+            flatSwaptionVolatilityCube2ptr = ext::make_shared<InterpolatedSwaptionVolatilityCube>(atmVol,
                                                              optionTenors,
                                                              swapTenors,
                                                              strikeSpreads,
                                                              nullVolSpreads,
                                                              swapIndexBase,
                                                              shortSwapIndexBase,
-                                                             vegaWeightedSmileFit));
+                                                             vegaWeightedSmileFit);
         flatSwaptionVolatilityCube2 = Handle<SwaptionVolatilityStructure>(
                 ext::shared_ptr<SwaptionVolatilityStructure>(flatSwaptionVolatilityCube2ptr));
         flatSwaptionVolatilityCube2->enableExtrapolation();

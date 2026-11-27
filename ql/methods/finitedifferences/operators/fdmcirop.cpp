@@ -156,8 +156,9 @@ namespace QuantLib {
         else if (direction == 1) {
             return dyMap_.getMap().solve_splitting(r, a, 1.0);
         }
-        else
+        else {
             QL_FAIL("direction too large");
+}
     }
 
     Array FdmCIROp::preconditioner(const Array& r, Real dt) const {

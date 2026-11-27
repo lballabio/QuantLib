@@ -181,8 +181,9 @@ namespace QuantLib {
         else if (direction == 1) {
             return mapY_->solve_splitting(1, u, s);
         }
-        else
+        else {
             QL_FAIL("direction too large");
+}
     }
 
     Array FdmHestonFwdOp::preconditioner(

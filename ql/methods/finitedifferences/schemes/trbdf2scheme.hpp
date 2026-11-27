@@ -141,8 +141,9 @@ namespace QuantLib {
                 (*iterations_) += result.errors.size();
                 fn = result.x;
             }
-            else
+            else {
                 QL_FAIL("unknown/illegal solver type");
+}
         }
 
         bcSet_.applyAfterSolving(fn);

@@ -36,6 +36,7 @@
 #include <ql/pricingengines/swaption/fdhullwhiteswaptionengine.hpp>
 #include <ql/pricingengines/swaption/g2swaptionengine.hpp>
 #include <ql/pricingengines/swaption/treeswaptionengine.hpp>
+#include <ql/shared_ptr.hpp>
 #include <ql/termstructures/yield/flatforward.hpp>
 #include <ql/time/daycounters/thirty360.hpp>
 #include <ql/time/schedule.hpp>
@@ -137,8 +138,8 @@ BOOST_AUTO_TEST_CASE(testCachedValues) {
     ext::shared_ptr<VanillaSwap> otmSwap = vars.makeSwap(1.2*atmRate);
 
     Real a = 0.048696, sigma = 0.0058904;
-    ext::shared_ptr<HullWhite> model(new HullWhite(vars.termStructure,
-                                                     a, sigma));
+    auto model = ext::make_shared<HullWhite>(vars.termStructure,
+                                                     a, sigma);
     std::vector<Date> exerciseDates;
     const Leg& leg = atmSwap->fixedLeg();
     for (const auto& i : leg) {
@@ -270,8 +271,8 @@ BOOST_AUTO_TEST_CASE(testCachedG2Values) {
 
     const Real a=0.1, sigma=0.01, b=0.2, eta=0.013, rho=-0.5;
 
-    const ext::shared_ptr<G2> g2Model(ext::make_shared<G2>(
-        vars.termStructure, a, sigma, b, eta, rho));
+    const auto g2Model = ext::make_shared<G2>(
+        vars.termStructure, a, sigma, b, eta, rho);
     const ext::shared_ptr<PricingEngine> fdmEngine(
         ext::make_shared<FdG2SwaptionEngine>(g2Model, 50, 75, 75, 0, 1e-3));
     const ext::shared_ptr<PricingEngine> treeEngine(
@@ -329,8 +330,7 @@ BOOST_AUTO_TEST_CASE(testG2SwaptionEngineCashSettlement) {
     const ext::shared_ptr<Exercise> exercise =
         ext::make_shared<EuropeanExercise>(swap->fixedSchedule().startDate());
     const Real a = 0.1, sigma = 0.01, b = 0.2, eta = 0.013, rho = -0.5;
-    const ext::shared_ptr<G2> g2Model(
-        ext::make_shared<G2>(vars.termStructure, a, sigma, b, eta, rho));
+    const auto g2Model = ext::make_shared<G2>(vars.termStructure, a, sigma, b, eta, rho);
     const ext::shared_ptr<PricingEngine> engine(
         ext::make_shared<G2SwaptionEngine>(g2Model, 6.0, 16));
 
@@ -342,7 +342,7 @@ BOOST_AUTO_TEST_CASE(testG2SwaptionEngineCashSettlement) {
     // difference is whether the swap is physically entered into or
     // cash-settled after exercise), so the engine must accept and
     // correctly price both.
-    const ext::shared_ptr<Swaption> physical =
+    const auto physical =
         ext::make_shared<Swaption>(swap, exercise, Settlement::Physical,
                                     Settlement::PhysicalOTC);
     physical->setPricingEngine(engine);
@@ -354,7 +354,7 @@ BOOST_AUTO_TEST_CASE(testG2SwaptionEngineCashSettlement) {
     // CollateralizedCashPrice acceptance at all.
     BOOST_REQUIRE(physicalNPV > 1.0e-4);
 
-    const ext::shared_ptr<Swaption> cashSettled =
+    const auto cashSettled =
         ext::make_shared<Swaption>(swap, exercise, Settlement::Cash,
                                     Settlement::CollateralizedCashPrice);
     cashSettled->setPricingEngine(engine);
@@ -371,7 +371,7 @@ BOOST_AUTO_TEST_CASE(testG2SwaptionEngineCashSettlement) {
     // the one settlement convention the engine genuinely cannot price
     // (it has no annuity-based cash-settlement formula) must still be
     // rejected.
-    const ext::shared_ptr<Swaption> parYieldCurveSettled =
+    const auto parYieldCurveSettled =
         ext::make_shared<Swaption>(swap, exercise, Settlement::Cash,
                                     Settlement::ParYieldCurve);
     parYieldCurveSettled->setPricingEngine(engine);
@@ -414,10 +414,8 @@ BOOST_AUTO_TEST_CASE(testFdSwaptionEnginesCashSettlement) {
     };
 
     const Real a = 0.048696, sigma = 0.0058904, b = 0.2, eta = 0.013, rho = -0.5;
-    const ext::shared_ptr<HullWhite> hwModel(
-        ext::make_shared<HullWhite>(vars.termStructure, a, sigma));
-    const ext::shared_ptr<G2> g2Model(
-        ext::make_shared<G2>(vars.termStructure, a, sigma, b, eta, rho));
+    const auto hwModel = ext::make_shared<HullWhite>(vars.termStructure, a, sigma);
+    const auto g2Model = ext::make_shared<G2>(vars.termStructure, a, sigma, b, eta, rho);
 
     std::vector<EngineCase> cases = {
         {"FdHullWhiteSwaptionEngine",
@@ -425,7 +423,7 @@ BOOST_AUTO_TEST_CASE(testFdSwaptionEnginesCashSettlement) {
         {"FdG2SwaptionEngine", ext::make_shared<FdG2SwaptionEngine>(g2Model)}};
 
     for (const auto& c : cases) {
-        const ext::shared_ptr<Swaption> physical =
+        const auto physical =
             ext::make_shared<Swaption>(swap, exercise, Settlement::Physical,
                                         Settlement::PhysicalOTC);
         physical->setPricingEngine(c.engine);
@@ -437,7 +435,7 @@ BOOST_AUTO_TEST_CASE(testFdSwaptionEnginesCashSettlement) {
         // the CollateralizedCashPrice acceptance at all.
         BOOST_REQUIRE(physicalNPV > 1.0e-4);
 
-        const ext::shared_ptr<Swaption> cashSettled =
+        const auto cashSettled =
             ext::make_shared<Swaption>(swap, exercise, Settlement::Cash,
                                         Settlement::CollateralizedCashPrice);
         cashSettled->setPricingEngine(c.engine);
@@ -452,7 +450,7 @@ BOOST_AUTO_TEST_CASE(testFdSwaptionEnginesCashSettlement) {
                 << "cash-settled NPV:  " << cashSettledNPV);
         }
 
-        const ext::shared_ptr<Swaption> parYieldCurveSettled =
+        const auto parYieldCurveSettled =
             ext::make_shared<Swaption>(swap, exercise, Settlement::Cash,
                                         Settlement::ParYieldCurve);
         parYieldCurveSettled->setPricingEngine(c.engine);

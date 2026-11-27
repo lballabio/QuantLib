@@ -27,6 +27,7 @@
 #include <ql/pricingengines/vanilla/fdcirvanillaengine.hpp>
 #include <ql/processes/coxingersollrossprocess.hpp>
 #include <ql/quotes/simplequote.hpp>
+#include <ql/shared_ptr.hpp>
 #include <ql/termstructures/volatility/equityfx/localconstantvol.hpp>
 #include <ql/termstructures/yield/flatforward.hpp>
 #include <ql/time/daycounters/actual365fixed.hpp>
@@ -92,7 +93,7 @@ BOOST_AUTO_TEST_CASE(testFdmCIRConvergence) {
     Real newSpeed = speed + (cirSigma*lambda); //1.0792
     Real newLevel = (level * speed)/(speed + (cirSigma*lambda));//// 0.0240
 
-    ext::shared_ptr<CoxIngersollRossProcess> cirProcess(new CoxIngersollRossProcess(newSpeed, cirSigma, initialRate, newLevel));
+    auto cirProcess = ext::make_shared<CoxIngersollRossProcess>(newSpeed, cirSigma, initialRate, newLevel);
 
     Real expected = 4.275;
     Real tolerance = 0.0003;

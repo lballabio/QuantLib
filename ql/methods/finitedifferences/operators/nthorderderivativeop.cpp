@@ -55,7 +55,7 @@ namespace QuantLib {
         for (const auto& iter : *mesher->layout()) {
             const auto ix = Integer(iter.coordinates()[direction]);
             const Integer offset = std::max(0, hPoints - ix)
-                - std::max(0, hPoints - (nx-((isEven)? 0 : 1) - ix));
+                - std::max(0, hPoints - (nx-(isEven? 0 : 1) - ix));
 
             const Integer ilx = ix - hPoints + offset;
 

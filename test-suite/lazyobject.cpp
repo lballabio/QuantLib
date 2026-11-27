@@ -21,6 +21,7 @@
 #include "utilities.hpp"
 #include <ql/instruments/stock.hpp>
 #include <ql/quotes/simplequote.hpp>
+#include <ql/shared_ptr.hpp>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
@@ -51,7 +52,7 @@ BOOST_AUTO_TEST_CASE(testDiscardingNotifications) {
 
     LazyObject::Defaults::instance().alwaysForwardNotifications();
 
-    ext::shared_ptr<SimpleQuote> q(new SimpleQuote(0.0));
+    auto q = ext::make_shared<SimpleQuote>(0.0);
     ext::shared_ptr<Instrument> s(new Stock(Handle<Quote>(q)));
 
     Flag f;
@@ -84,7 +85,7 @@ BOOST_AUTO_TEST_CASE(testDiscardingNotificationsByDefault) {
 
     LazyObject::Defaults::instance().forwardFirstNotificationOnly();
 
-    ext::shared_ptr<SimpleQuote> q(new SimpleQuote(0.0));
+    auto q = ext::make_shared<SimpleQuote>(0.0);
     ext::shared_ptr<Instrument> s(new Stock(Handle<Quote>(q)));
 
     Flag f;
@@ -115,7 +116,7 @@ BOOST_AUTO_TEST_CASE(testForwardingNotificationsByDefault) {
 
     LazyObject::Defaults::instance().alwaysForwardNotifications();
 
-    ext::shared_ptr<SimpleQuote> q(new SimpleQuote(0.0));
+    auto q = ext::make_shared<SimpleQuote>(0.0);
     ext::shared_ptr<Instrument> s(new Stock(Handle<Quote>(q)));
 
     Flag f;
@@ -140,7 +141,7 @@ BOOST_AUTO_TEST_CASE(testForwardingNotifications) {
 
     LazyObject::Defaults::instance().forwardFirstNotificationOnly();
 
-    ext::shared_ptr<SimpleQuote> q(new SimpleQuote(0.0));
+    auto q = ext::make_shared<SimpleQuote>(0.0);
     ext::shared_ptr<Instrument> s(new Stock(Handle<Quote>(q)));
 
     Flag f;

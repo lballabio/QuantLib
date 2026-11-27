@@ -69,7 +69,7 @@ namespace QuantLib {
     class SoftBarrierOption::arguments : public OneAssetOption::arguments {
       public:
         arguments();
-        Barrier::Type barrierType;
+        Barrier::Type barrierType = Barrier::Type(-1);
         Real barrier_lo;
         Real barrier_hi;
     };

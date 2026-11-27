@@ -42,13 +42,13 @@ namespace QuantLib {
       p1_(p1),
       p2_(p2),
       
-      localVol1_((localVol) ? p1->localVolatility().currentLink()
+      localVol1_(localVol ? p1->localVolatility().currentLink()
                             : ext::shared_ptr<LocalVolTermStructure>()),
-      localVol2_((localVol) ? p2->localVolatility().currentLink()
+      localVol2_(localVol ? p2->localVolatility().currentLink()
                             : ext::shared_ptr<LocalVolTermStructure>()),
                             
-      x_((localVol) ? Array(Exp(mesher->locations(0))) : Array()),
-      y_((localVol) ? Array(Exp(mesher->locations(1))) : Array()),
+      x_(localVol ? Array(Exp(mesher->locations(0))) : Array()),
+      y_(localVol ? Array(Exp(mesher->locations(1))) : Array()),
 
       opX_(mesher, p1, p1->x0(), localVol, illegalLocalVolOverwrite, 0),
       opY_(mesher, p2, p2->x0(), localVol, illegalLocalVolOverwrite, 1),
@@ -136,8 +136,9 @@ namespace QuantLib {
         else if (direction == 1) {
             return opY_.solve_splitting(direction, x, s);
         }
-        else
+        else {
             QL_FAIL("direction is too large");
+}
     }
     
     Array Fdm2dBlackScholesOp::preconditioner(const Array& r, 

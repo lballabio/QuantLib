@@ -153,7 +153,7 @@ namespace QuantLib {
             ext::make_shared<FdmCEVOp>(
                mesher, discountCurve_.currentLink(), f0_, alpha_, beta_, 0);
 
-        const ext::shared_ptr<Fdm1DimSolver> solver =
+        const auto solver =
             ext::make_shared<Fdm1DimSolver>(solverDesc, schemeDesc_, op);
 
         results_.value = solver->interpolateAt(f0_);

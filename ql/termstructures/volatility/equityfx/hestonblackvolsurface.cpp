@@ -91,7 +91,7 @@ namespace QuantLib {
         const Real fwd = process->s0()->value()
             * process->dividendYield()->discount(t, true) / df;
 
-        const ext::shared_ptr<PlainVanillaPayoff> payoff =
+        const auto payoff =
             ext::make_shared<PlainVanillaPayoff>(
                             fwd > strike ? Option::Put : Option::Call, strike);
 

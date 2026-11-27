@@ -210,7 +210,7 @@ namespace QuantLib {
             Date startDate = termVolSurface_->referenceDate();
             Date endDate = termVolSurface_->calendar().advance(
                 startDate, capFloorLength, termVolSurface_->businessDayConvention());
-            Schedule schedule(startDate, endDate, *optionletFrequency_,
+            Schedule schedule(startDate, endDate, *optionletFrequency_,  // NOLINT(bugprone-unchecked-optional-access)
                               termVolSurface_->calendar(),
                               termVolSurface_->businessDayConvention(),
                               termVolSurface_->businessDayConvention(),

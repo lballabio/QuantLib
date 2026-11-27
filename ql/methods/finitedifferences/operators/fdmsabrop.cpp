@@ -86,8 +86,9 @@ namespace QuantLib {
         else if (direction == 1) {
             return mapA_.solve_splitting(r, a, 1.0);
         }
-        else
+        else {
             QL_FAIL("direction too large");
+}
     }
 
     Array FdmSabrOp::preconditioner(

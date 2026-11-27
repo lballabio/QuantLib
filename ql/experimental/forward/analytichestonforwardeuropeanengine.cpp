@@ -19,6 +19,7 @@
 
 #include <ql/experimental/forward/analytichestonforwardeuropeanengine.hpp>
 #include <complex>
+#include <ql/shared_ptr.hpp>
 #include <utility>
 
 namespace QuantLib {
@@ -240,10 +241,10 @@ namespace QuantLib {
             HestonProcess(riskFreeRate_, dividendYield_, spotReset,
                 varReset, kappa_, theta_, sigma_, rho_));
 
-        ext::shared_ptr<HestonModel> hestonModel(new HestonModel(hestonProcess));
+        auto hestonModel = ext::make_shared<HestonModel>(hestonProcess);
 
-        ext::shared_ptr<AnalyticHestonEngine> analyticHestonEngine(
-            new AnalyticHestonEngine(hestonModel, integrationOrder_));
+        auto analyticHestonEngine = ext::make_shared<AnalyticHestonEngine>(
+            hestonModel, integrationOrder_);
 
         // Not sure how to pass only the chF, so just pass the whole thing for now!
         return analyticHestonEngine;

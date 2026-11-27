@@ -24,6 +24,7 @@
 #include <ql/instruments/stock.hpp>
 #include <ql/pricingengines/vanilla/analyticeuropeanengine.hpp>
 #include <ql/quotes/simplequote.hpp>
+#include <ql/shared_ptr.hpp>
 #include <ql/time/daycounters/actual360.hpp>
 
 using namespace QuantLib;
@@ -37,7 +38,7 @@ BOOST_AUTO_TEST_CASE(testObservable) {
 
     BOOST_TEST_MESSAGE("Testing observability of instruments...");
 
-    ext::shared_ptr<SimpleQuote> me1(new SimpleQuote(0.0));
+    auto me1 = ext::make_shared<SimpleQuote>(0.0);
     RelinkableHandle<Quote> h(me1);
     ext::shared_ptr<Instrument> s(new Stock(h));
 
@@ -51,7 +52,7 @@ BOOST_AUTO_TEST_CASE(testObservable) {
 
     s->NPV();
     f.lower();
-    ext::shared_ptr<SimpleQuote> me2(new SimpleQuote(0.0));
+    auto me2 = ext::make_shared<SimpleQuote>(0.0);
     h.linkTo(me2);
     if (!f.isUp())
         BOOST_FAIL("Observer was not notified of instrument change");
@@ -81,10 +82,10 @@ BOOST_AUTO_TEST_CASE(testCompositeWhenShiftingDates) {
 
     ext::shared_ptr<Instrument> option(new EuropeanOption(payoff, exercise));
 
-    ext::shared_ptr<SimpleQuote> spot(new SimpleQuote(100.0));
-    ext::shared_ptr<YieldTermStructure> qTS = flatRate(0.0, dc);
-    ext::shared_ptr<YieldTermStructure> rTS = flatRate(0.01, dc);
-    ext::shared_ptr<BlackVolTermStructure> volTS = flatVol(0.1, dc);
+    auto spot = ext::make_shared<SimpleQuote>(100.0);
+    auto qTS = flatRate(0.0, dc);
+    auto rTS = flatRate(0.01, dc);
+    auto volTS = flatVol(0.1, dc);
 
     ext::shared_ptr<BlackScholesMertonProcess> process(
         new BlackScholesMertonProcess(Handle<Quote>(spot),

@@ -37,7 +37,7 @@
 #include <limits>
 #include <utility>
 
-#if defined(QL_PATCH_MSVC)
+#ifdef QL_PATCH_MSVC
 #pragma warning(disable: 4180)
 #endif
 
@@ -147,10 +147,11 @@ namespace QuantLib {
                                -kappa_*theta_*(kmr*term_+1.0) ) / (2*kmr*kmr)
                             - v0_*(1.0-std::exp(kmr*term_)) / (2.0*kmr);
                     }
-                    else
+                    else {
                         // \kappa = \rho * \sigma
                         return dd_-sx_ + 0.25*kappa_*theta_*term_*term_
                                        + 0.5*v0_*term_;
+}
                 }
                 else {
                     return dd_-sx_
@@ -490,8 +491,9 @@ namespace QuantLib {
                 * (phiBS - enginePtr_->chF(zPrime, term_)) / (z*zPrime)
                 ).real()*s_alpha_;
         }
-        else
+        else {
             QL_FAIL("unknown control variate");
+}
     }
 
     Real AnalyticHestonEngine::AP_Helper::controlVariateValue() const {
@@ -537,8 +539,9 @@ namespace QuantLib {
                   -0.5*((alpha_ ==  0.0)? fwd_ :0.0)
                   +0.5*((alpha_ == -1.0)? strike_: 0.0);
         }
-        else
+        else {
             QL_FAIL("unknown control variate");
+}
     }
 
     std::complex<Real> AnalyticHestonEngine::chF(
@@ -568,7 +571,7 @@ namespace QuantLib {
             return std::exp(-(((theta - v0 + ekt*((-1 + kt)*theta + v0))
                     *z*zpi)/ekt)/(2.*kappa))
 
-                + (std::exp(-(kt) - ((theta - v0 + ekt
+                + (std::exp(-kt - ((theta - v0 + ekt
                     *((-1 + kt)*theta + v0))*z*zpi)
                 /(2.*ekt*kappa))*rho*(2*theta + kt*theta -
                     v0 - kt*v0 + ekt*((-2 + kt)*theta + v0))
@@ -615,8 +618,9 @@ namespace QuantLib {
         if (D.real() != 0.0 || D.imag() != 0.0) {
             y = expm1(-D*t)/(2.0*D);
         }
-        else
+        else {
             y = -0.5*t;
+}
 
         const std::complex<Real> A
             = kappa*theta/sigma2*(r*t - 2.0*log1p(-r*y));

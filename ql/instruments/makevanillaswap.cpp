@@ -67,9 +67,9 @@ namespace QuantLib {
                    "use one or the other");
 
         Date startDate;
-        if (effectiveDate_ != Date())
+        if (effectiveDate_ != Date()) {
             startDate = effectiveDate_;
-        else {
+        } else {
             Date refDate = Settings::instance().evaluationDate();
             // use index valueDate interface wherever possible to estimate spot date.
             // Unless we pass an explicit settlementDays_ which does not match the index-defined number of fixing days.
@@ -110,9 +110,9 @@ namespace QuantLib {
 
         const Currency& curr = iborIndex_->currency();
         Period fixedTenor;
-        if (fixedTenor_ != Period())
+        if (fixedTenor_ != Period()) {
             fixedTenor = fixedTenor_;
-        else {
+        } else {
             // When swapTenor_ was cleared by withTerminationDate(),
             // use the actual swap length for currency-dependent inference.
             Period tenor = swapTenor_;
@@ -153,9 +153,9 @@ namespace QuantLib {
                                floatFirstDate_, floatNextToLastDate_);
 
         DayCounter fixedDayCount;
-        if (fixedDayCount_ != DayCounter())
+        if (fixedDayCount_ != DayCounter()) {
             fixedDayCount = fixedDayCount_;
-        else {
+        } else {
             if (curr == USDCurrency())
                 fixedDayCount = Actual360();
             else if (curr == EURCurrency() || curr == CHFCurrency() ||
@@ -185,8 +185,9 @@ namespace QuantLib {
                 ext::shared_ptr<PricingEngine> engine(new
                     DiscountingSwapEngine(disc, includeSettlementDateFlows));
                 temp.setPricingEngine(engine);
-            } else
+            } else {
                 temp.setPricingEngine(engine_);
+}
 
             usedFixedRate = temp.fairRate();
         }
@@ -202,8 +203,9 @@ namespace QuantLib {
             ext::shared_ptr<PricingEngine> engine(new
                 DiscountingSwapEngine(disc, includeSettlementDateFlows));
             swap->setPricingEngine(engine);
-        } else
+        } else {
             swap->setPricingEngine(engine_);
+}
 
         return swap;
     }

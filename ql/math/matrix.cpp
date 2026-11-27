@@ -22,7 +22,7 @@
 */
 
 #include <ql/math/matrix.hpp>
-#if defined(QL_PATCH_MSVC)
+#ifdef QL_PATCH_MSVC
 #pragma warning(push)
 #pragma warning(disable:4180)
 #pragma warning(disable:4127)
@@ -35,7 +35,7 @@
 #include <boost/numeric/ublas/triangular.hpp>
 #include <boost/numeric/ublas/lu.hpp>
 
-#if defined(QL_PATCH_MSVC)
+#ifdef QL_PATCH_MSVC
 #pragma warning(pop)
 #endif
 

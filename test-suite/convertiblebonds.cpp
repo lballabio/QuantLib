@@ -573,7 +573,7 @@ BOOST_AUTO_TEST_CASE(testRegression) {
                                  tomorrow, NullCalendar(), 21.685235548092248,
                                  Thirty360(Thirty360::BondBasis)));
 
-    ext::shared_ptr<BlackProcess> process =
+    auto process =
         ext::make_shared<BlackProcess>(u,r,sigma);
 
     Handle<Quote> spread(ext::make_shared<SimpleQuote>(0.11498700678012874));

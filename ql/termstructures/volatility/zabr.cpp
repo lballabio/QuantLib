@@ -18,6 +18,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
+#include <ql/shared_ptr.hpp>
 #include <ql/termstructures/volatility/zabr.hpp>
 #include <ql/termstructures/volatility/sabr.hpp>
 #include <ql/errors.hpp>
@@ -295,8 +296,8 @@ Real ZabrModel::fullFdPrice(const Real strike) const {
     // Boundary conditions
     FdmBoundaryConditionSet boundaries;
 
-    ext::shared_ptr<FdmZabrOp> map(
-        new FdmZabrOp(mesher, beta_, nu_, rho_, gamma_));
+    auto map = ext::make_shared<FdmZabrOp>(
+        mesher, beta_, nu_, rho_, gamma_);
     FdmBackwardSolver solver(map, boundaries,
                              ext::shared_ptr<FdmStepConditionComposite>(),
                              FdmSchemeDesc::/*CraigSneyd()*/ Hundsdorfer());
@@ -309,7 +310,7 @@ Real ZabrModel::fullFdPrice(const Real strike) const {
     for (Size j = 0; j < v_.size(); ++j)
         std::copy(rhs.begin() + j * f_.size(),
                   rhs.begin() + (j + 1) * f_.size(), result.row_begin(j));
-    ext::shared_ptr<BicubicSpline> interpolation =
+    auto interpolation =
         ext::make_shared<BicubicSpline>(
             f_.begin(), f_.end(), v_.begin(), v_.end(), result);
     interpolation->disableExtrapolation();

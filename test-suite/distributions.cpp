@@ -838,7 +838,7 @@ BOOST_AUTO_TEST_CASE(testInverseCumulativePoissonIndexRange) {
     BOOST_TEST_MESSAGE("Testing inverse cumulative Poisson distribution "
                        "beyond the supported index range...");
 
-    const Real naturalMax = Real((std::numeric_limits<Natural>::max)());
+    const Real naturalMax = Real((std::numeric_limits<Natural>::max)());  // NOLINT(readability-redundant-parentheses)
     // Means whose indices cannot be represented are rejected instead of converted.
     for (Real lambda : std::vector<Real>{std::numeric_limits<Real>::infinity(),
                         std::ldexp(Real(1.0), std::numeric_limits<Natural>::digits),
@@ -856,7 +856,7 @@ BOOST_AUTO_TEST_CASE(testInverseCumulativePoissonIndexRange) {
     }
 
     // Higher-precision Real types need more than 13 standard deviations.
-    if (QL_EPSILON < std::numeric_limits<double>::epsilon()) {
+    if (QL_EPSILON < std::numeric_limits<double>::epsilon()) {  // NOLINT(misc-redundant-expression)
         InverseCumulativePoisson inverse(naturalMax - 13.0*std::sqrt(naturalMax));
         BOOST_CHECK_EXCEPTION(inverse(nearOne), Error,
                               ExpectedErrorMessage("exceeds the supported index range"));

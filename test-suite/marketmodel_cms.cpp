@@ -41,6 +41,7 @@
 #include <ql/models/marketmodels/swapforwardmappings.hpp>
 #include <ql/pricingengines/blackcalculator.hpp>
 #include <ql/pricingengines/blackformula.hpp>
+#include <ql/shared_ptr.hpp>
 #include <ql/time/calendars/nullcalendar.hpp>
 #include <ql/time/daycounters/simpledaycounter.hpp>
 #include <ql/time/schedule.hpp>
@@ -168,8 +169,8 @@ simulate(const ext::shared_ptr<MarketModelEvolver>& evolver,
     Real initialNumeraireValue = todaysDiscounts[initialNumeraire];
 
     AccountingEngine engine(evolver, product, initialNumeraireValue);
-    ext::shared_ptr<SequenceStatisticsInc> stats(
-                          new SequenceStatisticsInc(product.numberOfProducts()));
+    auto stats = ext::make_shared<SequenceStatisticsInc>(
+                          product.numberOfProducts());
     engine.multiplePathValues(*stats, paths_);
     return stats;
 }

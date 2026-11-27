@@ -190,8 +190,9 @@ namespace QuantLib {
             const Real vol = eta*std::sqrt(dt)*dw[0];
             retVal[0] = x0[0]*std::exp(mu + vol);            
         }
-        else
+        else {
             QL_FAIL("unknown discretization scheme");
+}
 
         return retVal;
     }

@@ -32,6 +32,7 @@ FOR A PARTICULAR PURPOSE.  See the license for more details.
 #include <ql/models/marketmodels/accountingengine.hpp>
 #include <ql/models/marketmodels/models/cotswaptofwdadapter.hpp>
 #include <ql/models/marketmodels/curvestates/coterminalswapcurvestate.hpp>
+#include <ql/shared_ptr.hpp>
 #include <ql/time/schedule.hpp>
 #include <ql/time/daycounters/simpledaycounter.hpp>
 #include <ql/math/statistics/sequencestatistics.hpp>
@@ -156,8 +157,7 @@ simulate(const std::vector<Real>& todaysDiscounts,
     Real initialNumeraireValue = todaysDiscounts[initialNumeraire];
 
     AccountingEngine engine(evolver, product, initialNumeraireValue);
-    ext::shared_ptr<SequenceStatisticsInc> stats(new
-            SequenceStatisticsInc(product.numberOfProducts()));
+    auto stats = ext::make_shared<SequenceStatisticsInc>(product.numberOfProducts());
     engine.multiplePathValues(*stats, paths_);
     return stats;
 }
@@ -422,7 +422,7 @@ BOOST_AUTO_TEST_CASE(testSwaptionImpliedVolatility)
         Real swapRate = lmmCurveState.cmSwapRate(startIndex,endIndex-startIndex);
         Real swapAnnuity = lmmCurveState.cmSwapAnnuity(startIndex,startIndex,endIndex-startIndex)*marketData.discountFactors()[startIndex];
 
-        ext::shared_ptr<PlainVanillaPayoff> payoffDis( new PlainVanillaPayoff(Option::Call, strike+displacement));
+        auto payoffDis = ext::make_shared<PlainVanillaPayoff>( Option::Call, strike+displacement);
 
         Real expectedSwaption = BlackCalculator(payoffDis,
             swapRate+displacement, estimatedImpliedVol *sqrt(rateTimes[startIndex]),
