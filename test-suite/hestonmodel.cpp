@@ -2969,7 +2969,7 @@ BOOST_AUTO_TEST_CASE(testSmallSigmaStepAgainstClosedForm) {
                 *((k-d)*tau - 2.0*std::log((1.0-gt*e)/(1.0-gt)));
 
             const auto [calculatedD, calculatedC] =
-                detail::hestonSmallSigmaStep(kappa, theta, sigma, rho, tau, z, Dprev);
+                QuantLib::detail::hestonSmallSigmaStep(kappa, theta, sigma, rho, tau, z, Dprev);
 
             const Real tol = 1e-7;
             if (std::abs(calculatedD - expectedD) > tol
