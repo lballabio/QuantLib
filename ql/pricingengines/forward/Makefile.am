@@ -7,6 +7,7 @@ this_include_HEADERS = \
     discountingfxforwardengine.hpp \
     forwardengine.hpp \
     forwardperformanceengine.hpp \
+    lognormalvolatilityswapengine.hpp \
     mcvarianceswapengine.hpp \
     replicatingvarianceswapengine.hpp \
     mcforwardvanillaengine.hpp \
@@ -15,6 +16,7 @@ this_include_HEADERS = \
 
 cpp_files = \
     discountingfxforwardengine.cpp \
+    lognormalvolatilityswapengine.cpp \
     mcforwardeuropeanbsengine.cpp \
     mcforwardeuropeanhestonengine.cpp
 
