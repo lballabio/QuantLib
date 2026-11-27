@@ -35,6 +35,7 @@
 #include <functional>
 #include <cmath>
 #include <limits>
+#include <type_traits>
 #include <utility>
 
 #ifdef QL_PATCH_MSVC
@@ -469,7 +470,7 @@ namespace QuantLib {
             else if (cpxLog_ == AsymptoticChF)
                 phiBS = std::exp(-u*tanPhi_*freq_ + u*std::complex<Real>(1, tanPhi_)*phi_ + psi_);
 
-            const std::complex<Real> v = enginePtr_->lnChF(hPrime, term_);            
+            const std::complex<Real> v = lnChFAt(hPrime);
             const std::complex<Real> chf_v = 
                 (v.real() == -std::numeric_limits<Real>::infinity())
                 ? 0.0: std::exp(-u*tanPhi_*freq_ + v);
@@ -494,6 +495,43 @@ namespace QuantLib {
         else {
             QL_FAIL("unknown control variate");
 }
+    }
+
+    std::complex<Real> AnalyticHestonEngine::AP_Helper::lnChFAt(
+        const std::complex<Real>& z) const {
+        const Size n = node_++;
+        if (cached_ != nullptr && n < cached_->z.size() && cached_->z[n] == z)
+            return cached_->lnChF[n];
+
+        const std::complex<Real> v = enginePtr_->lnChF(z, term_);
+        if (record_ != nullptr) {
+            record_->z.push_back(z);
+            record_->lnChF.push_back(v);
+        }
+        return v;
+    }
+
+    ext::shared_ptr<const AnalyticHestonEngine::LnChFCache>
+    AnalyticHestonEngine::findLnChF(
+        const Array& params, Time term, Real tanPhi) const {
+        std::lock_guard<std::mutex> lock(cacheMutex_);
+        if (cacheParams_ != params) {
+            lnChFCache_.clear();
+            cacheParams_ = params;
+        }
+        for (const auto& entry: lnChFCache_)
+            if (entry->term == term && entry->tanPhi == tanPhi)
+                return entry;
+        return ext::shared_ptr<const LnChFCache>();
+    }
+
+    void AnalyticHestonEngine::storeLnChF(
+        const ext::shared_ptr<const LnChFCache>& entry) const {
+        // up to three contour angles per maturity, so about 21 maturities
+        constexpr Size maxEntries = 64;
+        std::lock_guard<std::mutex> lock(cacheMutex_);
+        if (cacheParams_ == entry->params && lnChFCache_.size() < maxEntries)
+            lnChFCache_.push_back(entry);
     }
 
     Real AnalyticHestonEngine::AP_Helper::controlVariateValue() const {
@@ -641,7 +679,10 @@ namespace QuantLib {
       integration_(new Integration(
                           Integration::gaussLaguerre(integrationOrder))),
       andersenPiterbargEpsilon_(Null<Real>()),
-      alpha_(-0.5) {
+      alpha_(-0.5),
+      // fixed nodes, so lnChF values can be reused across strikes; not for AAD
+      // types, where a stored value would not be on the current tape
+      cacheLnChF_(std::is_floating_point_v<Real>) {
     }
 
     AnalyticHestonEngine::AnalyticHestonEngine(
@@ -655,7 +696,8 @@ namespace QuantLib {
       integration_(new Integration(Integration::gaussLobatto(
                               relTolerance, Null<Real>(), maxEvaluations))),
       andersenPiterbargEpsilon_(1e-40),
-      alpha_(-0.5) {
+      alpha_(-0.5),
+      cacheLnChF_(false) {
     }
 
     AnalyticHestonEngine::AnalyticHestonEngine(
@@ -671,7 +713,8 @@ namespace QuantLib {
       cpxLog_(cpxLog),
       integration_(new Integration(integration)),
       andersenPiterbargEpsilon_(andersenPiterbargEpsilon),
-      alpha_(alpha) {
+      alpha_(alpha),
+      cacheLnChF_(false) {
         QL_REQUIRE(   cpxLog_ != BranchCorrection
                    || !integration.isAdaptiveIntegration(),
                    "Branch correction does not work in conjunction "
@@ -795,9 +838,26 @@ namespace QuantLib {
                 ? optimalControlVariate(maturity, v0, kappa, theta, sigma, rho)
                 : cpxLog_;
 
-            const AP_Helper cvHelper(
+            AP_Helper cvHelper(
                  maturity, fwd, strike, finalLog, this, alpha_
             );
+
+            ext::shared_ptr<const LnChFCache> cached;
+            ext::shared_ptr<LnChFCache> record;
+            if (cacheLnChF_ && finalLog != AndersenPiterbarg
+                            && finalLog != AndersenPiterbargOptCV) {
+                const Array params = model_->params();
+                cached = findLnChF(params, maturity, cvHelper.tanPhi_);
+                if (cached != nullptr)
+                    cvHelper.cached_ = cached.get();
+                else {
+                    record = ext::make_shared<LnChFCache>();
+                    record->params = params;
+                    record->term = maturity;
+                    record->tanPhi = cvHelper.tanPhi_;
+                    cvHelper.record_ = record.get();
+                }
+            }
 
             const Real cvValue = cvHelper.controlVariateValue();
 
@@ -811,6 +871,9 @@ namespace QuantLib {
                 fwd/M_PI*integration_->calculate(c_inf, cvHelper, uM, scalingFactor);
 
             evaluations_ += integration_->numberOfEvaluations();
+
+            if (record != nullptr)
+                storeLnChF(record);
 
             switch (payoff->optionType())
             {
