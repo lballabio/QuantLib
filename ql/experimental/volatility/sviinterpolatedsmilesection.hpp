@@ -56,8 +56,8 @@ class SviInterpolatedSmileSection : public SmileSection, public LazyObject {
         bool rhoIsFixed,
         bool mIsFixed,
         bool vegaWeighted = true,
-        ext::shared_ptr<EndCriteria> endCriteria = ext::shared_ptr<EndCriteria>(),
-        ext::shared_ptr<OptimizationMethod> method = ext::shared_ptr<OptimizationMethod>(),
+        ext::shared_ptr<EndCriteria> endCriteria = {},
+        ext::shared_ptr<OptimizationMethod> method = {},
         const DayCounter& dc = Actual365Fixed());
     //! no quotes
     SviInterpolatedSmileSection(
@@ -78,8 +78,8 @@ class SviInterpolatedSmileSection : public SmileSection, public LazyObject {
         bool isRhoFixed,
         bool isMFixed,
         bool vegaWeighted = true,
-        ext::shared_ptr<EndCriteria> endCriteria = ext::shared_ptr<EndCriteria>(),
-        ext::shared_ptr<OptimizationMethod> method = ext::shared_ptr<OptimizationMethod>(),
+        ext::shared_ptr<EndCriteria> endCriteria = {},
+        ext::shared_ptr<OptimizationMethod> method = {},
         const DayCounter& dc = Actual365Fixed());
     //@}
     //! \name LazyObject interface

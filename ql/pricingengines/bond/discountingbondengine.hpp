@@ -39,7 +39,7 @@ namespace QuantLib {
     class DiscountingBondEngine : public Bond::engine {
       public:
         explicit DiscountingBondEngine(
-            Handle<YieldTermStructure> discountCurve = Handle<YieldTermStructure>(),
+            Handle<YieldTermStructure> discountCurve = {},
             const std::optional<bool>& includeSettlementDateFlows = std::nullopt);
         void calculate() const override;
         const Handle<YieldTermStructure>& discountCurve() const {

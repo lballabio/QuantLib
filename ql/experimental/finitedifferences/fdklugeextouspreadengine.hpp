@@ -52,8 +52,8 @@ namespace QuantLib {
               Size xGrid = 50,
               Size yGrid = 10,
               Size uGrid = 25,
-              ext::shared_ptr<GasShape> gasShape = ext::shared_ptr<GasShape>(),
-              ext::shared_ptr<PowerShape> powerShape = ext::shared_ptr<PowerShape>(),
+              ext::shared_ptr<GasShape> gasShape = {},
+              ext::shared_ptr<PowerShape> powerShape = {},
               const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Hundsdorfer());
 
           void calculate() const override;

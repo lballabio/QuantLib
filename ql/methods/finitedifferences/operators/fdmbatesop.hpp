@@ -40,7 +40,7 @@ namespace QuantLib {
                    FdmBoundaryConditionSet bcSet,
                    Size integroIntegrationOrder,
                    const ext::shared_ptr<FdmQuantoHelper>& quantoHelper =
-                       ext::shared_ptr<FdmQuantoHelper>());
+                       {});
 
         Size size() const override;
         void setTime(Time t1, Time t2) override;

@@ -67,11 +67,11 @@ namespace QuantLib {
             const int integrationPoints = 64, const Real stddevs = 7.0,
             const bool extrapolatePayoff = true,
             const bool flatPayoffExtrapolation = false,
-            const Handle<Quote> &oas = Handle<Quote>(), // continuously
+            const Handle<Quote> &oas = {}, // continuously
                                                         // compounded w.r.t. yts
                                                         // daycounter
             const Handle<YieldTermStructure> &discountCurve =
-                Handle<YieldTermStructure>(),
+                {},
             const Probabilities probabilities = None)
             : BasketGeneratingEngine(model, oas, discountCurve),
               GenericModelEngine<Gaussian1dModel,
@@ -95,11 +95,11 @@ namespace QuantLib {
             const int integrationPoints = 64, const Real stddevs = 7.0,
             const bool extrapolatePayoff = true,
             const bool flatPayoffExtrapolation = false,
-            const Handle<Quote> &oas = Handle<Quote>(), // continuously
+            const Handle<Quote> &oas = {}, // continuously
                                                         // compounded w.r.t. yts
                                                         // daycounter
             const Handle<YieldTermStructure> &discountCurve =
-                Handle<YieldTermStructure>(),
+                {},
             const Probabilities probabilities = None)
             : BasketGeneratingEngine(model, oas, discountCurve),
               GenericModelEngine<Gaussian1dModel,

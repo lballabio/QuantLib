@@ -52,6 +52,7 @@ bool isValidSingleNonMacroVar(const VarDecl *VD, const CallExpr *CE,
   return true;
 }
 
+// Check 1: ext::shared_ptr<Foo> x = ext::make_shared<Foo>(...)
 class UseAutoMakeSharedCheck : public ClangTidyCheck {
 public:
   UseAutoMakeSharedCheck(StringRef Name, ClangTidyContext *Context)
@@ -98,6 +99,7 @@ public:
   }
 };
 
+// Check 2: ext::shared_ptr<Foo> x = flatRate(...) / flatVol(...)
 class UseAutoFlatRateVolCheck : public ClangTidyCheck {
 public:
   UseAutoFlatRateVolCheck(StringRef Name, ClangTidyContext *Context)
@@ -136,6 +138,53 @@ public:
   }
 };
 
+// Check 3: ext::shared_ptr<Foo> / Handle<Foo> / RelinkableHandle<Foo> default arg -> = {}
+class DefaultSharedPtrBracesCheck : public ClangTidyCheck {
+public:
+  DefaultSharedPtrBracesCheck(StringRef Name, ClangTidyContext *Context)
+      : ClangTidyCheck(Name, Context) {}
+
+  void registerMatchers(MatchFinder *Finder) override {
+    auto TargetType = hasCanonicalType(recordType(hasDeclaration(
+        classTemplateSpecializationDecl(hasAnyName(
+            "::std::shared_ptr", "::QuantLib::Handle",
+            "::QuantLib::RelinkableHandle")))));
+
+    Finder->addMatcher(
+        parmVarDecl(
+            anyOf(hasType(TargetType),
+                  hasType(referenceType(pointee(TargetType)))),
+            hasDefaultArgument())
+            .bind("param"),
+        this);
+  }
+
+  void check(const MatchFinder::MatchResult &Result) override {
+    const auto *PVD = Result.Nodes.getNodeAs<ParmVarDecl>("param");
+    if (!PVD || !PVD->hasDefaultArg() || PVD->hasUninstantiatedDefaultArg())
+      return;
+
+    const Expr *DefaultArg = PVD->getDefaultArg();
+    if (!DefaultArg)
+      return;
+
+    const auto *CtorExpr =
+        dyn_cast<CXXConstructExpr>(DefaultArg->IgnoreImplicit());
+    if (!CtorExpr || CtorExpr->getNumArgs() != 0 ||
+        CtorExpr->isListInitialization())
+      return;
+
+    SourceRange ArgRange = DefaultArg->getSourceRange();
+    if (ArgRange.isInvalid() || ArgRange.getBegin().isMacroID() ||
+        ArgRange.getEnd().isMacroID())
+      return;
+
+    diag(ArgRange.getBegin(),
+         "use '{}' instead of explicit default constructor")
+        << FixItHint::CreateReplacement(ArgRange, "{}");
+  }
+};
+
 class CustomTidyModule : public ClangTidyModule {
 public:
   void addCheckFactories(ClangTidyCheckFactories &CheckFactories) override {
@@ -143,6 +192,8 @@ public:
         "custom-use-auto-make-shared");
     CheckFactories.registerCheck<UseAutoFlatRateVolCheck>(
         "custom-use-auto-flat-rate-vol");
+    CheckFactories.registerCheck<DefaultSharedPtrBracesCheck>(
+        "custom-default-shared-ptr-braces");
   }
 };
 

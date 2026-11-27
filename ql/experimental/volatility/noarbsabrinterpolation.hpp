@@ -203,9 +203,9 @@ class NoArbSabrInterpolation : public Interpolation {
         bool alphaIsFixed, bool betaIsFixed, bool nuIsFixed, bool rhoIsFixed,
         bool vegaWeighted = true,
         const ext::shared_ptr<EndCriteria> &endCriteria =
-            ext::shared_ptr<EndCriteria>(),
+            {},
         const ext::shared_ptr<OptimizationMethod> &optMethod =
-            ext::shared_ptr<OptimizationMethod>(),
+            {},
         const Real errorAccept = 0.0020, const bool useMaxError = false,
         const Size maxGuesses = 50, const Real shift = 0.0) {
 
@@ -251,8 +251,8 @@ class NoArbSabr {
               bool nuIsFixed,
               bool rhoIsFixed,
               bool vegaWeighted = false,
-              ext::shared_ptr<EndCriteria> endCriteria = ext::shared_ptr<EndCriteria>(),
-              ext::shared_ptr<OptimizationMethod> optMethod = ext::shared_ptr<OptimizationMethod>(),
+              ext::shared_ptr<EndCriteria> endCriteria = {},
+              ext::shared_ptr<OptimizationMethod> optMethod = {},
               const Real errorAccept = 0.0020,
               const bool useMaxError = false,
               const Size maxGuesses = 50)

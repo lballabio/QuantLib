@@ -42,7 +42,7 @@ namespace QuantLib {
         */
         explicit AnalyticCapFloorEngine(
             const ext::shared_ptr<AffineModel>& model,
-            Handle<YieldTermStructure> termStructure = Handle<YieldTermStructure>());
+            Handle<YieldTermStructure> termStructure = {});
         void calculate() const override;
 
       private:

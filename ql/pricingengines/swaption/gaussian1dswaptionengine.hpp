@@ -72,7 +72,7 @@ namespace QuantLib {
             const Real stddevs = 7.0,
             const bool extrapolatePayoff = true,
             const bool flatPayoffExtrapolation = false,
-            Handle<YieldTermStructure> discountCurve = Handle<YieldTermStructure>(),
+            Handle<YieldTermStructure> discountCurve = {},
             const Probabilities probabilities = None)
         : GenericModelEngine<Gaussian1dModel, Swaption::arguments, Swaption::results>(model),
           integrationPoints_(integrationPoints), stddevs_(stddevs),
@@ -89,7 +89,7 @@ namespace QuantLib {
             const Real stddevs = 7.0,
             const bool extrapolatePayoff = true,
             const bool flatPayoffExtrapolation = false,
-            Handle<YieldTermStructure> discountCurve = Handle<YieldTermStructure>(),
+            Handle<YieldTermStructure> discountCurve = {},
             const Probabilities probabilities = None)
         : GenericModelEngine<Gaussian1dModel, Swaption::arguments, Swaption::results>(model),
           integrationPoints_(integrationPoints), stddevs_(stddevs),

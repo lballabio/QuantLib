@@ -45,7 +45,7 @@ namespace QuantLib {
                               const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Douglas(),
                               bool localVol = false,
                               Real illegalLocalVolOverwrite = -Null<Real>(),
-                              Handle<FdmQuantoHelper> quantoHelper = Handle<FdmQuantoHelper>());
+                              Handle<FdmQuantoHelper> quantoHelper = {});
 
         Real valueAt(Real s) const;
         Real deltaAt(Real s) const;

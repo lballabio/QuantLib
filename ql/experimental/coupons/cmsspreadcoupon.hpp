@@ -140,7 +140,7 @@ namespace QuantLib {
     //! base pricer for vanilla CMS spread coupons
     class CmsSpreadCouponPricer : public FloatingRateCouponPricer {
       public:
-        explicit CmsSpreadCouponPricer(Handle<Quote> correlation = Handle<Quote>())
+        explicit CmsSpreadCouponPricer(Handle<Quote> correlation = {})
         : correlation_(std::move(correlation)) {
             registerWith(correlation_);
         }
@@ -150,7 +150,7 @@ namespace QuantLib {
         }
 
         void setCorrelation(
-                         const Handle<Quote> &correlation = Handle<Quote>()) {
+                         const Handle<Quote> &correlation = {}) {
             unregisterWith(correlation_);
             correlation_ = correlation;
             registerWith(correlation_);

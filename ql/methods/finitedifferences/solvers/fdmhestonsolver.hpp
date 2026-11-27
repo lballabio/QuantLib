@@ -44,9 +44,9 @@ namespace QuantLib {
         FdmHestonSolver(Handle<HestonProcess> process,
                         FdmSolverDesc solverDesc,
                         const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Hundsdorfer(),
-                        Handle<FdmQuantoHelper> quantoHelper = Handle<FdmQuantoHelper>(),
+                        Handle<FdmQuantoHelper> quantoHelper = {},
                         ext::shared_ptr<LocalVolTermStructure> leverageFct =
-                            ext::shared_ptr<LocalVolTermStructure>(),
+                            {},
                         Real mixingFactor = 1.0);
 
         Real valueAt(Real s, Real v) const;

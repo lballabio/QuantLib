@@ -37,7 +37,7 @@ namespace QuantLib {
     class SteepestDescent : public LineSearchBasedMethod {
       public:
         SteepestDescent(const ext::shared_ptr<LineSearch>& lineSearch =
-                                            ext::shared_ptr<LineSearch>())
+                                            {})
         : LineSearchBasedMethod(lineSearch) {}
       private:
         //! \name LineSearchBasedMethod interface

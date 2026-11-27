@@ -66,7 +66,7 @@ namespace QuantLib {
     class IborCouponPricer : public FloatingRateCouponPricer {
       public:
         explicit IborCouponPricer(
-            Handle<OptionletVolatilityStructure> v = Handle<OptionletVolatilityStructure>(),
+            Handle<OptionletVolatilityStructure> v = {},
             std::optional<bool> useIndexedCoupon = std::nullopt);
 
         bool useIndexedCoupon() const { return useIndexedCoupon_; }
@@ -76,7 +76,7 @@ namespace QuantLib {
         }
         void setCapletVolatility(
                             const Handle<OptionletVolatilityStructure>& v =
-                                    Handle<OptionletVolatilityStructure>()) {
+                                    {}) {
             unregisterWith(capletVol_);
             capletVol_ = v;
             registerWith(capletVol_);
@@ -112,7 +112,7 @@ namespace QuantLib {
       public:
         enum TimingAdjustment { Black76, BivariateLognormal };
         explicit BlackIborCouponPricer(
-            const Handle<OptionletVolatilityStructure>& v = Handle<OptionletVolatilityStructure>(),
+            const Handle<OptionletVolatilityStructure>& v = {},
             const TimingAdjustment timingAdjustment = Black76,
             Handle<Quote> correlation = Handle<Quote>(ext::shared_ptr<Quote>(new SimpleQuote(1.0))),
             const std::optional<bool> useIndexedCoupon = std::nullopt)
@@ -150,7 +150,7 @@ namespace QuantLib {
     class CmsCouponPricer : public FloatingRateCouponPricer {
       public:
         explicit CmsCouponPricer(
-            Handle<SwaptionVolatilityStructure> v = Handle<SwaptionVolatilityStructure>())
+            Handle<SwaptionVolatilityStructure> v = {})
         : swaptionVol_(std::move(v)) {
             registerWith(swaptionVol_);
         }
@@ -160,7 +160,7 @@ namespace QuantLib {
         }
         void setSwaptionVolatility(
                             const Handle<SwaptionVolatilityStructure>& v=
-                                    Handle<SwaptionVolatilityStructure>()) {
+                                    {}) {
             unregisterWith(swaptionVol_);
             swaptionVol_ = v;
             registerWith(swaptionVol_);

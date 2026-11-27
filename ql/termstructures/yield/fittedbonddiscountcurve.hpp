@@ -235,7 +235,7 @@ namespace QuantLib {
         FittingMethod(bool constrainAtZero = true,
                       const Array& weights = Array(),
                       ext::shared_ptr<OptimizationMethod> optimizationMethod =
-                          ext::shared_ptr<OptimizationMethod>(),
+                          {},
                       Array l2 = Array(),
                       Real minCutoffTime = 0.0,
                       Real maxCutoffTime = QL_MAX_REAL,

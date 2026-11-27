@@ -78,21 +78,21 @@ class Gaussian1dModel : public TermStructureConsistentModel, public LazyObject {
 
     Real numeraire(Time t,
                    Real y = 0.0,
-                   const Handle<YieldTermStructure>& yts = Handle<YieldTermStructure>()) const;
+                   const Handle<YieldTermStructure>& yts = {}) const;
 
     Real zerobond(Time T,
                   Time t = 0.0,
                   Real y = 0.0,
-                  const Handle<YieldTermStructure>& yts = Handle<YieldTermStructure>()) const;
+                  const Handle<YieldTermStructure>& yts = {}) const;
 
     Real numeraire(const Date& referenceDate,
                    Real y = 0.0,
-                   const Handle<YieldTermStructure>& yts = Handle<YieldTermStructure>()) const;
+                   const Handle<YieldTermStructure>& yts = {}) const;
 
     Real zerobond(const Date& maturity,
                   const Date& referenceDate = Date(),
                   Real y = 0.0,
-                  const Handle<YieldTermStructure>& yts = Handle<YieldTermStructure>()) const;
+                  const Handle<YieldTermStructure>& yts = {}) const;
 
     Real zerobondOption(const Option::Type& type,
                         const Date& expiry,
@@ -101,7 +101,7 @@ class Gaussian1dModel : public TermStructureConsistentModel, public LazyObject {
                         Rate strike,
                         const Date& referenceDate = Date(),
                         Real y = 0.0,
-                        const Handle<YieldTermStructure>& yts = Handle<YieldTermStructure>(),
+                        const Handle<YieldTermStructure>& yts = {},
                         Real yStdDevs = 7.0,
                         Size yGridPoints = 64,
                         bool extrapolatePayoff = true,
@@ -111,26 +111,26 @@ class Gaussian1dModel : public TermStructureConsistentModel, public LazyObject {
     forwardRate(const Date& fixing,
                 const Date& referenceDate = Date(),
                 Real y = 0.0,
-                const ext::shared_ptr<IborIndex>& iborIdx = ext::shared_ptr<IborIndex>()) const;
+                const ext::shared_ptr<IborIndex>& iborIdx = {}) const;
 
     Real compoundedRate(
         const OvernightIndexedCoupon& coupon,
         const Date& referenceDate = Date(),
         Real y = 0.0,
-        const Handle<YieldTermStructure>& yts = Handle<YieldTermStructure>()) const;
+        const Handle<YieldTermStructure>& yts = {}) const;
 
     Real swapRate(const Date& fixing,
                   const Period& tenor,
                   const Date& referenceDate = Date(),
                   Real y = 0.0,
-                  const ext::shared_ptr<SwapIndex>& swapIdx = ext::shared_ptr<SwapIndex>()) const;
+                  const ext::shared_ptr<SwapIndex>& swapIdx = {}) const;
 
     Real
     swapAnnuity(const Date& fixing,
                 const Period& tenor,
                 const Date& referenceDate = Date(),
                 Real y = 0.0,
-                const ext::shared_ptr<SwapIndex>& swapIdx = ext::shared_ptr<SwapIndex>()) const;
+                const ext::shared_ptr<SwapIndex>& swapIdx = {}) const;
 
     /*! Computes the integral
     \f[ {2\pi}^{-0.5} \int_{a}^{b} p(x) \exp{-0.5*x*x} \mathrm{d}x \f]

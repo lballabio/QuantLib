@@ -91,6 +91,7 @@ Checks: >
           -readability-use-std-min-max,
         custom-use-auto-make-shared,
         custom-use-auto-flat-rate-vol,
+        custom-default-shared-ptr-braces,
 HeaderFilterRegex: '.*'
 FormatStyle: none
 CheckOptions:

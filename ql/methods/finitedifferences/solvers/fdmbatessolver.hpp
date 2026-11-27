@@ -40,7 +40,7 @@ namespace QuantLib {
                        FdmSolverDesc solverDesc,
                        const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Hundsdorfer(),
                        Size integroIntegrationOrder = 12,
-                       Handle<FdmQuantoHelper> quantoHelper = Handle<FdmQuantoHelper>());
+                       Handle<FdmQuantoHelper> quantoHelper = {});
 
         Real valueAt(Real s, Real v) const;
         Real thetaAt(Real s, Real v) const;

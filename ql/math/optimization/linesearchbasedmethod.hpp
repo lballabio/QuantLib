@@ -37,7 +37,7 @@ namespace QuantLib {
     class LineSearchBasedMethod : public OptimizationMethod {
       public:
         explicit LineSearchBasedMethod(
-            ext::shared_ptr<LineSearch> lSearch = ext::shared_ptr<LineSearch>());
+            ext::shared_ptr<LineSearch> lSearch = {});
         ~LineSearchBasedMethod() override = default;
 
         EndCriteria::Type minimize(Problem& P, const EndCriteria& endCriteria) override;

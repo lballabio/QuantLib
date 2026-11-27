@@ -55,8 +55,8 @@ namespace QuantLib {
             bool isNuFixed = false,
             bool isRhoFixed = false,
             bool vegaWeighted = true,
-            ext::shared_ptr<EndCriteria> endCriteria = ext::shared_ptr<EndCriteria>(),
-            ext::shared_ptr<OptimizationMethod> method = ext::shared_ptr<OptimizationMethod>(),
+            ext::shared_ptr<EndCriteria> endCriteria = {},
+            ext::shared_ptr<OptimizationMethod> method = {},
             const DayCounter& dc = Actual365Fixed());
         //! no quotes
         NoArbSabrInterpolatedSmileSection(
@@ -75,8 +75,8 @@ namespace QuantLib {
             bool isNuFixed = false,
             bool isRhoFixed = false,
             bool vegaWeighted = true,
-            ext::shared_ptr<EndCriteria> endCriteria = ext::shared_ptr<EndCriteria>(),
-            ext::shared_ptr<OptimizationMethod> method = ext::shared_ptr<OptimizationMethod>(),
+            ext::shared_ptr<EndCriteria> endCriteria = {},
+            ext::shared_ptr<OptimizationMethod> method = {},
             const DayCounter& dc = Actual365Fixed());
         //@}
         //! \name LazyObject interface

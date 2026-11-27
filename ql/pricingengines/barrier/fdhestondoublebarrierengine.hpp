@@ -53,7 +53,7 @@ namespace QuantLib {
             Size dampingSteps = 0,
             const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Hundsdorfer(),
             ext::shared_ptr<LocalVolTermStructure> leverageFct =
-                ext::shared_ptr<LocalVolTermStructure>(),
+                {},
             Real mixingFactor = 1.0);
 
         void calculate() const override;
