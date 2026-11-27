@@ -19,6 +19,7 @@
 #include "toplevelfixture.hpp"
 #include "utilities.hpp"
 #include <ql/time/calendars/target.hpp>
+#include <ql/time/calendars/nullcalendar.hpp>
 #include <ql/time/daycounters/actualactual.hpp>
 #include <ql/instruments/bondforward.hpp>
 #include <ql/instruments/bonds/fixedratebond.hpp>
@@ -147,6 +148,35 @@ BOOST_AUTO_TEST_CASE(testThatForwardValueIsEqualToSpotValueIfNoIncome) {
         BOOST_ERROR("unable to match the dirty price \n"
                     << std::setprecision(5) << "    bond forward:    " << bndFwdValue << "\n"
                     << "    underlying bond:    " << underlyingDirtyPrice << "\n");
+}
+
+BOOST_AUTO_TEST_CASE(testForwardQuoteIndependentOfFaceAmount) {
+    BOOST_TEST_MESSAGE("Testing forward quotation units across bond face amounts...");
+    CommonVars vars;
+    const NullCalendar calendar;
+    const Actual365Fixed dayCounter;
+    const Date issue(2, February, 2022), couponDate(2, August, 2022);
+    const Date delivery(22, August, 2022), maturity(2, February, 2023);
+    const Real coupon = 0.05, rate = 0.04;
+    const Schedule schedule(issue, maturity, Period(Semiannual), calendar,
+                            Unadjusted, Unadjusted, DateGeneration::Forward, false);
+    const Handle<YieldTermStructure> curve(flatRate(vars.today, rate, dayCounter));
+    const DiscountFactor toCoupon = std::exp(-rate * (couponDate - vars.today) / 365.0);
+    const Real expectedIncome = 100.0 * coupon * (couponDate - issue) / 365.0 * toCoupon;
+    const Real payoff = 100.0 * (1.0 + coupon * (maturity - couponDate) / 365.0);
+    const Real expectedDirty = payoff * std::exp(-rate * (maturity - delivery) / 365.0);
+    const Real expectedAccrued = 100.0 * coupon * (delivery - couponDate) / 365.0;
+
+    for (const Real face : {100.0, 10000.0, 1000000.0}) {
+        auto bond = ext::make_shared<FixedRateBond>(0, face, schedule, std::vector<Rate>{coupon},
+                                                    dayCounter, Unadjusted, 100.0, issue);
+        bond->setPricingEngine(ext::make_shared<DiscountingBondEngine>(curve));
+        const BondForward forward(vars.today, delivery, Position::Long, 95.0, 0,
+                                  dayCounter, calendar, Unadjusted, bond, curve, curve);
+        BOOST_CHECK_CLOSE(forward.spotIncome(curve), expectedIncome, 1e-10);
+        BOOST_CHECK_CLOSE(forward.forwardPrice(), expectedDirty, 1e-10);
+        BOOST_CHECK_CLOSE(forward.cleanForwardPrice(), expectedDirty - expectedAccrued, 1e-10);
+    }
 }
 
 BOOST_AUTO_TEST_SUITE_END()

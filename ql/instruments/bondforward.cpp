@@ -79,7 +79,12 @@ namespace QuantLib {
             }
         }
 
-        return income;
+        if (income == 0.0)
+            return 0.0;
+        // Match the quotation units of the underlying dirty price.
+        const Real spotNotional = bond_->notional();
+        QL_REQUIRE(spotNotional > 0.0, "underlying has no notional at bond settlement");
+        return income * 100.0 / spotNotional;
     }
 
 
