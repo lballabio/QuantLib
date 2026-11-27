@@ -628,6 +628,38 @@ BOOST_AUTO_TEST_CASE(testVasicekDiscountFactorForSmallMeanReversion) {
     }
 }
 
+BOOST_AUTO_TEST_CASE(testCoxIngersollRossDiscountFactorForSmallSigma) {
+    BOOST_TEST_MESSAGE("Testing zero-bond pricing for CIR model with small sigma...");
+
+    // A(t,T) is exp(2*k*theta/sigma^2 * log(num/den)) with log(num/den) of
+    // order sigma^2, so a direct evaluation loses all its digits at small
+    // sigma. As sigma->0 the short rate follows dr=k(theta-r)dt, whose
+    // zero-coupon bond price is
+    // exp(-theta*tau - (r0-theta)*(1-exp(-k*tau))/k).
+    const Rate r0 = 0.03;
+    const Real theta = 0.05;
+    const Real k = 0.1;
+    const Real sigma = 1.0e-12;
+    const Time maturity = 30.0;
+
+    const CoxIngersollRoss model(r0, theta, k, sigma, false);
+
+    const Real expected =
+        std::exp(-theta*maturity - (r0-theta)*(1.0-std::exp(-k*maturity))/k);
+    const Real calculated = model.discountBond(0.0, maturity, r0);
+
+    QL_CHECK_CLOSE_FRACTION(calculated, expected, 1.0e-10);
+
+    // an ordinary case and a tiny-k case, against the closed form
+    // evaluated in high-precision arithmetic
+    const CoxIngersollRoss ordinary(r0, theta, k, 0.1, false);
+    QL_CHECK_CLOSE_FRACTION(ordinary.discountBond(0.0, maturity, r0),
+                            0.33951619180583830077, 1.0e-12);
+    const CoxIngersollRoss slow(r0, theta, 1.0e-8, 1.0e-9, false);
+    QL_CHECK_CLOSE_FRACTION(slow.discountBond(0.0, 1.0, 0.0),
+                            0.99999999975000000086, 1.0e-12);
+}
+
 BOOST_AUTO_TEST_CASE(testHullWhiteForwardStartBondOptionForSmallMeanReversion) {
     BOOST_TEST_MESSAGE("Testing Hull-White forward-start bond option across small mean-reversion speeds...");
 
