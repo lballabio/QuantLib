@@ -68,6 +68,9 @@ namespace QuantLib {
                    "different number of callability dates and prices");
         QL_REQUIRE(callabilityDates.size() == callabilityTypes.size(),
                    "different number of callability dates and types");
+        QL_REQUIRE(callabilityNoticeDates.empty() ||
+                       callabilityNoticeDates.size() == callabilityDates.size(),
+                   "different number of callability dates and notice dates");
         QL_REQUIRE(couponDates.size() == couponAmounts.size(),
                    "different number of coupon dates and amounts");
     }
@@ -441,9 +444,11 @@ namespace QuantLib {
 
         arguments->callabilityPrices.clear();
         arguments->callabilityDates.clear();
+        arguments->callabilityNoticeDates.clear();
         arguments->callabilityTypes.clear();
         arguments->callabilityPrices.reserve(putCallSchedule_.size());
         arguments->callabilityDates.reserve(putCallSchedule_.size());
+        arguments->callabilityNoticeDates.reserve(putCallSchedule_.size());
         arguments->callabilityTypes.reserve(putCallSchedule_.size());
 
         arguments->paymentDayCounter = paymentDayCounter_;
@@ -452,7 +457,13 @@ namespace QuantLib {
         arguments->putCallSchedule = putCallSchedule_;
         for (const auto& i : putCallSchedule_) {
             if (!i->hasOccurred(settlement, false)) {
+                // Whether an irrevocable notice has already been served is not part
+                // of the instrument. Do not silently price an expired decision.
+                QL_REQUIRE(i->noticeDate() >= settlement,
+                           "notice date " << i->noticeDate() << " before settlement "
+                           << settlement << " for outstanding call/put on " << i->date());
                 arguments->callabilityDates.push_back(i->date());
+                arguments->callabilityNoticeDates.push_back(i->noticeDate());
                 arguments->callabilityTypes.push_back(i->type());
                 arguments->callabilityPrices.push_back(i->price().amount());
 

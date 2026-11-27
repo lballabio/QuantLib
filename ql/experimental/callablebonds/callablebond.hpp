@@ -163,6 +163,8 @@ namespace QuantLib {
         //! bond full/dirty/cash prices
         std::vector<Real> callabilityPrices;
         std::vector<Date> callabilityDates;
+        //! Decision dates; an empty vector means exercise without notice.
+        std::vector<Date> callabilityNoticeDates;
         std::vector<Callability::Type> callabilityTypes;
         //! Spread to apply to the valuation. This is a continuously
         //! componded rate added to the model. Currently only applied

@@ -42,7 +42,21 @@ namespace QuantLib {
         enum Type { Call, Put };
 
         Callability(const Bond::Price& price, Type type, const Date& date)
-        : price_(price), type_(type), date_(date) {}
+        : Callability(price, type, date, date) {}
+        /*! The call/put price is paid on date. The issuer or holder must
+            decide on noticeDate; dates are supplied already adjusted for
+            the contractual calendar. Equal dates mean immediate exercise.
+            Advance notice is supported by the callable-bond tree engine.
+            When notice predates bond settlement but payment is still pending,
+            the notice status must be resolved by the caller: remove the right
+            if it expired unexercised, or value the committed cash flows if it
+            was exercised.
+        */
+        Callability(const Bond::Price& price, Type type, const Date& date, const Date& noticeDate)
+        : price_(price), type_(type), date_(date), noticeDate_(noticeDate) {
+            QL_REQUIRE(noticeDate <= date, "notice date after callability date");
+        }
+        Date noticeDate() const { return noticeDate_; }
         const Bond::Price& price() const {
             QL_REQUIRE(price_, "no price given");
             return *price_;
@@ -59,7 +73,7 @@ namespace QuantLib {
       private:
         std::optional<Bond::Price> price_;
         Type type_;
-        Date date_;
+        Date date_, noticeDate_;
     };
 
     inline void Callability::accept(AcyclicVisitor& v){
