@@ -74,6 +74,23 @@ namespace QuantLib {
         return notional() * pricer_->price();
     }
 
+    EquityNotionalResetCashFlow::EquityNotionalResetCashFlow(Real initialNotional,
+                                                             ext::shared_ptr<EquityIndex> index,
+                                                             const Date& initialDate,
+                                                             const Date& baseDate,
+                                                             const Date& fixingDate,
+                                                             const Date& paymentDate)
+    : EquityCashFlow(initialNotional, std::move(index), baseDate, fixingDate, paymentDate),
+      initialDate_(initialDate) {
+        QL_REQUIRE(initialDate_ <= baseDate,
+                   "initial date (" << initialDate_ << ") cannot be later than base date ("
+                                    << baseDate << ")");
+    }
+
+    Real EquityNotionalResetCashFlow::notional() const {
+        return initialNotional() * baseFixing() / index()->fixing(initialDate_);
+    }
+
 	EquityQuantoCashFlowPricer::EquityQuantoCashFlowPricer(
         Handle<YieldTermStructure> quantoCurrencyTermStructure,
         Handle<BlackVolTermStructure> equityVolatility,

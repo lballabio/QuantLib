@@ -4593,6 +4593,9 @@
     <ClInclude Include="ql\cashflows\equitycashflow.hpp">
       <Filter>cashflows</Filter>
     </ClInclude>
+    <ClInclude Include="ql\cashflows\equitynotionalresetcoupon.hpp">
+      <Filter>cashflows</Filter>
+    </ClInclude>
     <ClInclude Include="ql\time\daycounters\yearfractiontodate.hpp">
       <Filter>time\daycounters</Filter>
     </ClInclude>
@@ -7520,6 +7523,9 @@
       <Filter>instruments</Filter>
     </ClCompile>
     <ClCompile Include="ql\cashflows\equitycashflow.cpp">
+      <Filter>cashflows</Filter>
+    </ClCompile>
+    <ClCompile Include="ql\cashflows\equitynotionalresetcoupon.cpp">
       <Filter>cashflows</Filter>
     </ClCompile>
     <ClCompile Include="ql\time\daycounters\yearfractiontodate.cpp">
