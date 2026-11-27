@@ -49,6 +49,8 @@ this_include_HEADERS = \
     makecapfloor.hpp \
     makecds.hpp \
     makecms.hpp \
+    makeconstnotionalcrosscurrencybasisswap.hpp \
+    makeconstnotionalcrosscurrencyfixedvsfloatingswap.hpp \
     makemultipleresetsswap.hpp \
     makeois.hpp \
     makeswaption.hpp \
@@ -128,6 +130,8 @@ cpp_files = \
     makecapfloor.cpp \
     makecds.cpp \
     makecms.cpp \
+    makeconstnotionalcrosscurrencybasisswap.cpp \
+    makeconstnotionalcrosscurrencyfixedvsfloatingswap.cpp \
     makemultipleresetsswap.cpp \
     makeois.cpp \
     makeswaption.cpp \
