@@ -94,11 +94,13 @@ namespace QuantLib {
             // expected remaining notional:
             if (remainingNot == 0.) return 0.;
 
-            const Real one = 1.0 - 1.0e-12;  // FIXME DUE TO THE INV CUMUL AT 1
-            const Real k1 = std::min(one, attachLimit /(1.0 - averageRR)
-                ) + QL_EPSILON;
-            const Real k2 = std::min(one, detachLimit /(1.0 - averageRR)
-                ) + QL_EPSILON;
+            // InverseCumulativeNormal diverges at 1; cap the argument just
+            // below 1 so the inverse CDF remains finite.
+            const Real maxArg = 1.0 - 1.0e-12;
+            const Real k1 = std::min(maxArg, attachLimit / (1.0 - averageRR))
+                            + QL_EPSILON;
+            const Real k2 = std::min(maxArg, detachLimit / (1.0 - averageRR))
+                            + QL_EPSILON;
 
             if (prob > 0) {
                 const Real ip = InverseCumulativeNormal::standard_value(prob);
