@@ -1609,6 +1609,19 @@ BOOST_AUTO_TEST_CASE(testGlobalBootstrapVariables) {
     }
 }
 
+BOOST_AUTO_TEST_CASE(testSimpleQuoteVariablesThrowsOnBadGuess) {
+    BOOST_TEST_MESSAGE("Testing SimpleQuoteVariables throws when guess equals lower bound...");
+
+    auto quote = ext::make_shared<SimpleQuote>(0.05);
+    // Lower bound = 0.0, no initial guess (defaults to 0.0)
+    SimpleQuoteVariables vars({quote}, {}, {0.0});
+
+    // log(0 - 0) is invalid, so this must throw our validation error
+    BOOST_CHECK_EXCEPTION(
+        vars.initialize(false), QuantLib::Error,
+        ExpectedErrorMessage("is not strictly greater than lower bound"));
+}
+
 BOOST_AUTO_TEST_CASE(testGlobalBootstrapInitialGuessFn, *precondition(usingAtParCoupons())) {
 
     BOOST_TEST_MESSAGE("Testing global bootstrap initial guess function...");
