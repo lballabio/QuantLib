@@ -46,9 +46,11 @@
 #include <ql/termstructures/volatility/equityfx/blackconstantvol.hpp>
 #include <ql/termstructures/volatility/equityfx/blackvariancecurve.hpp>
 #include <ql/termstructures/yield/zerocurve.hpp>
+#include <ql/termstructures/yield/zerospreadedtermstructure.hpp>
 #include <ql/termstructures/yield/flatforward.hpp>
 #include <ql/time/daycounters/actual360.hpp>
 #include <ql/time/daycounters/actual365fixed.hpp>
+#include <ql/time/daycounters/thirty360.hpp>
 #include <ql/utilities/dataformatters.hpp>
 #include <ql/time/calendars/target.hpp>
 #include <cmath>
@@ -435,6 +437,191 @@ BOOST_AUTO_TEST_CASE(testAnalyticDiscreteGeometricAveragePrice) {
                        qRate->value(), rRate->value(), today,
                        vol->value(), expected, calculated, tolerance);
     }
+}
+
+BOOST_AUTO_TEST_CASE(testAnalyticDiscreteGeometricAveragePriceNonFlatRates) {
+    BOOST_TEST_MESSAGE("Testing geometric average-price Asians on a non-flat risk-free curve...");
+
+    Date today = Settings::instance().evaluationDate();
+    DayCounter dc = Actual360();
+    auto exercise = ext::make_shared<EuropeanExercise>(today + 360);
+    // The zero rate to maturity is 6%, as on a flat curve, but the rate to the first fixing is 1%.
+    auto riskFree = ext::make_shared<ZeroCurve>(
+        std::vector<Date>({today, today + 180, today + 360}),
+        std::vector<Rate>({0.01, 0.01, 0.06}), dc);
+    auto dividends = flatRate(today, 0.03, dc);
+    Real forward1 = 100.0*dividends->discount(today + 180)/riskFree->discount(today + 180);
+    Real forward2 = 100.0*dividends->discount(today + 360)/riskFree->discount(today + 360);
+    Time t1 = dc.yearFraction(today, today + 180);
+    Time t2 = dc.yearFraction(today, today + 360);
+
+    for (Volatility sigma : {0.0, 0.2}) {
+        auto process = ext::make_shared<BlackScholesMertonProcess>(
+            Handle<Quote>(ext::make_shared<SimpleQuote>(100.0)),
+            Handle<YieldTermStructure>(dividends), Handle<YieldTermStructure>(riskFree),
+            Handle<BlackVolTermStructure>(flatVol(today, sigma, dc)));
+        auto engine = ext::make_shared<AnalyticDiscreteGeometricAveragePriceAsianEngine>(process);
+        // log G = (log S(t1) + log S(t2))/2 is normal, and each log S(t_i) is centred
+        // on the forward to its own fixing date.
+        Real variance = sigma*sigma*(3.0*t1 + t2)/4.0;
+        Real mean = 0.5*(std::log(forward1) + std::log(forward2)) - sigma*sigma*(t1 + t2)/4.0;
+        Real forwardAverage = std::exp(mean + 0.5*variance);
+        // With zero volatility, the average is between the strike and the one
+        // obtained by drifting both fixings with the zero rate to maturity.
+        Real strike = 101.5;
+        for (Option::Type type : {Option::Call, Option::Put}) {
+            auto payoff = ext::make_shared<PlainVanillaPayoff>(type, strike);
+            DiscreteAveragingAsianOption option(Average::Geometric, 1.0, 0,
+                                              {today + 180, today + 360}, payoff, exercise);
+            option.setPricingEngine(engine);
+            Real expected = blackFormula(type, strike, forwardAverage, std::sqrt(variance),
+                                         riskFree->discount(today + 360));
+            QL_CHECK_SMALL(option.NPV()-expected, 1e-12);
+        }
+    }
+}
+
+BOOST_AUTO_TEST_CASE(testAnalyticDiscreteGeometricAveragePriceDayCounters) {
+    BOOST_TEST_MESSAGE("Testing geometric average-price Asian day-counter invariance...");
+
+    Date today = Settings::instance().evaluationDate();
+    auto exercise = ext::make_shared<EuropeanExercise>(today + 360);
+    std::vector<Date> fixingDates = {today + 36, today + 90, today + 180, today + 360};
+    DayCounter dc[] = {Actual360(), Actual365Fixed()};
+    Real scale[] = {1.0, 365.0/360.0};
+    auto engine = [&](Size r, Size q, Size v) -> ext::shared_ptr<PricingEngine> {
+        auto process = ext::make_shared<BlackScholesMertonProcess>(
+            Handle<Quote>(ext::make_shared<SimpleQuote>(100.0)),
+            Handle<YieldTermStructure>(flatRate(today, 0.03*scale[q], dc[q])),
+            Handle<YieldTermStructure>(flatRate(today, 0.06*scale[r], dc[r])),
+            Handle<BlackVolTermStructure>(flatVol(today, 0.20*std::sqrt(scale[v]), dc[v])));
+        return ext::make_shared<AnalyticDiscreteGeometricAveragePriceAsianEngine>(process);
+    };
+    for (Option::Type type : {Option::Call, Option::Put}) {
+        auto payoff = ext::make_shared<PlainVanillaPayoff>(type, 100.0);
+        DiscreteAveragingAsianOption option(Average::Geometric, 1.0, 0, fixingDates,
+                                          payoff, exercise);
+        option.setPricingEngine(engine(0, 0, 0));
+        Real expected = option.NPV();
+        // vary the clocks separately: changing all three together can mask mixed clocks
+        for (Size r = 0; r < 2; ++r) {
+            for (Size q = 0; q < 2; ++q) {
+                for (Size v = 0; v < 2; ++v) {
+                    BOOST_TEST_CONTEXT("r=" << dc[r] << ", q=" << dc[q] << ", vol=" << dc[v]) {
+                        option.setPricingEngine(engine(r, q, v));
+                        QL_CHECK_CLOSE(option.NPV(), expected, 1e-8);
+                    }
+                }
+            }
+        }
+    }
+}
+
+BOOST_AUTO_TEST_CASE(testAnalyticDiscreteGeometricAveragePriceRhoDayCounters) {
+    BOOST_TEST_MESSAGE("Testing geometric average-price Asian rho with different day counters...");
+
+    Date today = Settings::instance().evaluationDate();
+    // rates and dividends on Actual/365 (Fixed), volatility on Actual/360
+    DayCounter dc = Actual365Fixed();
+    Handle<YieldTermStructure> riskFree(ext::make_shared<ZeroCurve>(
+        std::vector<Date>({today, today + 360, today + 1800}),
+        std::vector<Rate>({0.02, 0.02, 0.04}), dc));
+    Handle<YieldTermStructure> dividends(flatRate(today, 0.02, dc));
+    Handle<Quote> spot(ext::make_shared<SimpleQuote>(100.0));
+    Handle<BlackVolTermStructure> volatility(flatVol(today, 0.25, Actual360()));
+
+    std::vector<Date> fixingDates;
+    for (Integer j=1; j<=20; j++)
+        fixingDates.push_back(today + 90*j);
+    auto exercise = ext::make_shared<EuropeanExercise>(fixingDates.back());
+
+    Spread h = 1.0e-5;
+    for (Option::Type type : {Option::Call, Option::Put}) {
+        DiscreteAveragingAsianOption option(Average::Geometric, 1.0, 0, fixingDates,
+                                            ext::make_shared<PlainVanillaPayoff>(type, 100.0),
+                                            exercise);
+        auto price = [&](const Handle<YieldTermStructure>& r,
+                         const Handle<YieldTermStructure>& q) -> Real {
+            option.setPricingEngine(
+                ext::make_shared<AnalyticDiscreteGeometricAveragePriceAsianEngine>(
+                    ext::make_shared<BlackScholesMertonProcess>(spot, q, r, volatility)));
+            return option.NPV();
+        };
+        auto shifted = [](const Handle<YieldTermStructure>& curve,
+                          Spread spread) -> Handle<YieldTermStructure> {
+            return Handle<YieldTermStructure>(ext::make_shared<ZeroSpreadedTermStructure>(
+                curve, Handle<Quote>(ext::make_shared<SimpleQuote>(spread))));
+        };
+
+        // central differences under a parallel shift of the continuous zero rates
+        Real expectedRho = (price(shifted(riskFree, h), dividends) -
+                            price(shifted(riskFree, -h), dividends)) / (2.0*h);
+        Real expectedDividendRho = (price(riskFree, shifted(dividends, h)) -
+                                    price(riskFree, shifted(dividends, -h))) / (2.0*h);
+        price(riskFree, dividends);
+        QL_CHECK_CLOSE_FRACTION(option.rho(), expectedRho, 1.0e-6);
+        QL_CHECK_CLOSE_FRACTION(option.dividendRho(), expectedDividendRho, 1.0e-6);
+    }
+}
+
+BOOST_AUTO_TEST_CASE(testAnalyticDiscreteGeometricAveragePriceDividendCurveAnchor) {
+    BOOST_TEST_MESSAGE("Testing geometric average-price Asians with a dividend curve "
+                       "anchored away from the spot date...");
+
+    // month ends make 30/360 times non-additive, so that dividend rho must use
+    // times measured on the dividend curve's own clock
+    Date today(31, July, 2025);
+    Settings::instance().evaluationDate() = today;
+    DayCounter dc = Actual365Fixed();
+    Handle<Quote> spot(ext::make_shared<SimpleQuote>(100.0));
+    Handle<YieldTermStructure> riskFree(flatRate(today, 0.03, dc));
+    auto price = [&](const Handle<YieldTermStructure>& dividends, Volatility vol,
+                     const std::vector<Date>& fixingDates) {
+        auto option = ext::make_shared<DiscreteAveragingAsianOption>(
+            Average::Geometric, 1.0, 0, fixingDates,
+            ext::make_shared<PlainVanillaPayoff>(Option::Call, 95.0),
+            ext::make_shared<EuropeanExercise>(fixingDates.back() + 180));
+        option->setPricingEngine(ext::make_shared<AnalyticDiscreteGeometricAveragePriceAsianEngine>(
+            ext::make_shared<BlackScholesMertonProcess>(
+                spot, dividends, riskFree,
+                Handle<BlackVolTermStructure>(flatVol(today, vol, dc)))));
+        return option;
+    };
+
+    // a single fixing today at zero volatility is the spot, wherever the dividend curve starts
+    for (Integer shift : {-2, 2}) {
+        BOOST_TEST_CONTEXT("dividend curve anchored " << shift << " days from today") {
+            Handle<YieldTermStructure> dividends(flatRate(today + shift, 0.04, dc));
+            auto option = price(dividends, 0.0, {today});
+            Real expected = 5.0 * riskFree->discount(today + 180);
+            QL_CHECK_CLOSE(option->NPV(), expected, 1.0e-10);
+            QL_CHECK_SMALL(option->dividendRho(), 1.0e-10);
+        }
+    }
+
+    std::vector<Date> fixingDates;
+    for (Integer j=1; j<=6; j++)
+        fixingDates.push_back(Date::endOfMonth(today + j*Months));
+
+    // with flat curves, anchoring the dividend curve before today changes nothing
+    Real expected = price(Handle<YieldTermStructure>(flatRate(today, 0.04, dc)), 0.25,
+                          fixingDates)->NPV();
+    Real calculated = price(Handle<YieldTermStructure>(flatRate(today - 2, 0.04, dc)), 0.25,
+                            fixingDates)->NPV();
+    QL_CHECK_CLOSE(calculated, expected, 1.0e-10);
+
+    // dividend rho against a parallel shift of a 30/360 dividend curve anchored before today
+    Handle<YieldTermStructure> dividends(
+        flatRate(today - 2, 0.04, Thirty360(Thirty360::BondBasis)));
+    auto shifted = [&](Spread spread) {
+        return Handle<YieldTermStructure>(ext::make_shared<ZeroSpreadedTermStructure>(
+            dividends, Handle<Quote>(ext::make_shared<SimpleQuote>(spread))));
+    };
+    Spread h = 1.0e-5;
+    Real expectedDividendRho = (price(shifted(h), 0.25, fixingDates)->NPV() -
+                                price(shifted(-h), 0.25, fixingDates)->NPV()) / (2.0*h);
+    QL_CHECK_CLOSE_FRACTION(price(dividends, 0.25, fixingDates)->dividendRho(),
+                            expectedDividendRho, 1.0e-6);
 }
 
 BOOST_AUTO_TEST_CASE(testAnalyticDiscreteGeometricAverageStrike) {
